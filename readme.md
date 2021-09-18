@@ -2,7 +2,7 @@
 
 Just a collection of unofficial bugfixes for *New Super Mario Bros. Wii.* There isn't much here yet, but hopefully it'll gradually grow over time.
 
-This project doesn't include anything from *Newer Super Mario Bros. Wii.* For that, go check out [NSMBWer](https://github.com/Danster64/NSMBWer).
+This project doesn't include anything from *Newer Super Mario Bros. Wii*, other than a small number of bugfixes it added. If you want to use Newer's extra features in NSMBW, go check out [NSMBWer](https://github.com/Danster64/NSMBWer).
 
 
 ## License
