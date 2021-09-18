@@ -37,3 +37,17 @@ kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
 // daEnBlockAngle_c (EN_BLOCK_HATENA_ANGLE: profile 532, sprite 255 & EN_BLOCK_RENGA_ANGLE: profile 533, sprite 256)
 kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
+
+
+/* **************************************************************** */
+/* ********************** Yoshi animation bug ********************* */
+/* **************************************************************** */
+
+// Thanks to Ninji (Treeki) for this patch.
+
+// Fix the relatively well-known Yoshi animation bug.
+// If Yoshi takes damage while eating a fruit, the game tries to play animation "Run".
+// The animation is actually called "Rrun (two "r"s), so the game crashes.
+// Nintendo fixed this in the Korean version of the game, and all later versions.
+
+kmWritePointer(0x802f2a4c, "Rrun");
