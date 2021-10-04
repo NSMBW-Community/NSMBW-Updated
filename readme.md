@@ -14,3 +14,4 @@ MIT license. See license.txt for details.
 
 * Sprites 107, 252, 253, 255, and 256 now handle the rotation controller's "Starting Rotation" value properly.
 * The game no longer crashes if Yoshi takes damage while eating a fruit, also known as the "Yoshi animation bug."
+* Switches are no longer horizontally mispositioned when upside-down.

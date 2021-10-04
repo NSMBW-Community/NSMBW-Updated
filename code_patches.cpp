@@ -51,3 +51,16 @@ kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
 // Nintendo fixed this in the Korean version of the game, and all later versions.
 
 kmWritePointer(0x802f2a4c, "Rrun");
+
+
+
+/* **************************************************************** */
+/* ************** Upside-down switch positioning bug ************** */
+/* **************************************************************** */
+
+// The game actively moves upside-down switches left by one unit (1/16 of a tile) upon spawn.
+// This doesn't appear to serve any useful purpose, and just makes them look slightly wrong.
+// This behavior can also be found in NSMBDS. If it had some reason to exist in that game,
+// it's probably unlikely (but admittedly not impossible) that it still does here.
+
+kmWrite32(0x80a19a7c, 0x60000000);  // nop
