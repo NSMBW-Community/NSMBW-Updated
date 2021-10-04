@@ -15,3 +15,4 @@ MIT license. See license.txt for details.
 * Sprites 107, 252, 253, 255, and 256 now handle the rotation controller's "Starting Rotation" value properly.
 * The game no longer crashes if Yoshi takes damage while eating a fruit, also known as the "Yoshi animation bug."
 * Switches are no longer horizontally mispositioned when upside-down.
+* The first camera profile in the level data can now be the first one to be activated. *(Note: Reggie secretly inserts a dummy camera profile into the level data in order to work around this bug for you, so you're unlikely to experience this bug even without the patch.)*
