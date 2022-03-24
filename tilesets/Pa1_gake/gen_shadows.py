@@ -1,8 +1,9 @@
 # 2022-03-16, RRWMC
 
 import math
+import struct
 
-from PyQt6 import QtCore, QtGui
+from PIL import Image
 
 SCALE = 1
 
@@ -199,27 +200,28 @@ def intensity_at(x: float, y: float) -> float:
 
 
 def main():
-    app = QtGui.QGuiApplication([])
-
-    canvas = QtGui.QImage(408 * SCALE, 144 * SCALE, QtGui.QImage.Format.Format_ARGB32)
-    canvas.fill(QtCore.Qt.GlobalColor.transparent)
+    width = 408 * SCALE
+    height = 144 * SCALE
 
     # Retail Pa1_gake
     r, g, b = 33, 16, 16
     # AnotherSMBW
     # r = g = b = 0
 
-    for y in range(canvas.height()):
-        for x in range(canvas.width()):
+    canvas = []
+
+    for y in range(height):
+        for x in range(width):
             # "+ 0.5" so we sample the *center* of the pixel
             intensity = intensity_at((x + 0.5) / SCALE, (y + 0.5) / SCALE)
             if intensity > 1:
                 raise ValueError(f'OOB intensity at {x}, {y}')
             a = int(intensity * 255)
-            if a > 0:
-                canvas.setPixel(x, y, (a << 24) | (r << 16) | (g << 8) | b)
 
-    canvas.save('Pa1_gake_recreated_shadows.png')
+            canvas.append((a << 24) | (b << 16) | (g << 8) | r)
+
+    image = Image.frombytes('RGBA', (width, height), struct.pack(f'<{width * height}I', *canvas))
+    image.save('Pa1_gake_recreated_shadows.png')
 
 
 if __name__ == '__main__':
