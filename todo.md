@@ -54,6 +54,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * The bug that occurs when you bubble at the same moment you touch the flagpole
     * If all the other players are bubbled or dead when you do this, it's a softlock (game must be hard-reset to continue)
 * The bug that occurs if you groundpound onto the flagpole at the end of Coin Battle 1
+    * Grop notes that "Fixing this might be as easy as just setting the state of the player to Normal when the player touches the flagpole."
 * [Mario running animation glitch](https://twitter.com/mariobrothblog/status/1496569843998507019)
 
 ### Assets
