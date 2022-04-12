@@ -56,6 +56,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * The bug that occurs if you groundpound onto the flagpole at the end of Coin Battle 1
     * Grop notes that "Fixing this might be as easy as just setting the state of the player to Normal when the player touches the flagpole."
 * [Mario running animation glitch](https://twitter.com/mariobrothblog/status/1496569843998507019)
+* [Mushroom platform propeller flight collision issue](https://youtu.be/mgNl4yeJO1E)
 
 ### Assets
 
