@@ -44,7 +44,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 
 #### Harder
 
-* "When you hit a two-way line controlled block, the items coming out move relative to the block's position horizontally but not vertically" ([video](https://discord.com/channels/673369321522593794/708423907731832882/939947637103271976))
+* "When you hit a two-way line controlled block, the items coming out move relative to the block's position horizontally but not vertically" ([video](https://cdn.discordapp.com/attachments/708423907731832882/939947635790479411/yo_wmc.mp4))
 * Autoscrollers with the "automatically begin" setting jerk to the player's position when they change powerup state
 * Event-controlled spinning rotation controllers don't save/reload their state correctly when the player switches between zones
     * This affects my September 2021 contest level; [at the time, I added a non-general workaround that only works in that specific level](https://github.com/RoadrunnerWMC/RoadrunnerWMC_Levels/blob/3e5369e24f7c48b77e0c7e4324c4c5bec30e5b12/2021_09_NSMBW_Level_Contest/code/src/sprite_edits/rotation_controller_spinning.cpp)
