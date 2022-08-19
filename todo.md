@@ -25,12 +25,14 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Hammer Bros (base class) spawn in the "Attack" state, but don't actually throw anything the first time
     * It may suffice to make them spawn in a different state
 * `daIce_c::create` bug if an actor is frozen while in poison water
-    * Grop investigated this in Horizon and figured out the root cause
+    * Grop investigated this in NHD and figured out the root cause
 * Yoshi flutter-jump speed glitch: you retain horizontal speed if the d-pad is neutral
     * This would be classified as a "fun, non-critical" bug, and the patch for it will be optional and probably disabled by default
 * Bushes have spawn rects that seem too small if the camera scrolls to them vertically; make them larger so that doesn't happen
 * It'd be nice if we could move flowers in front of layer 2
 * Move-When-On platforms support different movement directions, but the texture apparently doesn't update correctly with those settings
+* Some things (icicles, held Mecha-koopas, ...) can kill King Bills
+* Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 
 ##### Other things
 
@@ -103,12 +105,17 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 * Pa1_gake:
     * Slopes are grassy for some reason
     * Some of the light-colored solid-on-top rock platforms have the floor collision on the wrong tiles
+* Pa1_gake_yougan: some tiles that should be solid, aren't
 * Pa1_toride_boss3: a large portion of the ground isn't actually icy
 * [Pa1_toride_boss7: backport the improvement from NSMBW v2](https://tcrf.net/New_Super_Mario_Bros._Wii/Version_Differences#World_7-Tower_Boss_Battle_Tileset)
 
 #### World maps
 
 * The W4 starting path node is inconsistent with those of every other world
+
+#### Other models
+
+* The grassland backgrounds need texture filtering enabled on the mushroom hill lightmaps
 
 #### Other
 
@@ -119,3 +126,5 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 Defined as "improvements beyond what Nintendo had intended to do." These can be enabled/disabled with flags at build time. I plan to be very careful about adding to this list, as I really don't want the project scope to balloon too much -- the overall to-do list is already very long as it is!
 
 * Make hardcoded behaviors optional
+* Apply Pogo to all tilesets
+* Allow opening savefiles from any region (nop 800CF858)
