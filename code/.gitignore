@@ -1,3 +1,4 @@
 Kamek
-bin
+build
+*.ninja*
 *.o
