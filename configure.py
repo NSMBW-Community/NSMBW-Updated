@@ -215,7 +215,7 @@ rule km
         out_fp = RIIVO_DISC_CODE / f'{version}.bin'
         lines[-1] += f' $builddir/{ninja_escape_spaces(out_fp.relative_to(BUILD_DIR))}'
 
-    lines[-1] += ' km'
+    lines[-1] += ': km'
     for fp in src_files:
         lines[-1] += f' {ninja_escape_spaces(fp.with_suffix(".o"))}'
 
