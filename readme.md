@@ -23,6 +23,7 @@ None yet. This is still in early development, please be patient!
 * The first camera profile in the level data can now be the first one to be activated. *(Note: Reggie secretly inserts a dummy camera profile into the level data in order to work around this bug for you, so you're unlikely to experience this bug even without the patch.)*
 * Voice actress Caety Sagoian's name, misspelled as "Catey Sagoian" in the credits in some game versions, is now spelled correctly in all versions.
 * The "SOUND EFFECTS" header in the credits is no longer typoed as "SOUND EFFECT" in the Chinese version.
+* Lightmaps are now properly texture-filtered when playing in HD on Dolphin.
 
 
 ## Todo
