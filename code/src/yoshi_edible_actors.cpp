@@ -44,13 +44,14 @@
 // daEnPataMet_c, for example), so these patches work the same way.
 
 // Special Exit Controller, daNextGotoBlock_c (sprite 179, actor 226, AC_NEXTGOTO_BLOCK)
-kmBranchDefAsm(0x8086e794, 0x8086e798) {
-    nofralloc
-    stfs f31, 0x3dc(r3)
-    li r7, 0
-    stb r7, 0x36d(r3)
-    blr
-}
+// TODO -- the following is insufficient:
+// kmBranchDefAsm(0x8086e794, 0x8086e798) {
+//     nofralloc
+//     stfs f31, 0x3dc(r3)
+//     li r7, 0
+//     stb r7, 0x36d(r3)
+//     blr
+// }
 
 // Giant Icicle, daEnBigIcicle_c (sprite 311, actor 553, EN_BIG_ICICLE)
 // (thanks to Meatball132 for this patch)
