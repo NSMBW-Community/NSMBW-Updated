@@ -32,4 +32,15 @@
 // Nintendo fixed this in the Korean version of the game, and all later
 // versions.
 
+#if defined(P1) \
+ || defined(E1) \
+ || defined(J1) \
+ || defined(P2) \
+ || defined(E2) \
+ || defined(J2) \
+ || defined(P3) \
+ || defined(J3)
+
 kmWritePointer(0x802f2a4c, "Rrun");
+
+#endif

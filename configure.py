@@ -24,6 +24,7 @@
 
 import argparse
 import dataclasses
+import json
 from pathlib import Path
 import sys
 from typing import Any, Dict, Optional
@@ -158,11 +159,71 @@ CODE_SRC_DIR = CODE_ROOT_DIR / 'src'
 CODE_INCLUDE_DIR = CODE_ROOT_DIR / 'include'
 
 
+@dataclasses.dataclass
+class TranslationUnit:
+    """
+    Represents one translation unit (.cpp file)
+    """
+    cpp_file: Path
+
+    # Sometimes we need different builds for different game versions
+    # (such as when actor IDs are referenced in the code), but often we
+    # can just build for P1 and reuse it everywhere. This dict defines
+    # that relationship.
+    builds: Dict[str, str] = dataclasses.field(
+        default_factory=lambda: {v: 'P1' for v in VERSIONS})
+
+    def read_config(self, path: Path) -> None:
+        """
+        Read additional config data from an optional .json file
+        """
+        if not path.is_file():
+            return
+        with path.open(encoding='utf-8') as f:
+            j = json.load(f)
+
+        if builds_list := j.get('builds'):
+            # Invert it
+            self.builds = {}
+            for build, users in builds_list.items():
+                for user in users:
+                    self.builds[user] = build
+
+            if set(self.builds) != set(VERSIONS):
+                raise ValueError(f"{path.name} doesn't specify the right set of build versions:"
+                    f' {sorted(self.builds)} vs {sorted(VERSIONS)}')
+
+    def iter_builds(self):
+        """
+        Iterator over the .o files that need to be built for this TU.
+        Yields (version string, .o file path) pairs.
+        """
+        for version in set(self.builds.values()):
+            yield version, self.o_file_for_version(version)
+
+    def o_file_for_version(self, version: str) -> Path:
+        """
+        Return the .o file that should be linked for the specified game
+        version.
+        """
+        if len(set(self.builds.values())) == 1:
+            # No need to mangle the version name into the .o filename
+            return self.cpp_file.with_suffix('.o')
+        else:
+            return self.cpp_file.parent / (self.cpp_file.stem + f'_{self.builds[version]}.o')
+
+
 def make_code_rules(config: Config) -> str:
     """
     Create Ninja rules to build the .bin files in the Code directory
     """
-    src_files = sorted(CODE_SRC_DIR.glob('**/*.cpp'))
+    # Find all TUs, and read any configs
+    tus = []
+    for fp in sorted(CODE_SRC_DIR.glob('**/*.cpp')):
+        tu = TranslationUnit(fp)
+        tu.read_config(fp.with_suffix('.json'))
+        tus.append(tu)
+
     use_wine = (sys.platform == 'win32')
 
     lines = [f"""
@@ -193,33 +254,32 @@ rule cw
 """]
 
     # Add "cw" edges for all .cpp -> .o files.
-    for fp in src_files:
-        lines.append('build'
-            f' {ninja_escape_spaces(fp.with_suffix(".o"))}:'
-            f' cw {ninja_escape_spaces(fp)}')
+    for tu in tus:
+        for version, o_file in tu.iter_builds():
+            lines.append('build'
+                f' {ninja_escape_spaces(o_file)}:'
+                f' cw {ninja_escape_spaces(tu.cpp_file)}\n'
+                f' cflags = $cflags -D{version}')
     lines.append('')
 
     lines.append(f"""
 rule km
-  command = $kamek $in -dynamic -versions=$addrmap '-output-kamek=$builddir/{RIIVO_DISC_CODE.relative_to(BUILD_DIR)}/$$KV$$.bin'
-  description = Linking all outputs with $kamek ...
+  command = $kamek $in -dynamic -versions=$addrmap -output-kamek=$out -select-version=$selectversion
+  description = $kamek -> $out
 """)
 
-    # Add a "km" edge for the final linking step.
-    # This line is a bit of a cheat. Ninja needs to know that the
-    # linking outputs are P1.bin, E1.bin, etc, but Kamek derives those
-    # filenames from the address map rather than the command line. So we
-    # write this build edge without using "$out" anywhere at all.
-    lines.append('build')
     for version in VERSIONS:
+        lines.append('build')
         out_fp = RIIVO_DISC_CODE / f'{version}.bin'
         lines[-1] += f' $builddir/{ninja_escape_spaces(out_fp.relative_to(BUILD_DIR))}'
 
-    lines[-1] += ': km'
-    for fp in src_files:
-        lines[-1] += f' {ninja_escape_spaces(fp.with_suffix(".o"))}'
+        lines[-1] += ': km'
+        for tu in tus:
+            o_file = tu.o_file_for_version(version)
+            lines[-1] += f' {ninja_escape_spaces(o_file)}'
+        lines[-1] += f'\n selectversion = {version}'
 
-    lines.append('')
+        lines.append('')
     
     return '\n'.join(lines)
 
