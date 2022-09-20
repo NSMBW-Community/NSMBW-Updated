@@ -25,9 +25,8 @@
 
 // Thanks to Ninji (Treeki) for this patch.
 
-// Fix the relatively well-known Yoshi animation bug.
 // If Yoshi takes damage while eating a fruit, the game tries to play
-// animation "Run". The animation is actually called "Rrun (two "r"s),
+// animation "Run". The animation is actually called "Rrun" (two "r"s),
 // so the game crashes.
 
 // Nintendo fixed this in the Korean version of the game, and all later
