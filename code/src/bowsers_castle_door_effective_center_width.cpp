@@ -25,21 +25,28 @@
 
 // Thanks to Grop for this patch.
 
-// dAcPy_c::exeDemoOutDoor_OpenDoor() is responsible for deciding if
-// Mario is horizontally "close enough" to the center of a door to be
-// able to enter it without having to walk towards the center first.
-// dAcPy_c::setDoorDemo() selects the maximum allowed distance, and the
-// value it picks depends on the type of door, determined by checking
-// the door's profile ID: tower (EN_TORIDEDOOR) and castle
-// (EN_CASTLEDOOR) doors allow 10 units (1 unit = 1/16 tile), and all
-// others use 8.
+// When Mario enters a door, he decides if the door is "wide" or not,
+// which affects some details of his animation.
 
-// This makes sense because those doors are wider than others... but it
-// seems the developers forgot about the Bowser's Castle boss room door
-// (EN_KOOPADOOR), which is the widest door in the game.
+// If Mario isn't "close enough" to the center of a normal door, he'll
+// automatically walk to the center before entering it. If he is, the
+// walking animation will be skipped, and he'll just slide toward the
+// center while walking away from the camera instead.
 
-// This patch adjusts the condition to include EN_KOOPADOOR in the "wide
-// door types" case. Note that both the code being patched and the patch
-// itself rely on the fact that these three profile IDs are sequential.
+// Doors considered wide have a slightly larger radius for the "close
+// enough to the center" range (5/8 of a tile instead of 1/2), and they
+// omit the sliding behavior. (These changes take place in
+// dAcPy_c::exeDemoOutDoor_OpenDoor() and
+// dAcPy_c::exeDemoOutDoor_MoveInter() respectively.)
+
+// dAcPy_c::setDoorDemo() classifies a door into one of the
+// two categories. It considers tower (EN_TORIDEDOOR) and castle
+// (EN_CASTLEDOOR) doors wide, and all others normal. It seems, however,
+// that the developers forgot to consider the Bowser's Castle boss room
+// door (EN_KOOPADOOR), which is the widest door in the game.
+
+// This patch adjusts the condition to include EN_KOOPADOOR in that
+// category. Note that both the code being patched and the patch itself
+// rely on the fact that these three profile IDs are sequential.
 
 kmWrite32(0x8013f41c, 0x28000002);  // cmplwi r0, 2
