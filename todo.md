@@ -20,8 +20,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
     * Boo circle boos: Asu-chan suggests fixing this by writing 0x80A995C0 to 0x80B06E1C
     * Falling icicles: similar to above, but write 0x809FE210 to 0x80AE9EC4, and 0x80A20FA0 to 0x80AEFFD4
 * Yoshi eating inappropriate things
-    * Giant icicles (this can be ported from Newer 1.30)
-    * Special exit controllers
+    * Add to this list if you find any!
 * Hammer Bros (base class) spawn in the "Attack" state, but don't actually throw anything the first time
     * It may suffice to make them spawn in a different state
 * `daIce_c::create` bug if an actor is frozen while in poison water
@@ -112,6 +111,8 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 #### World maps
 
 * The W4 starting path node is inconsistent with those of every other world
+* The W6 pipe joints use an outdated tileset texture
+* The W7 cliffs use an outdated tileset texture
 
 #### Other models
 
@@ -127,4 +128,4 @@ Defined as "improvements beyond what Nintendo had intended to do." These can be 
 
 * Make hardcoded behaviors optional
 * Apply Pogo to all tilesets
-* Allow opening savefiles from any region (nop 800CF858)
+* Automatic BRSAR patching at runtime
