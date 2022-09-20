@@ -44,14 +44,12 @@
 // daEnPataMet_c, for example), so these patches work the same way.
 
 // Special Exit Controller, daNextGotoBlock_c (sprite 179, actor 226, AC_NEXTGOTO_BLOCK)
-// TODO -- the following is insufficient:
-// kmBranchDefAsm(0x8086e794, 0x8086e798) {
-//     nofralloc
-//     stfs f31, 0x3dc(r3)
-//     li r7, 0
-//     stb r7, 0x36d(r3)
-//     blr
-// }
+// This one is a little different: changing 0x36d in the actor does
+// prevent Yoshi from eating the actor, but his tongue still activates
+// the warp when it touches it. So to fix this, we edit the attack
+// bitfield in the actor's dCc_c initialization struct -- disabling the
+// "YoshiEat" bit (aka (bitfield >> 15) & 1) is sufficient.
+kmWrite8(0x80939b8a, 0x7f);
 
 // Giant Icicle, daEnBigIcicle_c (sprite 311, actor 553, EN_BIG_ICICLE)
 // (thanks to Meatball132 for this patch)
