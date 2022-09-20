@@ -25,6 +25,7 @@ None yet. This is still in early development, please be patient!
 * The "SOUND EFFECTS" header in the credits is no longer typoed as "SOUND EFFECT" in the Chinese version.
 * Lightmaps are now properly texture-filtered when playing in HD on Dolphin.
 * The Bowser's Castle boss room door is now considered a "wide" door for the purposes of fine-tuning player walking animations.
+* Yoshi is no longer able to eat Giant Falling Icicles and Special Exit Controllers.
 
 
 ## Todo
