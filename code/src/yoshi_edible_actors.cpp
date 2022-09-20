@@ -43,13 +43,19 @@
 // Sprites that edit the value do so in their create() method (see
 // daEnPataMet_c, for example), so these patches work the same way.
 
+// ----
+
 // Special Exit Controller, daNextGotoBlock_c (sprite 179, actor 226, AC_NEXTGOTO_BLOCK)
-// This one is a little different: changing 0x36d in the actor does
-// prevent Yoshi from eating the actor, but his tongue still activates
-// the warp when it touches it. So to fix this, we edit the attack
-// bitfield in the actor's dCc_c initialization struct -- disabling the
-// "YoshiEat" bit (aka (bitfield >> 15) & 1) is sufficient.
+// This one is a little different: changing 0x36d in the actor *does*
+// prevent Yoshi from eating it, but his tongue still activates the warp
+// when it touches it. So instead, we go one level higher and disable
+// the "YoshiEat" bit (aka (bitfield >> 15) & 1) of the "attack
+// bitfield" in the initialization struct for the actor's dCc_c. This
+// prevents the actor from being notified about Yoshi tongue collisions
+// entirely, so its edibility policy (actor+0x36d) doesn't matter.
 kmWrite8(0x80939b8a, 0x7f);
+
+// ----
 
 // Giant Icicle, daEnBigIcicle_c (sprite 311, actor 553, EN_BIG_ICICLE)
 // (thanks to Meatball132 for this patch)
