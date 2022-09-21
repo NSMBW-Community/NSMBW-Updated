@@ -28,6 +28,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Some things (icicles, held Mecha-koopas, ...) can kill King Bills
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 * The China 1-2 null-pointer crash
+* The actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform?
 
 ##### Other things
 
@@ -109,14 +110,6 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 * The W4 starting path node is inconsistent with those of every other world
 * The W6 pipe joints use an outdated tileset texture
 * The W7 cliffs use an outdated tileset texture
-
-#### Other models
-
-* The grassland backgrounds need texture filtering enabled on the mushroom hill lightmaps
-
-#### Other
-
-* Credits: backport the spelling fix for Caety Sagoian's name from the Korean version to the rest
 
 ## Enhancements
 
