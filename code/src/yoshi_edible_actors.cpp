@@ -23,42 +23,57 @@
 #include <kamek.h>
 
 
-// A 1-byte value at 0x36d in dActor_c determines whether Yoshi can eat
-// the actor or not:
+// Many actors that should really be inedible but aren't used in the
+// game's six Yoshi levels end up being edible anyway.
 
-// 0 = no
-// 1 = can be held in mouth
-// 2 = can be swallowed (default)
-// 3 = seems identical to 2
-// 4 = Yoshi spits out a fireball
-// 5 = Yoshi spits out an iceball
+// Making an actor edible requires two conditions, and thus, there are
+// generally two ways it can be fixed, though they're not exactly
+// equivalent:
+
+// First, it needs a dCc_c collision controller in order to detect the
+// collision with Yoshi's tongue. The collision is only detected if the
+// "YoshiEat" bit ((bitfield >> 15) & 1) in the initialization struct's
+// "attack bitfield" is set. Otherwise, Yoshi's tongue will pass right
+// through the collision box. This is the right place to patch if that's
+// the behavior you want.
+
+// Second, assuming the bit is set and a collision occurs, a u8 at 0x36d
+// in dActor_c determines what happens next:
+
+// 0 = Yoshi's tongue bounces off the collision box as though it were solid
+// 1 = actor is held in mouth
+// 2 = actor is swallowed (this is the default value (yes, really))
+// 3 = (seems identical to 2?)
+// 4 = actor is held in mouth, and becomes a fireball when spat out
+// 5 = actor is held in mouth, and becomes an iceball when spat out
 // (higher values seem identical to 1)
 
-// Since "swallowable" is the default, many actors that should really be
-// inedible but aren't used in the game's six Yoshi levels don't bother
-// to change it. This isn't really a *bug* since it doesn't affect
-// normal gameplay, but making actors behave correctly in more
-// situations opens up more possibilities for custom level design.
+// This is the right place to patch if you want Yoshi's tongue to treat
+// the collision as solid, or one of those other behaviors.
 
-// Sprites that edit the value do so in their create() method (see
-// daEnPataMet_c, for example), so these patches work the same way.
+// ----
+
+// Giant Floating Log, unknown class name (sprite 173, actor 501, EN_MARUTA)
+// Patches the attack bitfield
+kmWrite8(0x80ad2e5e, 0x5f);
 
 // ----
 
 // Special Exit Controller, daNextGotoBlock_c (sprite 179, actor 226, AC_NEXTGOTO_BLOCK)
-// This one is a little different: changing 0x36d in the actor *does*
-// prevent Yoshi from eating it, but his tongue still activates the warp
-// when it touches it. So instead, we go one level higher and disable
-// the "YoshiEat" bit (aka (bitfield >> 15) & 1) of the "attack
-// bitfield" in the initialization struct for the actor's dCc_c. This
-// prevents the actor from being notified about Yoshi tongue collisions
-// entirely, so its edibility policy (actor+0x36d) doesn't matter.
+// Patches the attack bitfield
 kmWrite8(0x80939b8a, 0x7f);
+
+// ----
+
+// Toad House Chest, daStrongBox_c (sprite 203, actor 293, AC_STRONGBOX)
+// Patches the attack bitfield
+kmWrite8(0x8093b43e, 0x7f);
 
 // ----
 
 // Giant Icicle, daEnBigIcicle_c (sprite 311, actor 553, EN_BIG_ICICLE)
 // (thanks to Meatball132 for this patch)
+// Patches field 0x36d
 kmBranchDefAsm(0x809b4420, 0x809b4424) {
     nofralloc
     stfs f1, 0x318(r30)
