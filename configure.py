@@ -34,6 +34,7 @@ PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
 REGIONS = ['P', 'E', 'J']
 VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2']
+DEFAULT_VERSION = 'P1'
 LANG_FOLDER_NAMES = {
     'P1': 'EU',
     'E1': 'US',
@@ -171,7 +172,7 @@ class TranslationUnit:
     # can just build for P1 and reuse it everywhere. This dict defines
     # that relationship.
     builds: Dict[str, str] = dataclasses.field(
-        default_factory=lambda: {v: 'P1' for v in VERSIONS})
+        default_factory=lambda: {v: DEFAULT_VERSION for v in VERSIONS})
 
     def read_config(self, path: Path) -> None:
         """
@@ -291,6 +292,10 @@ rule km
 
 CREDITS_PY = Path('credits/credits.py')
 
+# No bugs in the credits in these versions, so no need to add build
+# rules for their credits files
+CREDITS_VERSIONS_BLACKLIST = {'K', 'W'}
+
 
 def make_credits_rules(config: Config) -> str:
     """
@@ -308,6 +313,9 @@ rule credits
     already_covered_staffrolls = set()
 
     for version, root in config.game_roots.items():
+        if version in CREDITS_VERSIONS_BLACKLIST:
+            continue
+
         lang_folder = root / LANG_FOLDER_NAMES[version]
 
         # Find all staffroll.bin's
