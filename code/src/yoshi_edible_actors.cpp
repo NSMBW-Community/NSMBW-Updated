@@ -32,10 +32,10 @@
 
 // First, it needs a dCc_c collision controller in order to detect the
 // collision with Yoshi's tongue. The collision is only detected if the
-// "YoshiEat" bit ((bitfield >> 15) & 1) in the initialization struct's
-// "attack bitfield" is set. Otherwise, Yoshi's tongue will pass right
-// through the collision box. This is the right place to patch if that's
-// the behavior you want.
+// "YoshiEat" bit ((bitfield >> 15) & 1) in the dCc_c's initialization
+// struct's "attack bitfield" is set. Otherwise, Yoshi's tongue will
+// pass right through the collision box. This is the right place to
+// patch if that's the behavior you want.
 
 // Second, assuming the bit is set and a collision occurs, a u8 at 0x36d
 // in dActor_c determines what happens next:
@@ -68,6 +68,20 @@ kmWrite8(0x80939b8a, 0x7f);
 // Toad House Chest, daStrongBox_c (sprite 203, actor 293, AC_STRONGBOX)
 // Patches the attack bitfield
 kmWrite8(0x8093b43e, 0x7f);
+
+// ----
+
+// Falling Icicle, daEnIcicle_c (sprite 265, actor 339, EN_ICICLE)
+// Patches field 0x36d to 5, causing it to become an iceball when eaten
+// (which subjectively seems like the most logical behavior)
+
+kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
+    nofralloc
+    stfs f0, 0x31c(r28)
+    li r4, 5
+    stb r4, 0x36d(r28)
+    blr
+};
 
 // ----
 

@@ -26,6 +26,8 @@ None yet. This is still in early development, please be patient!
 * Lightmaps are now properly texture-filtered when playing in HD on Dolphin.
 * The Bowser's Castle boss room door is now considered a "wide" door for the purposes of fine-tuning player walking animations.
 * Yoshi is no longer able to eat Giant Floating Logs, Special Exit Controllers, Toad House Chests, and Giant Falling Icicles.
+* Falling Icicles now become iceballs when eaten.
+* Drilling with a Propeller Suit no longer kills Boo Circle boos and Falling Icicles.
 
 
 ## Todo
