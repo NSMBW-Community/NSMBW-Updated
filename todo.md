@@ -16,11 +16,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 
 ##### Sprites & actors
 
-* Propeller suit spin drill can inappropriately kill...
-    * Boo circle boos: Asu-chan suggests fixing this by writing 0x80A995C0 to 0x80B06E1C
-    * Falling icicles: similar to above, but write 0x809FE210 to 0x80AE9EC4, and 0x80A20FA0 to 0x80AEFFD4
-* Yoshi eating inappropriate things
-    * Add to this list if you find any!
 * Hammer Bros (base class) spawn in the "Attack" state, but don't actually throw anything the first time
     * It may suffice to make them spawn in a different state
 * `daIce_c::create` bug if an actor is frozen while in poison water
@@ -32,6 +27,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Move-When-On platforms support different movement directions, but the texture apparently doesn't update correctly with those settings
 * Some things (icicles, held Mecha-koopas, ...) can kill King Bills
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
+* The China 1-2 null-pointer crash
 
 ##### Other things
 
@@ -129,3 +125,4 @@ Defined as "improvements beyond what Nintendo had intended to do." These can be 
 * Make hardcoded behaviors optional
 * Apply Pogo to all tilesets
 * Automatic BRSAR patching at runtime
+* Incorporate Ninji's China DRM patch
