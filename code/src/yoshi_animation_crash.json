@@ -1,6 +1,7 @@
 {
     "builds": {
-        "P1": ["P1", "E1", "J1", "P2", "E2", "J2"]
+        "P1": ["P1", "E1", "J1", "P2", "E2", "J2"],
+        "K": ["K", "W"]
     },
-    "//": "TODO: add 'K: [K, W, C]'"
+    "//": "TODO: add C to the K builds list"
 }

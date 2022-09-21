@@ -32,8 +32,8 @@ from typing import Any, Dict, Optional
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
-REGIONS = ['P', 'E', 'J']
-VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2']
+REGIONS = ['P', 'E', 'J', 'K', 'W', 'C']
+VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2', 'P3', 'J3', 'K', 'W', 'C']
 DEFAULT_VERSION = 'P1'
 LANG_FOLDER_NAMES = {
     'P1': 'EU',
@@ -147,6 +147,8 @@ class Config:
 ########################################################################
 
 
+CODE_BUILD_VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2', 'K', 'W']
+
 CODE_ROOT_DIR = Path('code')
 KAMEK_ROOT_DIR = Path('Kamek')
 
@@ -158,6 +160,20 @@ ADDRESS_MAP_TXT = CODE_ROOT_DIR / 'address-map.txt'
 
 CODE_SRC_DIR = CODE_ROOT_DIR / 'src'
 CODE_INCLUDE_DIR = CODE_ROOT_DIR / 'include'
+
+PREPROC_FLAGS = {
+    #      Version       Region      v1            v2            vk           vw           vc
+    'P1': {'VERSION_P1', 'REGION_P', 'IS_V1',      'IS_PRE_V2',  'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'E1': {'VERSION_E1', 'REGION_E', 'IS_V1',      'IS_PRE_V2',  'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'J1': {'VERSION_J1', 'REGION_J', 'IS_V1',      'IS_PRE_V2',  'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'P2': {'VERSION_P2', 'REGION_P', 'IS_POST_V1', 'IS_V2',      'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'E2': {'VERSION_E2', 'REGION_E', 'IS_POST_V1', 'IS_V2',      'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'J2': {'VERSION_J2', 'REGION_J', 'IS_POST_V1', 'IS_V2',      'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
+    'K':  {'VERSION_K',  'REGION_K', 'IS_POST_V1', 'IS_POST_V2',              'IS_PRE_W',  'IS_PRE_C'},
+    'W':  {'VERSION_W',  'REGION_W', 'IS_POST_V1', 'IS_POST_V2', 'IS_POST_K',              'IS_PRE_C'},
+    # 'C':  {'VERSION_C',  'REGION_C', 'IS_POST_V1', 'IS_POST_V2', 'IS_POST_K', 'IS_POST_W',           },
+}
+assert set(PREPROC_FLAGS) == set(CODE_BUILD_VERSIONS)
 
 
 @dataclasses.dataclass
@@ -172,7 +188,7 @@ class TranslationUnit:
     # can just build for P1 and reuse it everywhere. This dict defines
     # that relationship.
     builds: Dict[str, str] = dataclasses.field(
-        default_factory=lambda: {v: DEFAULT_VERSION for v in VERSIONS})
+        default_factory=lambda: {v: DEFAULT_VERSION for v in CODE_BUILD_VERSIONS})
 
     def read_config(self, path: Path) -> None:
         """
@@ -190,9 +206,9 @@ class TranslationUnit:
                 for user in users:
                     self.builds[user] = build
 
-            if set(self.builds) != set(VERSIONS):
+            if set(self.builds) != set(CODE_BUILD_VERSIONS):
                 raise ValueError(f"{path.name} doesn't specify the right set of build versions:"
-                    f' {sorted(self.builds)} vs {sorted(VERSIONS)}')
+                    f' {sorted(self.builds)} vs {sorted(CODE_BUILD_VERSIONS)}')
 
     def iter_builds(self):
         """
@@ -260,7 +276,7 @@ rule cw
             lines.append('build'
                 f' {ninja_escape_spaces(o_file)}:'
                 f' cw {ninja_escape_spaces(tu.cpp_file)}\n'
-                f' cflags = $cflags -D{version}')
+                f' cflags = $cflags{"".join(f" -D{v}" for v in PREPROC_FLAGS[version])}')
     lines.append('')
 
     lines.append(f"""
@@ -269,7 +285,7 @@ rule km
   description = $kamek -> $out
 """)
 
-    for version in VERSIONS:
+    for version in CODE_BUILD_VERSIONS:
         lines.append('build')
         out_fp = RIIVO_DISC_CODE / f'{version}.bin'
         lines[-1] += f' $builddir/{ninja_escape_spaces(out_fp.relative_to(BUILD_DIR))}'
