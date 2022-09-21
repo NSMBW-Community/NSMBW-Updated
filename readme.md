@@ -28,6 +28,7 @@ None yet. This is still in early development, please be patient!
 * Yoshi is no longer able to eat Giant Floating Logs, Special Exit Controllers, Toad House Chests, and Giant Falling Icicles.
 * Falling Icicles now become iceballs when eaten.
 * Drilling with a Propeller Suit no longer kills Boo Circle boos and Falling Icicles.
+* Bush sprites (387) now spawn correctly (no pop-in) when approached from above.
 
 
 ## Todo

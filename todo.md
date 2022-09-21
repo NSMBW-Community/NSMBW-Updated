@@ -22,7 +22,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
     * Grop investigated this in NHD and figured out the root cause
 * Yoshi flutter-jump speed glitch: you retain horizontal speed if the d-pad is neutral
     * This would be classified as a "fun, non-critical" bug, and the patch for it will be optional and probably disabled by default
-* Bushes have spawn rects that seem too small if the camera scrolls to them vertically; make them larger so that doesn't happen
 * It'd be nice if we could move flowers in front of layer 2
 * Move-When-On platforms support different movement directions, but the texture apparently doesn't update correctly with those settings
 * Some things (icicles, held Mecha-koopas, ...) can kill King Bills
