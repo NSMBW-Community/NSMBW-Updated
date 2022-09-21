@@ -27,7 +27,7 @@ import dataclasses
 import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Set
 
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
@@ -113,6 +113,7 @@ class Config:
     Class that represents configuration options provided by the user
     """
     game_roots: Dict[str, Path] = dataclasses.field(default_factory=dict)
+    include_enhancements: bool = True
 
     def set_up_arg_parser(self, parser: argparse.ArgumentParser) -> None:
         """
@@ -121,6 +122,8 @@ class Config:
         parser.add_argument('--game-root', type=Path, action='append',
             help='the path to an extracted game root (i.e. with the Effect, Env, HomeButton2, etc. subdirectories).'
             ' You can specify this multiple times for different game versions, and the resulting Riivolution patch will include assets for all of them.')
+        parser.add_argument('--enhancements', choices=('on', 'off'), default='on',
+            help='whether to include enhancements in addition to bugfixes')
 
         # TODO: let the user configure
         # - path to CodeWarrior
@@ -140,6 +143,8 @@ class Config:
                     self.game_roots[version] = game_root
         else:
             print('WARNING: No game roots specified -- patched assets will not be built!')
+
+        self.include_enhancements = (args.enhancements == 'on')
 
 
 ########################################################################
@@ -174,6 +179,16 @@ PREPROC_FLAGS = {
     # 'C':  {'VERSION_C',  'REGION_C', 'IS_POST_V1', 'IS_POST_V2', 'IS_POST_K', 'IS_POST_W',           },
 }
 assert set(PREPROC_FLAGS) == set(CODE_BUILD_VERSIONS)
+
+
+def get_preproc_flags(config: Config, version: str) -> Set[str]:
+    """
+    Get the set of preprocessor flags to use for this game version.
+    """
+    flags = set(PREPROC_FLAGS[version])
+    if config.include_enhancements:
+        flags.add('ENHANCEMENTS')
+    return flags
 
 
 @dataclasses.dataclass
@@ -276,7 +291,7 @@ rule cw
             lines.append('build'
                 f' {ninja_escape_spaces(o_file)}:'
                 f' cw {ninja_escape_spaces(tu.cpp_file)}\n'
-                f' cflags = $cflags{"".join(f" -D{v}" for v in PREPROC_FLAGS[version])}')
+                f' cflags = $cflags{"".join(f" -D{v}" for v in get_preproc_flags(config, version))}')
     lines.append('')
 
     lines.append(f"""
