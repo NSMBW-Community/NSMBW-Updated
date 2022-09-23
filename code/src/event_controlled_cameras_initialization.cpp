@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00300
+
 // When using camera mode 5 (event-controlled), the game only switches
 // camera modes if the new camera-profile struct would have a different
 // index from the current one. Otherwise it refuses to switch to the new
@@ -46,3 +48,5 @@ kmBranchDefAsm(0x80077290, 0x80077294) {
     li r31, 0
     blr
 };
+
+#endif  // C00300

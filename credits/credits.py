@@ -28,32 +28,39 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from typing import Set
 
 
-def fix_caety_sagoian(txt: str) -> str:
+def fix_caety_sagoian(txt: str, bugs: Set[str]) -> str:
     """
     Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian"
     in P1, E1, J1, P2, E2, J2, P3, J3, and C. This is fixed in K and W.
     """
-    return txt.replace('Catey Sagoian', 'Caety Sagoian')
+    if 'P00000' in bugs:
+        return txt.replace('Catey Sagoian', 'Caety Sagoian')
+    else:
+        return txt
 
 
-def fix_sound_effects(txt: str) -> str:
+def fix_sound_effects(txt: str, bugs: Set[str]) -> str:
     """
     The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the
     C release. The C staffroll is otherwise identical to the J version,
     indicating that the devs grabbed a very slightly outdated version of
     the v1 credits file for this release.
     """
-    return txt.replace('<bold>SOUND EFFECT</bold>', '<bold>SOUND EFFECTS</bold>')
+    if 'P00100' in bugs:
+        return txt.replace('<bold>SOUND EFFECT</bold>', '<bold>SOUND EFFECTS</bold>')
+    else:
+        return txt
 
 
-def fix_staffroll_txt(txt: str) -> str:
+def fix_staffroll_txt(txt: str, bugs: Set[str]) -> str:
     """
     Apply fixes to the text-file representation of staffroll.bin.
     """
-    txt = fix_caety_sagoian(txt)
-    txt = fix_sound_effects(txt)
+    txt = fix_caety_sagoian(txt, bugs)
+    txt = fix_sound_effects(txt, bugs)
     return txt
 
 
@@ -67,7 +74,9 @@ def main(argv=None) -> None:
     parser.add_argument('input_file', type=Path,
         help='input staffroll.bin')
     parser.add_argument('output_file', type=Path,
-        help='output staffroll.bin')
+        help='output staffroll.bin (will be *deleted* instead of written if no modifications are made)')
+    parser.add_argument('bugs', nargs='*',
+        help='set of bugs to fix')
 
     args = parser.parse_args(argv)
 
@@ -88,16 +97,21 @@ def main(argv=None) -> None:
 
         # Edit the .txt
         staffroll_txt = temp_file.read_text(encoding='utf-8')
-        staffroll_txt = fix_staffroll_txt(staffroll_txt)
-        temp_file.write_text(staffroll_txt, encoding='utf-8')
+        staffroll_txt_2 = fix_staffroll_txt(staffroll_txt, set(args.bugs))
 
-        # Convert .txt -> .bin
-        subprocess.run([
-            sys.executable,
-            str(staffroll_tool),
-            str(temp_file),
-            str(args.output_file),
-            '--type=txt'])
+        if staffroll_txt == staffroll_txt_2:
+            args.output_file.unlink(missing_ok=True)
+
+        else:
+            temp_file.write_text(staffroll_txt_2, encoding='utf-8')
+
+            # Convert .txt -> .bin
+            subprocess.run([
+                sys.executable,
+                str(staffroll_tool),
+                str(temp_file),
+                str(args.output_file),
+                '--type=txt'])
 
 
 if __name__ == '__main__':

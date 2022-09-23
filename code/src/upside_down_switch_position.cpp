@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00200
+
 // The game actively moves upside-down switches left by one unit (1/16
 // of a tile) upon spawn. This doesn't appear to serve any useful
 // purpose, and just makes them look slightly wrong.
@@ -32,3 +34,5 @@
 // impossible) that it still does here.
 
 kmWrite32(0x80a19a7c, 0x60000000);  // nop
+
+#endif  // C00200

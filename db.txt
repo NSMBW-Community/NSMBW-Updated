@@ -1,0 +1,118 @@
+--------
+C00000
+tags: M, B
+
+Unused Rotation-Controlled Solid Platforms (sprite 107) ignore the starting-rotation setting
+
+--------
+C00001
+tags: M, B
+
+Rotation-Controlled Event Deactivation Blocks (sprite 252) double the starting-rotation setting
+
+--------
+C00002
+tags: M, B
+
+Rotation-Controlled Coins (sprite 253) double the starting-rotation setting
+
+--------
+C00003
+tags: M, B
+
+Rotation-Controlled ? Blocks (sprite 255) and Rotation-Controlled Brick Blocks (sprite 256) double the starting-rotation setting
+
+--------
+C00100
+fixed-in: K, W, C
+
+The game crashes if Yoshi takes damage while eating a fruit
+
+--------
+C00200
+
+Upside-down switches are moved 1/16 of a tile to the left
+
+--------
+C00300
+tags: M
+
+The first event-activated camera profile in a level cannot be the first one activated
+
+--------
+C00400
+tags: E, S
+
+Dynamically generated lightmaps use "nearest neighbor" filtering, causing pixelation when internal resolution is increased
+
+--------
+C00500
+tags: M
+
+Yoshi is able to swallow Special Exit Controllers (sprite 179)
+
+--------
+C00501
+tags: M
+
+Yoshi is able to swallow Giant Falling Icicles (sprite 311)
+
+--------
+C00502
+tags: M
+
+Yoshi is able to swallow Giant Floating Logs (sprite 173)
+
+--------
+C00503
+tags: M
+
+Yoshi is able to swallow Toad House Chests (sprite 203)
+
+--------
+C00504
+tags: M
+options: passthrough, iceball
+
+Yoshi is able to swallow Falling Icicles (sprite 265)
+
+--------
+C00600
+tags: E
+
+Save files are region-locked
+
+--------
+C00700
+
+The Bowser Boss Door (sprite 452) is not considered a "wide" door for the purposes of fine-tuning player walking animations
+
+--------
+C00800
+tags: F
+
+Falling Icicles (sprite 265) can be killed with a Propeller Suit spin-drill
+
+--------
+C00801
+tags: F
+
+Boo Circle Boos (spawned by sprite 323) can be killed with a Propeller Suit spin-drill
+
+--------
+C00900
+tags: M
+
+Bushes (sprite 387) with sizes larger than the default ("small") spawn too late when approached from above
+
+--------
+P00000
+fixed-in: K, W
+
+Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits
+
+--------
+P00100
+only-in: C
+
+The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits

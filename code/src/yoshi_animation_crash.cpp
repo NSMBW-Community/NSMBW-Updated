@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00100
+
 // Thanks to Ninji (Treeki) for this patch.
 
 // If Yoshi takes damage while eating a fruit, the game tries to play
@@ -34,4 +36,6 @@
 
 #ifdef IS_PRE_K
 kmWritePointer(0x802f2a4c, "Rrun");
-#endif
+#endif  // IS_PRE_K
+
+#endif  // C00100

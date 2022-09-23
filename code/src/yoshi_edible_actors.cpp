@@ -51,26 +51,28 @@
 // This is the right place to patch if you want Yoshi's tongue to treat
 // the collision as solid, or one of those other behaviors.
 
-// ----
-
+#ifdef C00502
 // Giant Floating Log, unknown class name (sprite 173, actor 501, EN_MARUTA)
 // Patches the attack bitfield
 kmWrite8(0x80ad2e5e, 0x5f);
+#endif  // C00502
 
-// ----
-
+#ifdef C00500
 // Special Exit Controller, daNextGotoBlock_c (sprite 179, actor 226, AC_NEXTGOTO_BLOCK)
 // Patches the attack bitfield
 kmWrite8(0x80939b8a, 0x7f);
+#endif  // C00500
 
-// ----
-
+#ifdef C00503
 // Toad House Chest, daStrongBox_c (sprite 203, actor 293, AC_STRONGBOX)
 // Patches the attack bitfield
 kmWrite8(0x8093b43e, 0x7f);
+#endif  // C00503
 
-// ----
-
+// #ifdef C00504_PASSTHROUGH
+// TODO
+// #endif  // C00504_PASSTHROUGH
+#ifdef C00504_ICEBALL
 // Falling Icicle, daEnIcicle_c (sprite 265, actor 339, EN_ICICLE)
 // Patches field 0x36d to 5, causing it to become an iceball when eaten
 // (which subjectively seems like the most logical behavior)
@@ -82,9 +84,9 @@ kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     stb r4, 0x36d(r28)
     blr
 };
+#endif  // C00504_ICEBALL
 
-// ----
-
+#ifdef C00501
 // Giant Icicle, daEnBigIcicle_c (sprite 311, actor 553, EN_BIG_ICICLE)
 // (thanks to Meatball132 for this patch)
 // Patches field 0x36d
@@ -95,3 +97,4 @@ kmBranchDefAsm(0x809b4420, 0x809b4424) {
     stb r9, 0x36d(r30)
     blr
 };
+#endif  // C00501

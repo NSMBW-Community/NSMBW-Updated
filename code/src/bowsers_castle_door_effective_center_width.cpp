@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00700
+
 // Thanks to Grop for this patch.
 
 // When Mario enters a door, he decides if the door is "wide" or not,
@@ -50,3 +52,5 @@
 // rely on the fact that these three profile IDs are sequential.
 
 kmWrite32(0x8013f41c, 0x28000002);  // cmplwi r0, 2
+
+#endif  // C00700

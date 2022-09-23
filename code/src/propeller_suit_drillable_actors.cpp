@@ -28,13 +28,13 @@
 // "SpinFall" bit ((bitfield >> 13) & 1) of the "attack bitfield" in the
 // initialization struct for the actor's dCc_c collision controller.
 
-// ----
-
+#ifdef C00800
 // Falling Icicle, daEnIcicle_c (sprite 265, actor 339, EN_ICICLE)
 kmWrite8(0x80ad0eba, 0xdf);  // for 1x1 size
 kmWrite8(0x80ad0ede, 0xdf);  // for 1x2 size
+#endif  // C00800
 
-// ----
-
+#ifdef C00801
 // Boo Circle Boo, daEnRotarionGhost_c [sic] (EN_ROTATION_GHOST)
 kmWrite8(0x80ad415a, 0x88);
+#endif  // C00801

@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00900
+
 // The "Bush" sprite (387, maps to actor 561, OBJ_FRUITTREE) just uses
 // the default single-tile spawn range instead of configuring it to fit
 // the actor's actual shape. This works fine at the default "small"
@@ -35,3 +37,5 @@
 
 kmWrite32(0x8030dfc8, 64);  // Move spawn range 4 tiles up
 kmWrite32(0x8030dfd4, 64);  // Increase spawn range height by 4 tiles
+
+#endif  // C00900

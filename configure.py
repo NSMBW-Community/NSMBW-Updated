@@ -27,7 +27,9 @@ import dataclasses
 import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
+
+import db
 
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
@@ -112,22 +114,41 @@ class Config:
     """
     Class that represents configuration options provided by the user
     """
+    db: db.Database
     game_roots: Dict[str, Path] = dataclasses.field(default_factory=dict)
-    include_enhancements: bool = True
+
+    bugfixes_default: bool = True
+    bugfixes_default_by_tag: List[Tuple[db.DatabaseEntryTag, bool]] = dataclasses.field(default_factory=list)
+    bugfixes_individual: Dict[str, Union[bool, str]] = dataclasses.field(default_factory=dict)
 
     def set_up_arg_parser(self, parser: argparse.ArgumentParser) -> None:
         """
         Add arguments to the ArgumentParser
         """
-        parser.add_argument('--game-root', type=Path, action='append',
+        env_group = parser.add_argument_group('Environment setup')
+        env_group.add_argument('--game-root', type=Path, action='append',
             help='the path to an extracted game root (i.e. with the Effect, Env, HomeButton2, etc. subdirectories).'
             ' You can specify this multiple times for different game versions, and the resulting Riivolution patch will include assets for all of them.')
-        parser.add_argument('--enhancements', choices=('on', 'off'), default='on',
-            help='whether to include enhancements in addition to bugfixes')
-
         # TODO: let the user configure
         # - path to CodeWarrior
         # - path to Kamek
+
+        config_group = parser.add_argument_group('Bugfix selection')
+        config_group.add_argument('--default', choices=('on', 'off'), default='on',
+            help='whether all bugfixes should be enabled or disabled by default')
+
+        tag_names = (f.name() for f in db.DatabaseEntryTag if f)
+        tags_metavar = f'{{{",".join(tag_names)}}}'
+        config_group.add_argument('--tag-default', nargs=2, action='append',
+            metavar=(tags_metavar, '{on,off}'),
+            help='whether all bugfixes with a particular tag should be enabled or disabled by default')
+
+        bug_names = sorted(self.db.entries)
+        bug_names = bug_names[:3] + ['...'] + bug_names[-3:]
+        bugs_metavar = f'{{{",".join(bug_names)}}}'
+        config_group.add_argument('--bug', nargs=2, action='append',
+            metavar=(bugs_metavar, '{(on|bug_specific_options),off}'),
+            help='choose an option for a specific bugfix, or disable it')
 
     def read_args(self, args: argparse.Namespace) -> None:
         """
@@ -144,7 +165,74 @@ class Config:
         else:
             print('WARNING: No game roots specified -- patched assets will not be built!')
 
-        self.include_enhancements = (args.enhancements == 'on')
+        self.bugfixes_default = (args.default.lower() == 'on')
+
+        # We intentionally preserve the order of the tag defaults
+        self.bugfixes_default_by_tag = []
+        if args.tag_default:
+            for instance in args.tag_default:
+                tag_str, choice_str = instance
+
+                tag = db.DatabaseEntryTag.from_name(tag_str.upper())
+                if tag is None:
+                    raise ValueError(f'Unknown tag: {tag_str!r}')
+                if choice_str.lower() not in {'on', 'off'}:
+                    raise ValueError(f'Tag defaults can only be "on" or "off", not {choice_str!r}')
+
+                choice = (choice_str.lower() == 'on')
+
+                self.bugfixes_default_by_tag.append((tag, choice))
+
+        self.bugfixes_individual = {}
+        if args.bug:
+            for instance in args.bug:
+                bug_id, choice_str = instance
+
+                entry = self.db.entries.get(bug_id.upper())
+                if entry is None:
+                    raise ValueError(f'Unknown bug ID: {bug_id!r}')
+
+                choice = None
+                if choice_str.lower() == 'off':
+                    choice = False
+                else:
+                    if entry.options is None:
+                        if choice_str.lower() == 'on':
+                            choice = True
+                    else:
+                        if choice_str.lower() in entry.options:
+                            choice = choice_str.lower()
+
+                if choice is None:
+                    raise ValueError(f'Illegal option for bug {bug_id}: {choice_str!r}')
+
+                self.bugfixes_individual[bug_id] = choice
+
+    def get_selected_bugfixes(self) -> Dict[str, Union[bool, str]]:
+        """
+        Flatten the info from the CLI args into a single dict that lists
+        all bugfixes to be applied.
+        """
+        state = {}
+
+        if self.bugfixes_default:
+            for id, entry in self.db.entries.items():
+                state[id] = entry.get_default_active_option()
+
+        for tag, choice in self.bugfixes_default_by_tag:
+            for id, entry in self.db.entries.items():
+                if choice:
+                    state[id] = entry.get_default_active_option()
+                else:
+                    state.pop(id, None)
+
+        for id, choice in self.bugfixes_individual.items():
+            if choice:
+                state[id] = choice
+            else:
+                state.pop(id, None)
+
+        return state
 
 
 ########################################################################
@@ -166,7 +254,7 @@ ADDRESS_MAP_TXT = CODE_ROOT_DIR / 'address-map.txt'
 CODE_SRC_DIR = CODE_ROOT_DIR / 'src'
 CODE_INCLUDE_DIR = CODE_ROOT_DIR / 'include'
 
-PREPROC_FLAGS = {
+VERSION_PREPROC_FLAGS = {
     #      Version       Region      v1            v2            vk           vw           vc
     'P1': {'VERSION_P1', 'REGION_P', 'IS_V1',      'IS_PRE_V2',  'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
     'E1': {'VERSION_E1', 'REGION_E', 'IS_V1',      'IS_PRE_V2',  'IS_PRE_K',  'IS_PRE_W',  'IS_PRE_C'},
@@ -178,17 +266,7 @@ PREPROC_FLAGS = {
     'W':  {'VERSION_W',  'REGION_W', 'IS_POST_V1', 'IS_POST_V2', 'IS_POST_K',              'IS_PRE_C'},
     # 'C':  {'VERSION_C',  'REGION_C', 'IS_POST_V1', 'IS_POST_V2', 'IS_POST_K', 'IS_POST_W',           },
 }
-assert set(PREPROC_FLAGS) == set(CODE_BUILD_VERSIONS)
-
-
-def get_preproc_flags(config: Config, version: str) -> Set[str]:
-    """
-    Get the set of preprocessor flags to use for this game version.
-    """
-    flags = set(PREPROC_FLAGS[version])
-    if config.include_enhancements:
-        flags.add('ENHANCEMENTS')
-    return flags
+assert set(VERSION_PREPROC_FLAGS) == set(CODE_BUILD_VERSIONS)
 
 
 @dataclasses.dataclass
@@ -258,6 +336,13 @@ def make_code_rules(config: Config) -> str:
 
     use_wine = (sys.platform == 'win32')
 
+    global_preproc_flags = set()
+    for id, choice in config.get_selected_bugfixes().items():
+        if isinstance(choice, str):
+            global_preproc_flags.add(f'{id}_{choice.upper()}')
+        else:
+            global_preproc_flags.add(id)
+
     lines = [f"""
 mwcceppc = {CODEWARRIOR_EXE}
 cc = {'' if use_wine else 'wine '}$mwcceppc
@@ -278,7 +363,8 @@ cflags = $
   -rostr $
   -sdata 0 $
   -sdata2 0 $
-  -RTTI off
+  -RTTI off $
+  {' '.join(f'-D{v}' for v in global_preproc_flags)}
 
 rule cw
   command = $cc $cflags -c -o $out $in
@@ -291,7 +377,7 @@ rule cw
             lines.append('build'
                 f' {ninja_escape_spaces(o_file)}:'
                 f' cw {ninja_escape_spaces(tu.cpp_file)}\n'
-                f' cflags = $cflags{"".join(f" -D{v}" for v in get_preproc_flags(config, version))}')
+                f' cflags = $cflags{"".join(f" -D{v}" for v in set(VERSION_PREPROC_FLAGS[version]))}')
     lines.append('')
 
     lines.append(f"""
@@ -323,10 +409,6 @@ rule km
 
 CREDITS_PY = Path('credits/credits.py')
 
-# No bugs in the credits in these versions, so no need to add build
-# rules for their credits files
-CREDITS_VERSIONS_BLACKLIST = {'K', 'W'}
-
 
 def make_credits_rules(config: Config) -> str:
     """
@@ -337,15 +419,13 @@ def make_credits_rules(config: Config) -> str:
 
     lines = [f"""
 rule credits
-  command = $py {CREDITS_PY} $in $out
+  command = $py {CREDITS_PY} $in $out {' '.join(config.get_selected_bugfixes().keys())}
   description = Editing credits...
 """]
 
     already_covered_staffrolls = set()
 
     for version, root in config.game_roots.items():
-        if version in CREDITS_VERSIONS_BLACKLIST:
-            continue
 
         lang_folder = root / LANG_FOLDER_NAMES[version]
 
@@ -434,7 +514,7 @@ def main(argv=None) -> None:
     Main function
     """
 
-    config = Config()
+    config = Config(db=db.Database.load_from_default_file())
 
     parser = argparse.ArgumentParser(
         description=f'Configure {PROJECT_DISPLAY_NAME} to prepare for building.')

@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00400
+
 // Thanks to Skawo and Ninji for this patch.
 
 // NSMBW (or, to be more specific, EGG) has a custom system for dynamic
@@ -41,7 +43,6 @@
 // Unfortunately, that function runs before the Kamek loader, so that
 // doesn't work with the current loader setup.
 
-#ifdef ENHANCEMENTS
 kmBranchDefAsm(0x802cc5f4, 0x802cc5f8) {
     nofralloc
     li r4, 5
@@ -51,4 +52,5 @@ kmBranchDefAsm(0x802cc5f4, 0x802cc5f8) {
     li r4, 0
     blr
 };
-#endif
+
+#endif  // C00400

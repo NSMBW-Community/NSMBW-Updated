@@ -23,6 +23,8 @@
 #include <kamek.h>
 
 
+#ifdef C00600
+
 // The first four bytes of the savegame file, wiimj2d.sav, are the game
 // ID -- for example, "SMNP" for PAL NSMBW, or "SMNE" for US NSMBW.
 // This is checked when the file is loaded. Unfortunately, this ties
@@ -33,10 +35,10 @@
 // nops out the check for the fourth byte, so that files from any
 // region will pass the validation.
 
-#ifdef ENHANCEMENTS
 kmWrite32(0x800cf8a4, 0x60000000);  // nop
 kmWrite32(0x800cf8a8, 0x60000000);  // nop
 kmWrite32(0x800cf8ac, 0x60000000);  // nop
 kmWrite32(0x800cf8b0, 0x60000000);  // nop
 kmWrite32(0x800cf8b4, 0x60000000);  // nop
-#endif
+
+#endif  // C00600

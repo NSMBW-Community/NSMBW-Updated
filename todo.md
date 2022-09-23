@@ -28,6 +28,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 * The China 1-2 null-pointer crash
 * The actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform?
+* In Mario Maker 2, Yoshi's tongue has no collision with falling icicles. Make that an option
 
 ##### Other things
 
