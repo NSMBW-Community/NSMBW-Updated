@@ -27,32 +27,44 @@
 // (EN_ICICLE).
 
 
-#ifdef C00800
+// This actor has two dCc_c initialization structs, one for each size
+// (1x1, 1x2). Two bugfix patches both flip a bit in the third byte of
+// the initialization structs' attack bitfields, so since "kmWrite1()"
+// doesn't exist, we have to take handle these two patches together.
 
+// C00800:
 // The actor can be killed by a Propeller Suit spin-drill.
-
 // More information on this type of bug can be found here:
 #include "propeller_suit_drillable_actors.h"
 
-kmWrite8(0x80ad0eba, 0xdf);  // for 1x1 size
-kmWrite8(0x80ad0ede, 0xdf);  // for 1x2 size
-
-#endif  // C00800
-
-
-#ifdef C00504
-
+// C00504:
 // The actor can be eaten by Yoshi.
-
 // More information on this type of bug can be found here:
 #include "yoshi_edible_actors.h"
 
-// #ifdef C00504_PASSTHROUGH
-// TODO
-// #endif  // C00504_PASSTHROUGH
+// Note that for C00504, we only patch the attack bitfield if the
+// "passthrough" patch option is chosen -- for the "iceball" option, we
+// keep that bit set and change the behavior through a completely
+// different mechanism (see further below).
+
+// Determine what byte value to patch into the bitfields, if any
+#if defined(C00800) && defined(C00504_PASSTHROUGH)
+#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x5f
+#elif defined(C00800)
+#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0xdf
+#elif defined(C00504_PASSTHROUGH)
+#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x7f
+#endif
+
+// Patch it in
+#ifdef FALLING_ICICLE_ATTACK_BITFIELD_BYTE2
+kmWrite8(0x80ad0eba, FALLING_ICICLE_ATTACK_BITFIELD_BYTE2);  // for 1x1 size
+kmWrite8(0x80ad0ede, FALLING_ICICLE_ATTACK_BITFIELD_BYTE2);  // for 1x2 size
+#endif  // FALLING_ICICLE_ATTACK_BITFIELD_BYTE2
+
 
 #ifdef C00504_ICEBALL
-// Patches field 0x36d to 5, causing it to become an iceball when eaten
+// Patch field 0x36d to 5, causing it to become an iceball when eaten
 kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     nofralloc
     stfs f0, 0x31c(r28)
@@ -61,5 +73,3 @@ kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     blr
 };
 #endif  // C00504_ICEBALL
-
-#endif  // C00504
