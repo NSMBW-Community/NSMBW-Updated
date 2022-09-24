@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2021 RoadrunnerWMC
+// Copyright (c) 2022 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,43 @@
 #include <kamek.h>
 
 
-#ifdef C00200
+// Patches for Falling Icicle (daEnIcicle_c): sprite 265, profile 339
+// (EN_ICICLE).
 
-// The game actively moves upside-down switches left by one unit (1/16
-// of a tile) upon spawn. This doesn't appear to serve any useful
-// purpose, and just makes them look slightly wrong.
 
-// This behavior can also be found in NSMBDS. If it had some reason to
-// exist in that game, it's probably unlikely (but admittedly not
-// impossible) that it still does here.
+#ifdef C00800
 
-kmWrite32(0x80a19a7c, 0x60000000);  // nop
+// The actor can be killed by a Propeller Suit spin-drill.
 
-#endif  // C00200
+// More information on this type of bug can be found here:
+#include "propeller_suit_drillable_actors.h"
+
+kmWrite8(0x80ad0eba, 0xdf);  // for 1x1 size
+kmWrite8(0x80ad0ede, 0xdf);  // for 1x2 size
+
+#endif  // C00800
+
+
+#ifdef C00504
+
+// The actor can be eaten by Yoshi.
+
+// More information on this type of bug can be found here:
+#include "yoshi_edible_actors.h"
+
+// #ifdef C00504_PASSTHROUGH
+// TODO
+// #endif  // C00504_PASSTHROUGH
+
+#ifdef C00504_ICEBALL
+// Patches field 0x36d to 5, causing it to become an iceball when eaten
+kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
+    nofralloc
+    stfs f0, 0x31c(r28)
+    li r4, 5
+    stb r4, 0x36d(r28)
+    blr
+};
+#endif  // C00504_ICEBALL
+
+#endif  // C00504

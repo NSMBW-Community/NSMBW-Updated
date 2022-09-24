@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2021 RoadrunnerWMC
+// Copyright (c) 2022 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,18 @@
 #include <kamek.h>
 
 
-#ifdef C00100
+// Patches for Special Exit Controller (daNextGotoBlock_c): sprite 179,
+// profile 226 (AC_NEXTGOTO_BLOCK).
 
-// Thanks to Ninji (Treeki) for this patch.
 
-// If Yoshi takes damage while eating a fruit, the game tries to play
-// animation "Run". The animation is actually called "Rrun" (two "r"s),
-// so the game crashes.
+#ifdef C00500
 
-// Nintendo fixed this in the Korean version of the game, and all later
-// versions.
+// The actor can be eaten by Yoshi.
 
-#ifdef IS_PRE_K
-kmWritePointer(0x802f2a4c, "Rrun");
-#endif  // IS_PRE_K
+// More information on this type of bug can be found here:
+#include "yoshi_edible_actors.h"
 
-#endif  // C00100
+// Patches the attack bitfield
+kmWrite8(0x80939b8a, 0x7f);
+
+#endif  // C00500

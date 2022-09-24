@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2022 RoadrunnerWMC
+// Copyright (c) 2021 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,22 @@
 #include <kamek.h>
 
 
-// A few actors can be inappropriately killed by Propeller Mario
-// performing the spin-drill move. This can be fixed by disabling the
-// "SpinFall" bit ((bitfield >> 13) & 1) of the "attack bitfield" in the
-// initialization struct for the actor's dCc_c collision controller.
+// Patches for Yoshi (daYoshi_c): profile 14 (YOSHI).
 
-#ifdef C00800
-// Falling Icicle, daEnIcicle_c (sprite 265, actor 339, EN_ICICLE)
-kmWrite8(0x80ad0eba, 0xdf);  // for 1x1 size
-kmWrite8(0x80ad0ede, 0xdf);  // for 1x2 size
-#endif  // C00800
 
-#ifdef C00801
-// Boo Circle Boo, daEnRotarionGhost_c [sic] (EN_ROTATION_GHOST)
-kmWrite8(0x80ad415a, 0x88);
-#endif  // C00801
+#ifdef C00100
+
+// Thanks to Ninji (Treeki) for this patch.
+
+// If Yoshi takes damage while eating a fruit, the game tries to play
+// animation "Run". The animation is actually called "Rrun" (two "r"s),
+// so the game crashes.
+
+// Nintendo fixed this in the Korean version of the game, and all later
+// versions.
+
+#ifdef IS_PRE_K
+kmWritePointer(0x802f2a4c, "Rrun");
+#endif  // IS_PRE_K
+
+#endif  // C00100

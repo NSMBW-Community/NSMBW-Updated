@@ -324,10 +324,9 @@ def make_code_rules(config: Config) -> str:
 
     bug_flags = set()
     for id, choice in config.get_selected_bugfixes().items():
+        bug_flags.add(id)
         if isinstance(choice, str):
             bug_flags.add(f'{id}_{choice.upper()}')
-        else:
-            bug_flags.add(id)
 
     lines = [f"""
 mwcceppc = {CODEWARRIOR_EXE}

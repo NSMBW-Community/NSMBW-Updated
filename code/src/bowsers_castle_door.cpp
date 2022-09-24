@@ -23,6 +23,10 @@
 #include <kamek.h>
 
 
+// Patches for Bowser's Castle Boss Room Door (daEnKoopaDoor_c): sprite
+// 452, profile 233 (EN_KOOPADOOR).
+
+
 #ifdef C00700
 
 // Thanks to Grop for this patch.
@@ -45,9 +49,9 @@
 // two categories. It considers tower (EN_TORIDEDOOR) and castle
 // (EN_CASTLEDOOR) doors wide, and all others normal. It seems, however,
 // that the developers forgot to consider the Bowser's Castle boss room
-// door (EN_KOOPADOOR), which is the widest door in the game.
+// door, which is the widest door in the game.
 
-// This patch adjusts the condition to include EN_KOOPADOOR in that
+// This patch adjusts the condition to include this door in that
 // category. Note that both the code being patched and the patch itself
 // rely on the fact that these three profile IDs are sequential.
 

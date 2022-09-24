@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2022 RoadrunnerWMC
+// Copyright (c) 2021 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,22 @@
 #include <kamek.h>
 
 
-#ifdef C00400
+// Patches for Rotation-Controlled Blocks (daEnBlockAngle_c):
+// - Rotation-Controlled ? Block: sprite 255, profile 532
+//   (EN_BLOCK_HATENA_ANGLE)
+// - Rotation-Controlled Brick Block: sprite 256, profile 533
+//   (EN_BLOCK_RENGA_ANGLE)
 
-// Thanks to Skawo and Ninji for this patch.
 
-// NSMBW (or, to be more specific, EGG) has a custom system for dynamic
-// lightmap generation. Unfortunately, the lightmap materials are set to
-// nearest-neighbor filtering rather than linear, resulting in
-// pixelated-looking reflections on models when played in Dolphin with
-// increased internal resolution.
+#ifdef C00003
 
-// Here, we patch EGG::LightTexture::draw() to force the
-// EGG::CpuTexture's minFilter and magFilter fields to 5
-// (Linear_Mipmap_Linear) and 1 (Linear) respectively, just before
-// they're drawn.
+// The actor mis-uses the rotation controller's "starting rotation"
+// spritedata field.
 
-// A better solution would be to patch these values when they're
-// initialized in EGG::LightTexture::initialize() (see P1: 802cbe5c).
-// Unfortunately, that function runs before the Kamek loader, so that
-// doesn't work with the current loader setup.
+// More information on this type of bug can be found here:
+#include "rotation_controlled_actors_starting_rotation.h"
 
-kmBranchDefAsm(0x802cc5f4, 0x802cc5f8) {
-    nofralloc
-    li r4, 5
-    stb r4, 0xc(r3)
-    li r4, 1
-    stb r4, 0xd(r3)
-    li r4, 0
-    blr
-};
+kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
 
-#endif  // C00400
+#endif  // C00003

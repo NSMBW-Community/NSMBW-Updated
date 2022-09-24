@@ -20,17 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <kamek.h>
 
-
-// Fix actors that don't use the rotation controller's Starting Rotation
-// value correctly.
-
-// Some context: most rotation-controlled things inherit from
-// daRotObjsBase_c and use its correctly-written functions for reading
-// the rotation controller's info. But some handle it all manually
-// themselves instead, and several don't read the starting-rotation
-// value properly.
+// Most rotation-controlled things inherit from daRotObjsBase_c and use
+// its correctly-written functions for reading the rotation controller's
+// info. But some handle it all manually themselves instead, and several
+// don't read the starting-rotation value properly.
 
 // All these actors have an "initial angle" field, representing their
 // placement angle from the controller, calculated with atan2 upon load.
@@ -47,29 +41,3 @@
 // difference between "up" (the default angle) and "right" (0 radians).
 // This constant shows up frequently in Nintendo's own rotation-control
 // code, too.
-
-#ifdef C00000
-// Unused Rotation-Controlled Solid Platform, daEnLiftRotHalf_c
-// (sprite 107, actor 481, EN_LIFT_ROTATION_HALF)
-kmWrite32(0x80a5d980, 0x38a0c000);  // li r5, -0x4000
-#endif  // C00000
-
-#ifdef C00001
-// Rotation-Controlled Event Deactivation Block, daEnObjRotationBlock_c
-// (sprite 252, actor 529, EN_ROTATION_BLOCK)
-kmWrite32(0x80a7b558, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x80a7b570, 0x3860c000);  // li r3, -0x4000
-#endif  // C00001
-
-#ifdef C00002
-// Rotation-Controlled Coin, daEnCoinAngle_c (sprite 253, actor 530, EN_COIN_ANGLE)
-kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
-#endif  // C00002
-
-#ifdef C00003
-// Rotation-Controlled ? and Brick Blocks, daEnBlockAngle_c
-// (sprites 255 & 256, actors 532 & 533, EN_BLOCK_HATENA_ANGLE & EN_BLOCK_RENGA_ANGLE)
-kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
-#endif  // C00003

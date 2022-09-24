@@ -20,22 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <kamek.h>
 
-
-#ifdef C00900
-
-// The "Bush" sprite (387, maps to actor 561, OBJ_FRUITTREE) just uses
-// the default single-tile spawn range instead of configuring it to fit
-// the actor's actual shape. This works fine at the default "small"
-// size, but with any of the larger size settings, this can cause severe
-// pop-in when approached from above.
-
-// We fix this by simply increasing the spawn range vertically. The
-// largest bush size is about 4 tiles (aka 64 units) taller than the
-// default, so we increase it by that much.
-
-kmWrite32(0x8030dfc8, 64);  // Move spawn range 4 tiles up
-kmWrite32(0x8030dfd4, 64);  // Increase spawn range height by 4 tiles
-
-#endif  // C00900
+// A few actors can be inappropriately killed by Propeller Mario
+// performing the spin-drill move. This can be fixed by disabling the
+// "SpinFall" bit ((bitfield >> 13) & 1) of the "attack bitfield" in the
+// initialization struct for the actor's dCc_c collision controller.

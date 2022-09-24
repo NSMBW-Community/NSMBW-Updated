@@ -23,22 +23,18 @@
 #include <kamek.h>
 
 
-#ifdef C00600
+// Patches for:
+// - Boo Circle (daRotarionGhostParent_c [sic]): sprite 323, profile 368 (AC_ROTATION_GHOST_PARENT)
+// - Boo Circle Boo (daEnRotarionGhost_c [sic]): profile 369 (EN_ROTATION_GHOST)
 
-// The first four bytes of the savegame file, wiimj2d.sav, are the game
-// ID -- for example, "SMNP" for PAL NSMBW, or "SMNE" for US NSMBW.
-// This is checked when the file is loaded. Unfortunately, this ties
-// savegames to specific regions, even though in practice there are no
-// other differences between different regions' savegames.
 
-// The bytes are checked one by one in dNandThread_c::load(). This patch
-// nops out the check for the fourth byte, so that files from any
-// region will pass the validation.
+#ifdef C00801
 
-kmWrite32(0x800cf8a4, 0x60000000);  // nop
-kmWrite32(0x800cf8a8, 0x60000000);  // nop
-kmWrite32(0x800cf8ac, 0x60000000);  // nop
-kmWrite32(0x800cf8b0, 0x60000000);  // nop
-kmWrite32(0x800cf8b4, 0x60000000);  // nop
+// daEnRotarionGhost_c can be killed by a Propeller Suit spin-drill.
 
-#endif  // C00600
+// More information on this type of bug can be found here:
+#include "propeller_suit_drillable_actors.h"
+
+kmWrite8(0x80ad415a, 0x88);
+
+#endif  // C00801
