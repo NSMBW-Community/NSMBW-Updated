@@ -34,7 +34,7 @@
 // More information on this type of bug can be found here:
 #include "yoshi_edible_actors.h"
 
-// Patches the attack bitfield
+// Patch the attack bitfield
 kmWrite8(0x8093b43e, 0x7f);
 
 #endif  // C00503
