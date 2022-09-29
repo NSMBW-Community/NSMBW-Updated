@@ -25,13 +25,48 @@
 
 import argparse
 from pathlib import Path
+from typing import Iterator
 
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
 
 
-def make_xml(args) -> str:
+def iter_folder_lines(args: argparse.Namespace) -> Iterator[str]:
+    """
+    Generate <folder> lines
+    """
+    if args.folder is not None:
+        for f in args.folder:
+            external, disc = f.split(',')
+            yield f'<folder external="{external}" disc="{disc}" create="true" />'
+
+
+def iter_memory_lines(args: argparse.Namespace) -> Iterator[str]:
+    """
+    Generate <memory> lines
+    """
+    with args.loader_xml.open('r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip().replace("'", '"')
+
+            if not line:
+                continue
+
+            if len(line) > 100:
+                # Probably the inlined loader.bin...
+                NEEDLE = 'value="'
+                value_start = line.index(NEEDLE)
+                value_end = line.index('"', value_start + len(NEEDLE)) + 1
+                yield line[:value_start] + f'valuefile="{args.loader_bin}"' + line[value_end:]
+            else:
+                yield line
+
+
+def make_xml(args: argparse.Namespace) -> str:
+    """
+    Create the XML data
+    """
     xml = [f"""
 <wiidisc version="1" shiftfiles="true" root="{args.root_dir}" log="true">
     <id game="SMN">
@@ -52,12 +87,11 @@ def make_xml(args) -> str:
     <patch id="{PROJECT_SAFE_NAME}">
 """.strip('\n'))
 
-    if args.folder is not None:
-        for f in args.folder:
-            external, disc = f.split(',')
-            xml.append(f'        <folder external="{external}" disc="{disc}" create="true" />')
+    for line in iter_folder_lines(args):
+        xml.append(f'        {line}')
 
-    xml.append('TODO: <memory> stuff')
+    for line in iter_memory_lines(args):
+        xml.append(f'        {line}')
 
     xml.append("""
     </patch>
@@ -76,12 +110,16 @@ def main(argv=None) -> None:
         help='XML file to write output to')
     parser.add_argument('root_dir',
         help='"root" directory (you should probably start it with "/")')
-    parser.add_argument('regions',
+    parser.add_argument('--regions', required=True,
         help='comma-separated list of regions (e.g. "P,E,J")')
-    parser.add_argument('title',
+    parser.add_argument('--title', required=True,
         help='name to use in the Riivolution menu')
+    parser.add_argument('--loader-xml', type=Path, required=True,
+        help='host path to the loader XML file')
+    parser.add_argument('--loader-bin', required=True,
+        help='disc path to the loader bin file')
     parser.add_argument('--folder', action='append',
-        help='"external,disc"')
+        help='add a <folder> line (argument format: "external,disc")')
 
     args = parser.parse_args(argv)
 

@@ -4,7 +4,7 @@ import db as db_lib
 
 
 README_PATH = Path('readme.md')
-SPLIT_AT_STR = '## Full List of Fixed Bugs'
+SPLIT_AT_STR = '## Full list of fixed bugs'
 
 
 def make_table() -> str:
