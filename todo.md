@@ -28,7 +28,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 * The China 1-2 null-pointer crash
 * The actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform?
-* In Mario Maker 2, Yoshi's tongue has no collision with falling icicles. Make that an option
 
 ##### Other things
 
@@ -45,6 +44,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Autoscrollers with the "automatically begin" setting jerk to the player's position when they change powerup state
 * Event-controlled spinning rotation controllers don't save/reload their state correctly when the player switches between zones
     * This affects my September 2021 contest level; [at the time, I added a non-general workaround that only works in that specific level](https://github.com/RoadrunnerWMC/RoadrunnerWMC_Levels/blob/3e5369e24f7c48b77e0c7e4324c4c5bec30e5b12/2021_09_NSMBW_Level_Contest/code/src/sprite_edits/rotation_controller_spinning.cpp)
+* Reports that spinies in 6-2 "don't inflict damage if you're close enough to the ceiling"
 
 #### Hardest
 
@@ -57,6 +57,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * [Mario running animation glitch](https://twitter.com/mariobrothblog/status/1496569843998507019)
 * [Mushroom platform propeller flight collision issue](https://youtu.be/mgNl4yeJO1E)
 * The animation bug that occurs if you just barely jump onto a platform which is moving downwards (easy to do in 5-1)
+* Clipping through platforms in 5-5 (by the POW) and the 8-7 bonecoaster
 
 ### Assets
 
