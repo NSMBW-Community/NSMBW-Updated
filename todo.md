@@ -56,6 +56,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
     * Grop notes that "Fixing this might be as easy as just setting the state of the player to Normal when the player touches the flagpole."
 * [Mario running animation glitch](https://twitter.com/mariobrothblog/status/1496569843998507019)
 * [Mushroom platform propeller flight collision issue](https://youtu.be/mgNl4yeJO1E)
+* The animation bug that occurs if you just barely jump onto a platform which is moving downwards (easy to do in 5-1)
 
 ### Assets
 
@@ -120,3 +121,4 @@ Defined as "improvements beyond what Nintendo had intended to do." These can be 
 * Apply Pogo to all tilesets
 * Automatic BRSAR patching at runtime
 * Incorporate Ninji's China DRM patch
+* Full-save anywhere? (definitely disable by default, if this is added)
