@@ -117,7 +117,7 @@ ID | Description | Tags | Versions | Options
 **C00001** | Rotation-Controlled Event Deactivation Blocks (sprite 252) double the starting-rotation setting | B, M | | on, off
 **C00002** | Rotation-Controlled Coins (sprite 253) double the starting-rotation setting | B, M | | on, off
 **C00003** | Rotation-Controlled ? Blocks (sprite 255) and Rotation-Controlled Brick Blocks (sprite 256) double the starting-rotation setting | B, M | | on, off
-**C00100** | The game crashes if Yoshi takes damage while eating a fruit | | Fixed in: C, K, W | on, off
+**C00100** | The game crashes if Yoshi takes damage while eating a fruit | | Fixed in: K, W, C | on, off
 **C00200** | Upside-down switches are moved 1/16 of a tile to the left | | | on, off
 **C00300** | The first event-activated camera profile in a level cannot be the first one activated | M | | on, off
 **C00400** | Dynamically generated lightmaps use "nearest neighbor" filtering, causing pixelation when internal resolution is increased | E, S | | on, off

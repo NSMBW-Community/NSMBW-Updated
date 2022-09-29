@@ -30,27 +30,13 @@ import sys
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import db as db_lib
+from nsmbw_constants import REGIONS, VERSIONS, LANG_FOLDER_NAMES
 
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
-REGIONS = ['P', 'E', 'J', 'K', 'W', 'C']
-VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2', 'P3', 'J3', 'K', 'W', 'C']
-DEFAULT_VERSION = 'P1'
-LANG_FOLDER_NAMES = {
-    'P1': 'EU',
-    'E1': 'US',
-    'J1': 'JP',
-    'P2': 'EU',
-    'E2': 'US',
-    'J2': 'JP',
-    'P3': 'EU',
-    'J3': 'JP',
-    'K': 'KR',
-    'W': 'TW',
-    'C': 'CN',
-}
 
+DEFAULT_VERSION = 'P1'
 
 BUILD_DIR = Path('build')
 

@@ -3,6 +3,8 @@ import enum
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
+from nsmbw_constants import VERSIONS
+
 
 DEFAULT_DB_PATH = Path(__file__).parent / 'db.txt'
 
@@ -126,14 +128,14 @@ class DatabaseEntry:
         Return the "fixed-in" versions set, as a nice comma-separated
         string
         """
-        return ', '.join(sorted(v for v in self.fixed_in))
+        return ', '.join(v for v in VERSIONS if v in self.fixed_in)
 
     def comma_separated_only_in_str(self) -> str:
         """
         Return the "only-in" versions set, as a nice comma-separated
         string
         """
-        return ', '.join(sorted(v for v in self.only_in))
+        return ', '.join(v for v in VERSIONS if v in self.only_in)
 
     def comma_separated_options_str(self) -> str:
         """
