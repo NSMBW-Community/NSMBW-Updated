@@ -106,6 +106,12 @@ tags: M
 Bushes (sprite 387) with sizes larger than the default ("small") spawn too late when approached from above
 
 --------
+C01000
+tags: M
+
+The unused Jumbo Ray Respawner 2 deletes all of its existing Jumbo Rays whenever it spawns new ones
+
+--------
 P00000
 fixed-in: K, W
 

@@ -131,5 +131,6 @@ ID | Description | Tags | Versions | Options
 **C00800** | Falling Icicles (sprite 265) can be killed with a Propeller Suit spin-drill | F | | on, off
 **C00801** | Boo Circle Boos (spawned by sprite 323) can be killed with a Propeller Suit spin-drill | F | | on, off
 **C00900** | Bushes (sprite 387) with sizes larger than the default ("small") spawn too late when approached from above | M | | on, off
+**C01000** | The unused Jumbo Ray Respawner 2 deletes all of its existing Jumbo Rays whenever it spawns new ones | M | | on, off
 **P00000** | Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits | | Fixed in: K, W | on, off
 **P00100** | The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits | | Only in: C | on, off
