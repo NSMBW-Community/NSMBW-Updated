@@ -123,3 +123,6 @@ Defined as "improvements beyond what Nintendo had intended to do." These can be 
 * Automatic BRSAR patching at runtime
 * Incorporate Ninji's China DRM patch
 * Full-save anywhere? (definitely disable by default, if this is added)
+* Disable eager tile-block allocation
+* Collision renderer from Newer?
+* Disable death / powerup-change lag
