@@ -27,7 +27,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Some things (icicles, held Mecha-koopas, ...) can kill King Bills
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 * The China 1-2 null-pointer crash
-* The actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform?
+* Checkpoint Flag multiple-checkpoints multiplayer bug [(explained on TCRF)](https://tcrf.net/New_Super_Mario_Bros._Wii/Unused_Objects#Checkpoint_Flag)
 
 ##### Other things
 
@@ -114,9 +114,13 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 * The W6 pipe joints use an outdated tileset texture
 * The W7 cliffs use an outdated tileset texture
 
+#### Actors
+
+* The unused actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform? I think these might just be missing the placeholder lightmap materials.
+
 ## Enhancements
 
-Defined as "improvements beyond what Nintendo had intended to do." These can be enabled/disabled with flags at build time. I plan to be very careful about adding to this list, as I really don't want the project scope to balloon too much -- the overall to-do list is already very long as it is!
+Defined as "improvements beyond what Nintendo had intended to do." This list just contains ideas -- not all will necessarily be implemented, as I really don't want the project scope to balloon too much!
 
 * Make hardcoded behaviors optional
 * Apply Pogo to all tilesets
