@@ -47,7 +47,6 @@ RIIVO_DISC_CODE = RIIVO_DISC_ROOT / 'Code'
 RIIVO_DISC_CODE_LOADER = RIIVO_DISC_CODE / 'loader.bin'
 RIIVO_DISC_OBJECT = RIIVO_DISC_ROOT / 'Object'
 RIIVO_DISC_STAGE = RIIVO_DISC_ROOT / 'Stage'
-RIIVO_DISC_FOLDER_NAMES = ['Code', 'Object', 'Stage', *sorted(set(LANG_FOLDER_NAMES.values()))]
 
 RIIVO_XML = RIIVO_CONFIG_DIR / f'{PROJECT_SAFE_NAME}.xml'
 
@@ -518,8 +517,8 @@ rule credits
             if staffroll_relative in already_covered_staffrolls:
                 continue
 
-            target_dir = f'$builddir/{(RIIVO_DISC_ROOT / staffroll_relative).relative_to(BUILD_DIR)}'
-            lines.append(f'build {ninja_escape(target_dir)}: credits {ninja_escape(staffroll)}')
+            target_dir = f'$builddir/{ninja_escape((RIIVO_DISC_ROOT / staffroll_relative).relative_to(BUILD_DIR))}'
+            lines.append(f'build {target_dir}: credits {ninja_escape(staffroll)}')
 
             already_covered_staffrolls.add(staffroll_relative)
 
@@ -539,20 +538,16 @@ def make_riivolution_xml_rules(config: Config) -> str:
     """
     lines = [f"""
 rule riixml
-  command = $py {CREATE_RIIVOLUTION_XML_PY} $out /{PROJECT_SAFE_NAME}"""]
+  command = $py {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}"""]
 
-    lines[-1] += f' --regions={",".join(REGIONS)}'
     lines[-1] += f" --title='{PROJECT_DISPLAY_NAME}'"
     lines[-1] += f" --loader-xml='$in'"
     lines[-1] += f" --loader-bin='{RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}'"
 
-    for folder in RIIVO_DISC_FOLDER_NAMES:
-        lines[-1] += f' --folder={folder},/{folder}'
-
     lines.append('  description = Generating Riivolution XML...')
     lines.append('')
 
-    lines.append(f'build $builddir/{RIIVO_XML.relative_to(BUILD_DIR)}: riixml {ninja_escape(config.get_loader_xml_path())}')
+    lines.append(f'build $builddir/{ninja_escape(RIIVO_XML.relative_to(BUILD_DIR))}: riixml {ninja_escape(config.get_loader_xml_path())}')
     
     return '\n'.join(lines)
 

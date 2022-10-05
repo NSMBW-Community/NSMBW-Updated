@@ -32,16 +32,6 @@ PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
 
 
-def iter_folder_lines(args: argparse.Namespace) -> Iterator[str]:
-    """
-    Generate <folder> lines
-    """
-    if args.folder is not None:
-        for f in args.folder:
-            external, disc = f.split(',')
-            yield f'<folder external="{external}" disc="{disc}" create="true" />'
-
-
 def iter_memory_lines(args: argparse.Namespace) -> Iterator[str]:
     """
     Generate <memory> lines
@@ -69,26 +59,17 @@ def make_xml(args: argparse.Namespace) -> str:
     """
     xml = [f"""
 <wiidisc version="1" shiftfiles="true" root="{args.root_dir}" log="true">
-    <id game="SMN">
-""".strip('\n')]
-
-    for region in args.regions.split(','):
-        xml.append(f'        <region type="{region}"/>')
-
-    xml.append(f"""
-    </id>
+    <id game="SMN" />
     <options>
         <section name="{args.title}">
             <option name="{args.title}" id="{PROJECT_SAFE_NAME}" default="1">
-                <choice name="Enabled"><patch id="{PROJECT_SAFE_NAME}"/></choice>
+                <choice name="Enabled"><patch id="{PROJECT_SAFE_NAME}" /></choice>
             </option>
         </section>
     </options>
     <patch id="{PROJECT_SAFE_NAME}">
-""".strip('\n'))
-
-    for line in iter_folder_lines(args):
-        xml.append(f'        {line}')
+        <folder external="./" disc="/" create="true" recursive="true" />
+""".strip('\n')]
 
     for line in iter_memory_lines(args):
         xml.append(f'        {line}')
@@ -110,16 +91,12 @@ def main(argv=None) -> None:
         help='XML file to write output to')
     parser.add_argument('root_dir',
         help='"root" directory (you should probably start it with "/")')
-    parser.add_argument('--regions', required=True,
-        help='comma-separated list of regions (e.g. "P,E,J")')
     parser.add_argument('--title', required=True,
         help='name to use in the Riivolution menu')
     parser.add_argument('--loader-xml', type=Path, required=True,
         help='host path to the loader XML file')
     parser.add_argument('--loader-bin', required=True,
         help='disc path to the loader bin file')
-    parser.add_argument('--folder', action='append',
-        help='add a <folder> line (argument format: "external,disc")')
 
     args = parser.parse_args(argv)
 
