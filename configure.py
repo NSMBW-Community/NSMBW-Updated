@@ -286,6 +286,7 @@ CODE_BUILD_VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2', 'K', 'W']
 CODE_ROOT_DIR = Path('code')
 
 ADDRESS_MAP_TXT = CODE_ROOT_DIR / 'address-map.txt'
+EXTERNALS_TXT = CODE_ROOT_DIR / 'externals.txt'
 
 CODE_SRC_DIR = CODE_ROOT_DIR / 'src'
 CODE_INCLUDE_DIR = CODE_ROOT_DIR / 'include'
@@ -370,6 +371,7 @@ cc = {'' if use_wine else 'wine '}$mwcceppc
 kamek = {config.get_kamek_executable()}
 kstdlib = {config.get_kstdlib_dir()}
 addrmap = {ADDRESS_MAP_TXT}
+externals = {EXTERNALS_TXT}
 includedir = {CODE_INCLUDE_DIR}
 loaderdir = {config.loader_root}
 loaderaddr = {config.loader_base_addr:#08x}
@@ -421,7 +423,7 @@ rule cw
 
     lines.append(f"""
 rule kmdynamic
-  command = $kamek $in -dynamic -versions=$addrmap -output-kamek=$out -select-version=$selectversion
+  command = $kamek $in -dynamic -versions=$addrmap -externals=$externals -output-kamek=$out -select-version=$selectversion
   description = $kamek -> $out
 """)
 
@@ -435,6 +437,7 @@ rule kmdynamic
         for tu in tus:
             o_file = tu.o_file_for_version(version)
             lines[-1] += f' {ninja_escape(o_file)}'
+        lines[-1] += ' | $addrmap $externals'
         lines.append(f'  selectversion = {version}')
         lines.append('')
 

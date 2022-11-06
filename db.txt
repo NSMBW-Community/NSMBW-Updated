@@ -112,6 +112,24 @@ tags: M
 The unused Jumbo Ray Respawner 2 deletes all of its existing Jumbo Rays whenever it spawns new ones
 
 --------
+C01100
+tags: M
+
+"Direct Pipe" entrances use the wrong path nodes
+
+--------
+C01200
+tags: B, M
+
+"Direct Pipe" entrances are exited in the direction of the entered pipe, rather than the exited pipe
+
+--------
+C01300
+tags: B, M
+
+"Direct Pipe" entrances that should exit upward actually exit downward
+
+--------
 P00000
 fixed-in: K, W
 

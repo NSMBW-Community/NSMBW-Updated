@@ -35,7 +35,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Backports from later versions of NSMBW
     * Savegame code fixes from NSMBW v2
     * A variety of other, undocumented code changes from even later versions
-* Port the fix for connected pipes from Newer
 * Meatball claims that flying with a propeller suit plays two sfx, one positional and one global -- and they should really both be positional
 * Fix the RNG function (this may necessitate a new tag, like "B" but just for replays)
 

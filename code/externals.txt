@@ -1,0 +1,2 @@
+getNextGotoP__9dCdFile_cFUc=0x8008e3d0
+StateID_DemoInDokanD__10daPlBase_c=0x80354b6c
