@@ -172,6 +172,14 @@ kmCallDefCpp(0x80050a50, NextGoto*, dCdFile_c *area, unsigned char src_entrance_
 // more robust against different builds of the game with different
 // memory layouts.
 
+// Implementation note 2: Newer SMBW works around this bug by instead
+// encoding "direction of other side" as a new setting in byte 0x13 of
+// the NextGoto struct. That byte is never referenced at all in the
+// original game, and that fix clearly doesn't match the intent of the
+// original code, which checks entrance types. The fix presented here is
+// more correct, but may not work with certain levels that expect
+// Newer's version.
+
 extern "C" void* StateID_DemoInDokanD__10daPlBase_c;
 
 kmBranchDefAsm(0x80050a88, 0x80050a8c) {
