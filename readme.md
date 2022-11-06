@@ -2,10 +2,16 @@
 
 A collection of unofficial bugfixes for *New Super Mario Bros. Wii.*
 
+The goal is for this project to be all of the following:
+
+* A standalone Riivolution patch that fixes as many mistakes in the base game as possible
+* Detailed, high-quality documentation on those mistakes and how the fixes work
+* A useful base code package that can be plugged into other mods of the game, improving the status quo of perpetually copying the same few common patches from mod to mod
+
 
 ## License
 
-MIT license. See license.txt for details.
+MIT license. See [license.txt](license.txt) for details.
 
 
 ## Release builds?
@@ -95,7 +101,7 @@ Each bug may also be marked with any combination of the following modifier tags,
 
 Tag | Meaning
 --- | ------
-**B** | The fix for the bug may not be backward-compatible with existing levels.
+**B** | The fix for the bug may not be backward-compatible with existing levels. It should be fine if you're creating new levels with the fix in mind, but otherwise, be careful.
 **E** | This isn't a real bug; the fix is actually more of an *enhancement*. (These will be added somewhat sparingly.)
 **F** | The bug is actually harmless and kind of fun to play around with.
 **M** | The bug can only be encountered through further game modifications (for example, buggy interactions between a pair of actors that never appear together in any retail level). Note that emulator enhancements such as HD internal resolution don't count as "game modifications."
