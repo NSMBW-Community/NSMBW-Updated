@@ -28,6 +28,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
 * The China 1-2 null-pointer crash
 * Checkpoint Flag multiple-checkpoints multiplayer bug [(explained on TCRF)](https://tcrf.net/New_Super_Mario_Bros._Wii/Unused_Objects#Checkpoint_Flag)
+* Port [Meatball's GAKENOKO fix](https://github.com/Meatball132/NSMBW_GAKENOKO_fix)
 
 ##### Other things
 
@@ -45,6 +46,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Event-controlled spinning rotation controllers don't save/reload their state correctly when the player switches between zones
     * This affects my September 2021 contest level; [at the time, I added a non-general workaround that only works in that specific level](https://github.com/RoadrunnerWMC/RoadrunnerWMC_Levels/blob/3e5369e24f7c48b77e0c7e4324c4c5bec30e5b12/2021_09_NSMBW_Level_Contest/code/src/sprite_edits/rotation_controller_spinning.cpp)
 * Reports that spinies in 6-2 "don't inflict damage if you're close enough to the ceiling"
+* [You can clip through the moving platform in the W3 Boo House](https://cdn.discordapp.com/attachments/708423907731832882/1034717098322178088/2022-10-25_18-58-31_Trim.mp4)
 
 #### Hardest
 
@@ -93,6 +95,12 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
     * Pa1_koopa_out (according to B1)
     * Pa1_sabaku (ditto)
     * Pa1_sabaku_chika (ditto)
+    * Pa1_shiro_sora: the first and 15th tiles in the fourth row
+* Tilesets with missing randomization:
+    * Pa1_gake_yougan
+    * Pa1_korichika
+    * Pa1_shiro_sora
+* Pa1_shiro_sora: the top-left diagonal blue background-rocks object has the darkened bricks on the lower row of each tile, instead of the upper row
 
 ##### Objects
 
@@ -118,6 +126,10 @@ Similar to levels, these will use a not-yet-developed custom tool similar to Pap
 
 * The unused actors with darkened models: Loose Arrow, One-Way Gate, many of the test platforms, unused swinging castle platform? I think these might just be missing the placeholder lightmap materials.
 
+#### Music
+
+* The "Fast" version of Snow has an extra "bah" at the very beginning
+
 ## Enhancements
 
 Defined as "improvements beyond what Nintendo had intended to do." This list just contains ideas -- not all will necessarily be implemented, as I really don't want the project scope to balloon too much!
@@ -130,3 +142,6 @@ Defined as "improvements beyond what Nintendo had intended to do." This list jus
 * Disable eager tile-block allocation
 * Collision renderer from Newer?
 * Disable death / powerup-change lag
+* Additional translations? (The hardest part would be fonts -- there's no Cryllic MarioFont as far as I know, for example)
+    * I should make a separate repo with a Riivo patch that replaces every level with a (shared) dummy level file, and a set of savefiles that can be used to quickly trigger as many messages as possible (plus a document listing, for every translatable message, the fastest way to trigger it)
+    * Maybe also make a dummy "translation" that just replaces every message with a unique number, and then use that to try to classify where some of the less-obvious messages are used
