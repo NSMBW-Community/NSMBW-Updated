@@ -26,6 +26,7 @@ import argparse
 import dataclasses
 import json
 from pathlib import Path
+import subprocess
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -90,6 +91,14 @@ def ninja_escape(thing: Any) -> str:
     Ninja-style space escaping
     """
     return str(thing).replace('$', '$$').replace(':', '$:').replace(' ', '$ ')
+
+
+def winepath(unix_path: Path) -> str:
+    """
+    Call winepath on a Unix path, to convert it to an equivalent Windows
+    path
+    """
+    return subprocess.check_output(['winepath', '-w', str(unix_path)], encoding='utf-8').rstrip('\n')
 
 
 ########################################################################
@@ -357,7 +366,7 @@ def make_code_rules(config: Config) -> str:
         tu.read_config(fp.with_suffix('.json'))
         tus.append(tu)
 
-    use_wine = (sys.platform == 'win32')
+    use_wine = (sys.platform != 'win32')
 
     bug_flags = set()
     for id, choice in config.get_selected_bugfixes().items():
@@ -365,20 +374,26 @@ def make_code_rules(config: Config) -> str:
         if isinstance(choice, str):
             bug_flags.add(f'{id}_{choice.upper()}')
 
+    def winepath_if_wine(path: Path) -> str:
+        if use_wine:
+            return winepath(path)
+        else:
+            return str(path)
+
     lines = [f"""
-mwcceppc = {config.cw_exe}
-cc = {'' if use_wine else 'wine '}$mwcceppc
-kamek = {config.get_kamek_executable()}
-kstdlib = {config.get_kstdlib_dir()}
-addrmap = {ADDRESS_MAP_TXT}
-externals = {EXTERNALS_TXT}
-includedir = {CODE_INCLUDE_DIR}
-loaderdir = {config.loader_root}
+mwcceppc = {ninja_escape(config.cw_exe)}
+cc = {'wine ' if use_wine else ''}$mwcceppc
+kamek = {ninja_escape(config.get_kamek_executable())}
+kstdlib_win = {ninja_escape(winepath_if_wine(config.get_kstdlib_dir()))}
+addrmap = {ninja_escape(ADDRESS_MAP_TXT)}
+externals = {ninja_escape(EXTERNALS_TXT)}
+includedir_win = {ninja_escape(winepath_if_wine(CODE_INCLUDE_DIR))}
+loaderdir_win = {ninja_escape(winepath_if_wine(config.loader_root))}
 loaderaddr = {config.loader_base_addr:#08x}
 
 cflags = $
   -I- $
-  -i $kstdlib $
+  -i '$kstdlib_win' $
   -Cpp_exceptions off $
   -enum int $
   -O4,s $
@@ -401,8 +416,8 @@ cflags_C  = -DVERSION_C  -DREGION_C -DIS_POST_V1 -DIS_POST_V2 -DIS_POST_K -DIS_P
 
 cflags_bugs = {' '.join(f'-D{v}' for v in sorted(bug_flags))}
 
-cflags_proj_include = -i $includedir
-cflags_loader_include = -i $loaderdir
+cflags_proj_include = -i '$includedir_win'
+cflags_loader_include = -i '$loaderdir_win'
 
 rule cw
   command = $cc $cflags -c -o $out $in
@@ -423,7 +438,7 @@ rule cw
 
     lines.append(f"""
 rule kmdynamic
-  command = $kamek $in -dynamic -versions=$addrmap -externals=$externals -output-kamek=$out -select-version=$selectversion
+  command = '$kamek' $in -dynamic -versions=$addrmap -externals=$externals -output-kamek=$out -select-version=$selectversion
   description = $kamek -> $out
 """)
 
@@ -460,7 +475,7 @@ rule kmdynamic
 
     lines.append(f"""
 rule kmstatic
-  command = $kamek $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
+  command = '$kamek' $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
   description = $kamek -> $outxml + $outbin
 """)
 
@@ -493,7 +508,7 @@ def make_credits_rules(config: Config) -> str:
 
     lines = [f"""
 rule credits
-  command = $py {CREDITS_PY} $in $out $bugs
+  command = '$py' {CREDITS_PY} $in $out $bugs
   description = Editing credits...
 """]
 
@@ -541,11 +556,11 @@ def make_riivolution_xml_rules(config: Config) -> str:
     """
     lines = [f"""
 rule riixml
-  command = $py {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}"""]
+  command = '$py' {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}"""]
 
-    lines[-1] += f" --title='{PROJECT_DISPLAY_NAME}'"
-    lines[-1] += f" --loader-xml='$in'"
-    lines[-1] += f" --loader-bin='{RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}'"
+    lines[-1] += f" '--title={PROJECT_DISPLAY_NAME}'"
+    lines[-1] += f" '--loader-xml=$in'"
+    lines[-1] += f" '--loader-bin={RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}'"
 
     lines.append('  description = Generating Riivolution XML...')
     lines.append('')
