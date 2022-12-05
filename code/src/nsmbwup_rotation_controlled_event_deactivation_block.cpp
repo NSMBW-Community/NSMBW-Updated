@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Rotation-Controlled Event Deactivation Block
 // (daEnObjRotationBlock_c): sprite 252, profile 529

@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Bush (daObjFruitTree_c): sprite 387, profile 561
 // (OBJ_FRUITTREE).

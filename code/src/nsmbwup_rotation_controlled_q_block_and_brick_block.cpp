@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Rotation-Controlled Blocks (daEnBlockAngle_c):
 // - Rotation-Controlled ? Block: sprite 255, profile 532

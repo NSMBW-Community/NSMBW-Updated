@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Event-Controlled Cameras, aka Camera Profiles.
 

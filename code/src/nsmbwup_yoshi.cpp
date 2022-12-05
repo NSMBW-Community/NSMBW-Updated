@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Yoshi (daYoshi_c): profile 14 (YOSHI).
 
@@ -37,8 +40,8 @@
 // Nintendo fixed this in the Korean version of the game, and all later
 // versions.
 
-#ifdef NSMBWUP_IS_PRE_K
+#if NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K
 kmWritePointer(0x802f2a4c, "Rrun");
-#endif  // NSMBWUP_IS_PRE_K
+#endif  // NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K
 
 #endif  // NSMBWUP_C00100

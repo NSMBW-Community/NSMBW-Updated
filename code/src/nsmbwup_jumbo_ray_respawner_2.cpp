@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Jumbo Ray Respawner 2 (daMantaMgr2_c): profile 526
 // (MANTA_MGR2).

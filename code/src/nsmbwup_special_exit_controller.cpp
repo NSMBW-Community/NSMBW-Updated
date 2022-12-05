@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Special Exit Controller (daNextGotoBlock_c): sprite 179,
 // profile 226 (AC_NEXTGOTO_BLOCK).

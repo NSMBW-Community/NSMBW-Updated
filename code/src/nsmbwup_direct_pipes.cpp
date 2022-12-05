@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for "direct pipes" (aka "connected pipes") entrance
 // functionality, which is implemented in daPlBase_c.

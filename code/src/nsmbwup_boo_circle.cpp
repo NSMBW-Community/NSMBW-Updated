@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for:
 // - Boo Circle (daRotarionGhostParent_c [sic]): sprite 323, profile 368 (AC_ROTATION_GHOST_PARENT)

@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Falling Icicle (daEnIcicle_c): sprite 265, profile 339
 // (EN_ICICLE).

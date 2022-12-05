@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Giant Floating Log (unknown class name): sprite 173,
 // profile 501 (EN_MARUTA).

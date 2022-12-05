@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Rotation-Controlled Coin (daEnCoinAngle_c): sprite 253,
 // profile 530 (EN_COIN_ANGLE).

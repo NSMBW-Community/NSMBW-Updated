@@ -20,31 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <kamek.h>
 
-#include "nsmbwup_common.h"
-#include "nsmbwup_user_config.h"
+// This is a configuration file where you can adjust preprocessor
+// variables change compilation behavior. It may be more convenient for
+// you than adding more CLI flags to your CodeWarrior invocations.
 
+// Here are some examples:
 
-// Patches for save-data-related code.
+// To compile for a specific game version:
+// #define NSMBWUP_VERSION NSMBWUP_VERSION_E2
 
-
-#ifdef NSMBWUP_C00600
-
-// The first four bytes of the save data file, wiimj2d.sav, are the game
-// ID -- for example, "SMNP" for PAL NSMBW, or "SMNE" for US NSMBW.
-// This is checked when the file is loaded. Unfortunately, this ties
-// savegames to specific regions, even though in practice there are no
-// other differences between different regions' savegames.
-
-// The bytes are checked one by one in dNandThread_c::load(). This patch
-// nops out the check for the fourth byte, so that files from any
-// region will pass the validation.
-
-kmWrite32(0x800cf8a4, 0x60000000);  // nop
-kmWrite32(0x800cf8a8, 0x60000000);  // nop
-kmWrite32(0x800cf8ac, 0x60000000);  // nop
-kmWrite32(0x800cf8b0, 0x60000000);  // nop
-kmWrite32(0x800cf8b4, 0x60000000);  // nop
-
-#endif  // NSMBWUP_C00600
+// To activate the fix for a particular bug:
+// #define NSMBWUP_C00900

@@ -404,16 +404,6 @@ cflags = $
   -sdata2 0 $
   -RTTI off
 
-cflags_P1 = -DNSMBWUP_VERSION_P1 -DNSMBWUP_REGION_P -DNSMBWUP_IS_V1      -DNSMBWUP_IS_PRE_V2  -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_E1 = -DNSMBWUP_VERSION_E1 -DNSMBWUP_REGION_E -DNSMBWUP_IS_V1      -DNSMBWUP_IS_PRE_V2  -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_J1 = -DNSMBWUP_VERSION_J1 -DNSMBWUP_REGION_J -DNSMBWUP_IS_V1      -DNSMBWUP_IS_PRE_V2  -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_P2 = -DNSMBWUP_VERSION_P2 -DNSMBWUP_REGION_P -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_V2      -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_E2 = -DNSMBWUP_VERSION_E2 -DNSMBWUP_REGION_E -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_V2      -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_J2 = -DNSMBWUP_VERSION_J2 -DNSMBWUP_REGION_J -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_V2      -DNSMBWUP_IS_PRE_K  -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_K  = -DNSMBWUP_VERSION_K  -DNSMBWUP_REGION_K -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_POST_V2                     -DNSMBWUP_IS_PRE_W  -DNSMBWUP_IS_PRE_C
-cflags_W  = -DNSMBWUP_VERSION_W  -DNSMBWUP_REGION_W -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_POST_V2 -DNSMBWUP_IS_POST_K                     -DNSMBWUP_IS_PRE_C
-cflags_C  = -DNSMBWUP_VERSION_C  -DNSMBWUP_REGION_C -DNSMBWUP_IS_POST_V1 -DNSMBWUP_IS_POST_V2 -DNSMBWUP_IS_POST_K -DNSMBWUP_IS_POST_W
-
 cflags_bugs = {' '.join(f'-DNSMBWUP_{v}' for v in sorted(bug_flags))}
 
 cflags_proj_include = -i '$includedir_win'
@@ -433,7 +423,7 @@ rule cw
             lines.append('build'
                 f' {ninja_escape(o_file)}:'
                 f' cw {ninja_escape(tu.cpp_file)}')
-            lines.append(f'  cflags = $cflags $cflags_proj_include $cflags_{version} $cflags_bugs')
+            lines.append(f'  cflags = $cflags $cflags_proj_include -DNSMBWUP_SET_VERSION_{version} $cflags_bugs')
     lines.append('')
 
     lines.append(f"""

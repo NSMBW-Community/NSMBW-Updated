@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Switch (daEnHnswich_c):
 // - ? Switch: sprite 40, profile 72 (EN_HNSWICH [sic])

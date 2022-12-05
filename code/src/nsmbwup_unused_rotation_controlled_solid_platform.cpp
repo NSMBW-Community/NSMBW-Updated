@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Unused Rotation-Controlled Solid Platform
 // (daEnLiftRotHalf_c): sprite 107, profile 481 (EN_LIFT_ROTATION_HALF).

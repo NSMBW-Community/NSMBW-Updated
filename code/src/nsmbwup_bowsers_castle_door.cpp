@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Bowser's Castle Boss Room Door (daEnKoopaDoor_c): sprite
 // 452, profile 233 (EN_KOOPADOOR).

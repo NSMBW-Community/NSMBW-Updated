@@ -22,6 +22,9 @@
 
 #include <kamek.h>
 
+#include "nsmbwup_common.h"
+#include "nsmbwup_user_config.h"
+
 
 // Patches for Toad House Chest (daStrongBox_c): sprite 203, profile 293
 // (AC_STRONGBOX).
