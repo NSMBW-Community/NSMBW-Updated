@@ -23,19 +23,18 @@
 #include <kamek.h>
 
 
-// Patches for Rotation-Controlled Coin (daEnCoinAngle_c): sprite 253,
-// profile 530 (EN_COIN_ANGLE).
+// Patches for Unused Rotation-Controlled Solid Platform
+// (daEnLiftRotHalf_c): sprite 107, profile 481 (EN_LIFT_ROTATION_HALF).
 
 
-#ifdef C00002
+#ifdef C00000
 
 // The actor mis-uses the rotation controller's "starting rotation"
 // spritedata field.
 
 // More information on this type of bug can be found here:
-#include "rotation_controlled_actors_starting_rotation.h"
+#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
-kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x80a5d980, 0x38a0c000);  // li r5, -0x4000
 
-#endif  // C00002
+#endif  // C00000

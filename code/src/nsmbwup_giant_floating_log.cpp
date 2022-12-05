@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2021 RoadrunnerWMC
+// Copyright (c) 2022 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,18 @@
 #include <kamek.h>
 
 
-// Patches for Unused Rotation-Controlled Solid Platform
-// (daEnLiftRotHalf_c): sprite 107, profile 481 (EN_LIFT_ROTATION_HALF).
+// Patches for Giant Floating Log (unknown class name): sprite 173,
+// profile 501 (EN_MARUTA).
 
 
-#ifdef C00000
+#ifdef C00502
 
-// The actor mis-uses the rotation controller's "starting rotation"
-// spritedata field.
+// The actor can be eaten by Yoshi.
 
 // More information on this type of bug can be found here:
-#include "rotation_controlled_actors_starting_rotation.h"
+#include "nsmbwup_yoshi_edible_actors.h"
 
-kmWrite32(0x80a5d980, 0x38a0c000);  // li r5, -0x4000
+// Patch the attack bitfield
+kmWrite8(0x80ad2e5e, 0x5f);
 
-#endif  // C00000
+#endif  // C00502

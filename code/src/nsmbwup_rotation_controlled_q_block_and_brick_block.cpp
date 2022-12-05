@@ -23,20 +23,22 @@
 #include <kamek.h>
 
 
-// Patches for Rotation-Controlled Event Deactivation Block
-// (daEnObjRotationBlock_c): sprite 252, profile 529
-// (EN_ROTATION_BLOCK).
+// Patches for Rotation-Controlled Blocks (daEnBlockAngle_c):
+// - Rotation-Controlled ? Block: sprite 255, profile 532
+//   (EN_BLOCK_HATENA_ANGLE)
+// - Rotation-Controlled Brick Block: sprite 256, profile 533
+//   (EN_BLOCK_RENGA_ANGLE)
 
 
-#ifdef C00001
+#ifdef C00003
 
 // The actor mis-uses the rotation controller's "starting rotation"
 // spritedata field.
 
 // More information on this type of bug can be found here:
-#include "rotation_controlled_actors_starting_rotation.h"
+#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
-kmWrite32(0x80a7b558, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x80a7b570, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
 
-#endif  // C00001
+#endif  // C00003

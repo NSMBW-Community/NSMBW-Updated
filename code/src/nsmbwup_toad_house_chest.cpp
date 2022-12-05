@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2021 RoadrunnerWMC
+// Copyright (c) 2022 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,18 @@
 #include <kamek.h>
 
 
-// Patches for Rotation-Controlled Blocks (daEnBlockAngle_c):
-// - Rotation-Controlled ? Block: sprite 255, profile 532
-//   (EN_BLOCK_HATENA_ANGLE)
-// - Rotation-Controlled Brick Block: sprite 256, profile 533
-//   (EN_BLOCK_RENGA_ANGLE)
+// Patches for Toad House Chest (daStrongBox_c): sprite 203, profile 293
+// (AC_STRONGBOX).
 
 
-#ifdef C00003
+#ifdef C00503
 
-// The actor mis-uses the rotation controller's "starting rotation"
-// spritedata field.
+// The actor can be eaten by Yoshi.
 
 // More information on this type of bug can be found here:
-#include "rotation_controlled_actors_starting_rotation.h"
+#include "nsmbwup_yoshi_edible_actors.h"
 
-kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
+// Patch the attack bitfield
+kmWrite8(0x8093b43e, 0x7f);
 
-#endif  // C00003
+#endif  // C00503

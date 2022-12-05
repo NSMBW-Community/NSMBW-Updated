@@ -23,18 +23,18 @@
 #include <kamek.h>
 
 
-// Patches for Giant Floating Log (unknown class name): sprite 173,
-// profile 501 (EN_MARUTA).
+// Patches for Special Exit Controller (daNextGotoBlock_c): sprite 179,
+// profile 226 (AC_NEXTGOTO_BLOCK).
 
 
-#ifdef C00502
+#ifdef C00500
 
 // The actor can be eaten by Yoshi.
 
 // More information on this type of bug can be found here:
-#include "yoshi_edible_actors.h"
+#include "nsmbwup_yoshi_edible_actors.h"
 
 // Patch the attack bitfield
-kmWrite8(0x80ad2e5e, 0x5f);
+kmWrite8(0x80939b8a, 0x7f);
 
-#endif  // C00502
+#endif  // C00500

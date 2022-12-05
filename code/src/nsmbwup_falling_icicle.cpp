@@ -35,12 +35,12 @@
 // C00800:
 // The actor can be killed by a Propeller Suit spin-drill.
 // More information on this type of bug can be found here:
-#include "propeller_suit_drillable_actors.h"
+#include "nsmbwup_propeller_suit_drillable_actors.h"
 
 // C00504:
 // The actor can be eaten by Yoshi.
 // More information on this type of bug can be found here:
-#include "yoshi_edible_actors.h"
+#include "nsmbwup_yoshi_edible_actors.h"
 
 // Note that for C00504, we only patch the attack bitfield if the
 // "passthrough" patch option is chosen -- for the "iceball" option, we

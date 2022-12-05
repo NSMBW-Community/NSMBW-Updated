@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2022 RoadrunnerWMC
+// Copyright (c) 2021 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,19 @@
 #include <kamek.h>
 
 
-// Patches for Special Exit Controller (daNextGotoBlock_c): sprite 179,
-// profile 226 (AC_NEXTGOTO_BLOCK).
+// Patches for Rotation-Controlled Coin (daEnCoinAngle_c): sprite 253,
+// profile 530 (EN_COIN_ANGLE).
 
 
-#ifdef C00500
+#ifdef C00002
 
-// The actor can be eaten by Yoshi.
+// The actor mis-uses the rotation controller's "starting rotation"
+// spritedata field.
 
 // More information on this type of bug can be found here:
-#include "yoshi_edible_actors.h"
+#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
-// Patch the attack bitfield
-kmWrite8(0x80939b8a, 0x7f);
+kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
 
-#endif  // C00500
+#endif  // C00002

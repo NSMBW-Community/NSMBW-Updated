@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2022 RoadrunnerWMC
+// Copyright (c) 2021 RoadrunnerWMC
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,20 @@
 #include <kamek.h>
 
 
-// Patches for Toad House Chest (daStrongBox_c): sprite 203, profile 293
-// (AC_STRONGBOX).
+// Patches for Rotation-Controlled Event Deactivation Block
+// (daEnObjRotationBlock_c): sprite 252, profile 529
+// (EN_ROTATION_BLOCK).
 
 
-#ifdef C00503
+#ifdef C00001
 
-// The actor can be eaten by Yoshi.
+// The actor mis-uses the rotation controller's "starting rotation"
+// spritedata field.
 
 // More information on this type of bug can be found here:
-#include "yoshi_edible_actors.h"
+#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
-// Patch the attack bitfield
-kmWrite8(0x8093b43e, 0x7f);
+kmWrite32(0x80a7b558, 0x3860c000);  // li r3, -0x4000
+kmWrite32(0x80a7b570, 0x3860c000);  // li r3, -0x4000
 
-#endif  // C00503
+#endif  // C00001
