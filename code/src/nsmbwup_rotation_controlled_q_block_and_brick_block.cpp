@@ -32,7 +32,7 @@
 
 #ifdef C00003
 
-// The actor mis-uses the rotation controller's "starting rotation"
+// The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
 
 // More information on this type of bug can be found here:
