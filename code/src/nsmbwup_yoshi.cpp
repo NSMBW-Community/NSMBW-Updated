@@ -26,7 +26,7 @@
 // Patches for Yoshi (daYoshi_c): profile 14 (YOSHI).
 
 
-#ifdef C00100
+#ifdef NSMBWUP_C00100
 
 // Thanks to Ninji (Treeki) for this patch.
 
@@ -37,8 +37,8 @@
 // Nintendo fixed this in the Korean version of the game, and all later
 // versions.
 
-#ifdef IS_PRE_K
+#ifdef NSMBWUP_IS_PRE_K
 kmWritePointer(0x802f2a4c, "Rrun");
-#endif  // IS_PRE_K
+#endif  // NSMBWUP_IS_PRE_K
 
-#endif  // C00100
+#endif  // NSMBWUP_C00100

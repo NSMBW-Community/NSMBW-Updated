@@ -30,7 +30,7 @@
 //   (EN_BLOCK_RENGA_ANGLE)
 
 
-#ifdef C00003
+#ifdef NSMBWUP_C00003
 
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
@@ -41,4 +41,4 @@
 kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
 
-#endif  // C00003
+#endif  // NSMBWUP_C00003

@@ -27,7 +27,7 @@
 // profile 501 (EN_MARUTA).
 
 
-#ifdef C00502
+#ifdef NSMBWUP_C00502
 
 // The actor can be eaten by Yoshi.
 
@@ -37,4 +37,4 @@
 // Patch the attack bitfield
 kmWrite8(0x80ad2e5e, 0x5f);
 
-#endif  // C00502
+#endif  // NSMBWUP_C00502

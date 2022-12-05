@@ -26,7 +26,7 @@
 // Patches for Event-Controlled Cameras, aka Camera Profiles.
 
 
-#ifdef C00300
+#ifdef NSMBWUP_C00300
 
 // When using camera mode 5 (event-controlled), the game only switches
 // camera modes if the new camera-profile struct would have a different
@@ -52,4 +52,4 @@ kmBranchDefAsm(0x80077290, 0x80077294) {
     blr
 };
 
-#endif  // C00300
+#endif  // NSMBWUP_C00300

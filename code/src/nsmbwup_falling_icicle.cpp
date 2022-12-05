@@ -48,11 +48,11 @@
 // different mechanism (see further below).
 
 // Determine what byte value to patch into the bitfields, if any
-#if defined(C00800) && defined(C00504_PASSTHROUGH)
+#if defined(NSMBWUP_C00800) && defined(NSMBWUP_C00504_PASSTHROUGH)
 #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x5f
-#elif defined(C00800)
+#elif defined(NSMBWUP_C00800)
 #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0xdf
-#elif defined(C00504_PASSTHROUGH)
+#elif defined(NSMBWUP_C00504_PASSTHROUGH)
 #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x7f
 #endif
 
@@ -63,7 +63,7 @@ kmWrite8(0x80ad0ede, FALLING_ICICLE_ATTACK_BITFIELD_BYTE2);  // for 1x2 size
 #endif  // FALLING_ICICLE_ATTACK_BITFIELD_BYTE2
 
 
-#ifdef C00504_ICEBALL
+#ifdef NSMBWUP_C00504_ICEBALL
 // Patch field 0x36d to 5, causing it to become an iceball when eaten
 kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     nofralloc
@@ -72,4 +72,4 @@ kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     stb r4, 0x36d(r28)
     blr
 };
-#endif  // C00504_ICEBALL
+#endif  // NSMBWUP_C00504_ICEBALL

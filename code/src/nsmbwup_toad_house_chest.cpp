@@ -27,7 +27,7 @@
 // (AC_STRONGBOX).
 
 
-#ifdef C00503
+#ifdef NSMBWUP_C00503
 
 // The actor can be eaten by Yoshi.
 
@@ -37,4 +37,4 @@
 // Patch the attack bitfield
 kmWrite8(0x8093b43e, 0x7f);
 
-#endif  // C00503
+#endif  // NSMBWUP_C00503

@@ -26,7 +26,7 @@
 // Patches for save-data-related code.
 
 
-#ifdef C00600
+#ifdef NSMBWUP_C00600
 
 // The first four bytes of the save data file, wiimj2d.sav, are the game
 // ID -- for example, "SMNP" for PAL NSMBW, or "SMNE" for US NSMBW.
@@ -44,4 +44,4 @@ kmWrite32(0x800cf8ac, 0x60000000);  // nop
 kmWrite32(0x800cf8b0, 0x60000000);  // nop
 kmWrite32(0x800cf8b4, 0x60000000);  // nop
 
-#endif  // C00600
+#endif  // NSMBWUP_C00600

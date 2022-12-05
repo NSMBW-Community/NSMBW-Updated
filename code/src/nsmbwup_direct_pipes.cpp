@@ -55,7 +55,7 @@ public:
 };
 
 
-#ifdef C01100
+#ifdef NSMBWUP_C01100
 
 // Thanks to Ninji (Treeki) for this patch.
 
@@ -111,10 +111,10 @@ kmWrite32(0x80050928, 0x7c052214);  // add r0, r5, r4                 // r0 = pa
 kmWrite32(0x8005092c, 0x54002036);  // slwi r0, r0, 4                 // (left-shift to prepare for indexing)
 kmWrite32(0x80050930, 0x7ca60214);  // add r5, r6, r0                 // r5 = area->pathNodesBlock[r0];
 
-#endif  // C01100
+#endif  // NSMBWUP_C01100
 
 
-#ifdef C01200
+#ifdef NSMBWUP_C01200
 
 // daPlBase_c::setExitRailDokan(), called at the end of direct-pipes
 // animations, switches the player to the correct animation state for
@@ -143,10 +143,10 @@ kmCallDefCpp(0x80050a50, NextGoto*, dCdFile_c *area, unsigned char src_entrance_
     return area->getNextGotoP(src_ent->dest_id);
 }
 
-#endif  // C01200
+#endif  // NSMBWUP_C01200
 
 
-#ifdef C01300
+#ifdef NSMBWUP_C01300
 
 // daPlBase_c::setExitRailDokan(), called at the end of direct-pipes
 // animations, switches the player to the correct animation state for
@@ -187,4 +187,4 @@ kmBranchDefAsm(0x80050a88, 0x80050a8c) {
     ori r4, r4, StateID_DemoInDokanD__10daPlBase_c@l
 }
 
-#endif  // C01300
+#endif  // NSMBWUP_C01300

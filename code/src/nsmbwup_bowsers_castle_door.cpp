@@ -27,7 +27,7 @@
 // 452, profile 233 (EN_KOOPADOOR).
 
 
-#ifdef C00700
+#ifdef NSMBWUP_C00700
 
 // Thanks to Grop for this patch.
 
@@ -57,4 +57,4 @@
 
 kmWrite32(0x8013f41c, 0x28000002);  // cmplwi r0, 2
 
-#endif  // C00700
+#endif  // NSMBWUP_C00700
