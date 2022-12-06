@@ -27,15 +27,16 @@
 // revisions are guaranteed to be comparable in chronological order, so
 // that you can do e.g. "NSMBWUP_REVISION_OF(x) < NSMBWUP_REVISION_K".
 
-#define NSMBWUP_VERSION_P1 1
-#define NSMBWUP_VERSION_E1 2
-#define NSMBWUP_VERSION_J1 3
-#define NSMBWUP_VERSION_P2 4
-#define NSMBWUP_VERSION_E2 5
-#define NSMBWUP_VERSION_J2 6
-#define NSMBWUP_VERSION_K 7
-#define NSMBWUP_VERSION_W 8
-#define NSMBWUP_VERSION_C 9
+#define NSMBWUP_VERSION_DYNAMIC 1
+#define NSMBWUP_VERSION_P1 2
+#define NSMBWUP_VERSION_E1 3
+#define NSMBWUP_VERSION_J1 4
+#define NSMBWUP_VERSION_P2 5
+#define NSMBWUP_VERSION_E2 6
+#define NSMBWUP_VERSION_J2 7
+#define NSMBWUP_VERSION_K 8
+#define NSMBWUP_VERSION_W 9
+#define NSMBWUP_VERSION_C 10
 
 #define NSMBWUP_REGION_P 1
 #define NSMBWUP_REGION_E 2
@@ -58,7 +59,10 @@
 // "-DNSMBWUP_VERSION=NSMBWUP_VERSION_P1" would work), here are some
 // helper macros you can use for that ("-DNSMBWUP_SET_VERSION_P1"):
 
-#if defined(NSMBWUP_SET_VERSION_P1)
+#if defined(NSMBWUP_SET_VERSION_DYNAMIC)
+#define NSMBWUP_VERSION NSMBWUP_VERSION_DYNAMIC
+#undef NSMBWUP_SET_VERSION_DYNAMIC
+#elif defined(NSMBWUP_SET_VERSION_P1)
 #define NSMBWUP_VERSION NSMBWUP_VERSION_P1
 #undef NSMBWUP_SET_VERSION_P1
 #elif defined(NSMBWUP_SET_VERSION_E1)
@@ -91,7 +95,7 @@
 // If no version has been selected yet, choose a default one.
 
 #ifndef NSMBWUP_VERSION
-#define NSMBWUP_VERSION NSMBWUP_VERSION_P1
+#define NSMBWUP_VERSION NSMBWUP_VERSION_DYNAMIC
 #endif  // NSMBWUP_VERSION
 
 

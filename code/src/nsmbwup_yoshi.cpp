@@ -40,8 +40,13 @@
 // Nintendo fixed this in the Korean version of the game, and all later
 // versions.
 
-#if NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K
+// Note about the "dynamic version" compilation mode (i.e. target game
+// version is unknown at compile-time): in this case, we should always
+// apply the patch, because in K and later versions, it'll just
+// harmlessly overwrite the "Rrun" string with itself.
+
+#if (NSMBWUP_VERSION == NSMBWUP_VERSION_DYNAMIC) || (NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K)
 kmWritePointer(0x802f2a4c, "Rrun");
-#endif  // NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K
+#endif  // (NSMBWUP_VERSION == NSMBWUP_VERSION_DYNAMIC) || (NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K)
 
 #endif  // NSMBWUP_C00100_OFF
