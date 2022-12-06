@@ -30,7 +30,7 @@
 // (daEnLiftRotHalf_c): sprite 107, profile 481 (EN_LIFT_ROTATION_HALF).
 
 
-#ifdef NSMBWUP_C00000
+#ifndef NSMBWUP_C00000_OFF
 
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
@@ -40,4 +40,4 @@
 
 kmWrite32(0x80a5d980, 0x38a0c000);  // li r5, -0x4000
 
-#endif  // NSMBWUP_C00000
+#endif  // NSMBWUP_C00000_OFF

@@ -31,7 +31,7 @@
 // (EN_ROTATION_BLOCK).
 
 
-#ifdef NSMBWUP_C00001
+#ifndef NSMBWUP_C00001_OFF
 
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
@@ -42,4 +42,4 @@
 kmWrite32(0x80a7b558, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x80a7b570, 0x3860c000);  // li r3, -0x4000
 
-#endif  // NSMBWUP_C00001
+#endif  // NSMBWUP_C00001_OFF

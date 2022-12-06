@@ -368,10 +368,18 @@ def make_code_rules(config: Config) -> str:
 
     use_wine = (sys.platform != 'win32')
 
+    # The goal here is to detect the following cases:
+    # - Bug is unselected: add "BUGNAME_OFF" flag
+    # - Bug is selected (True): the default behavior, no flag needed
+    # - Bug is selected (some other str): add "BUGNAME_CHOICENAME" flag
+    selected_bugfixes = config.get_selected_bugfixes()
     bug_flags = set()
-    for id, choice in config.get_selected_bugfixes().items():
-        bug_flags.add(id)
-        if isinstance(choice, str):
+    for id in config.db.entries.keys():
+        choice = selected_bugfixes.get(id, False)
+        if isinstance(choice, bool):
+            if not choice:
+                bug_flags.add(f'{id}_OFF')
+        else:
             bug_flags.add(f'{id}_{choice.upper()}')
 
     def winepath_if_wine(path: Path) -> str:

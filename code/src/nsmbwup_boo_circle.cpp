@@ -31,7 +31,7 @@
 // - Boo Circle Boo (daEnRotarionGhost_c [sic]): profile 369 (EN_ROTATION_GHOST)
 
 
-#ifdef NSMBWUP_C00801
+#ifndef NSMBWUP_C00801_OFF
 
 // daEnRotarionGhost_c can be killed by a Propeller Suit spin-drill.
 
@@ -40,4 +40,4 @@
 
 kmWrite8(0x80ad415a, 0x88);
 
-#endif  // NSMBWUP_C00801
+#endif  // NSMBWUP_C00801_OFF

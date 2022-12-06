@@ -30,5 +30,5 @@
 // To compile for a specific game version:
 // #define NSMBWUP_VERSION NSMBWUP_VERSION_E2
 
-// To activate the fix for a particular bug:
-// #define NSMBWUP_C00900
+// To deactivate the fix for a particular bug:
+// #define NSMBWUP_C00900_OFF

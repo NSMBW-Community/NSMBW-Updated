@@ -30,7 +30,7 @@
 // profile 530 (EN_COIN_ANGLE).
 
 
-#ifdef NSMBWUP_C00002
+#ifndef NSMBWUP_C00002_OFF
 
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
@@ -41,4 +41,4 @@
 kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
 
-#endif  // NSMBWUP_C00002
+#endif  // NSMBWUP_C00002_OFF

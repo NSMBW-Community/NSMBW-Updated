@@ -30,7 +30,7 @@
 // (MANTA_MGR2).
 
 
-#ifdef NSMBWUP_C01000
+#ifndef NSMBWUP_C01000_OFF
 
 // The used Jumbo Ray Respawner actor (MANTA_MGR) has two methods for
 // deleting its child Rays:
@@ -68,4 +68,4 @@
 kmWrite32(0x80860070, 0x4bfff551);  // bl 0x8085f5c0
 kmWrite32(0x808600d4, 0x4bfff4ed);  // bl 0x8085f5c0
 
-#endif  // NSMBWUP_C01000
+#endif  // NSMBWUP_C01000_OFF

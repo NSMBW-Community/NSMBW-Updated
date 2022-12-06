@@ -30,7 +30,7 @@
 // (OBJ_FRUITTREE).
 
 
-#ifdef NSMBWUP_C00900
+#ifndef NSMBWUP_C00900_OFF
 
 // The Bush sprite just uses the default single-tile spawn range instead
 // of configuring it to fit the actor's actual shape. This works fine at
@@ -44,4 +44,4 @@
 kmWrite32(0x8030dfc8, 64);  // Move spawn range 4 tiles up
 kmWrite32(0x8030dfd4, 64);  // Increase spawn range height by 4 tiles
 
-#endif  // NSMBWUP_C00900
+#endif  // NSMBWUP_C00900_OFF

@@ -29,7 +29,7 @@
 // Patches for Yoshi (daYoshi_c): profile 14 (YOSHI).
 
 
-#ifdef NSMBWUP_C00100
+#ifndef NSMBWUP_C00100_OFF
 
 // Thanks to Ninji (Treeki) for this patch.
 
@@ -44,4 +44,4 @@
 kmWritePointer(0x802f2a4c, "Rrun");
 #endif  // NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K
 
-#endif  // NSMBWUP_C00100
+#endif  // NSMBWUP_C00100_OFF

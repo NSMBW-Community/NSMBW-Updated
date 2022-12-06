@@ -30,7 +30,7 @@
 // profile 226 (AC_NEXTGOTO_BLOCK).
 
 
-#ifdef NSMBWUP_C00500
+#ifndef NSMBWUP_C00500_OFF
 
 // The actor can be eaten by Yoshi.
 
@@ -40,4 +40,4 @@
 // Patch the attack bitfield
 kmWrite8(0x80939b8a, 0x7f);
 
-#endif  // NSMBWUP_C00500
+#endif  // NSMBWUP_C00500_OFF

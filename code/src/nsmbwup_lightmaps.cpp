@@ -29,7 +29,7 @@
 // Patches for EGG's custom system for dynamically generated lightmaps.
 
 
-#ifdef NSMBWUP_C00400
+#ifndef NSMBWUP_C00400_OFF
 
 // Thanks to Skawo and Ninji for this patch.
 
@@ -58,4 +58,4 @@ kmBranchDefAsm(0x802cc5f4, 0x802cc5f8) {
     blr
 };
 
-#endif  // NSMBWUP_C00400
+#endif  // NSMBWUP_C00400_OFF

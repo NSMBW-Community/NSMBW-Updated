@@ -35,7 +35,7 @@
 // - Large Bowser Switch: sprite 479, profile 76 (EN_BOSS_KOOPA_BIG_SWITCH)
 
 
-#ifdef NSMBWUP_C00200
+#ifndef NSMBWUP_C00200_OFF
 
 // The game actively moves upside-down switches left by one unit (1/16
 // of a tile) upon spawn. This doesn't appear to serve any useful
@@ -47,4 +47,4 @@
 
 kmWrite32(0x80a19a7c, 0x60000000);  // nop
 
-#endif  // NSMBWUP_C00200
+#endif  // NSMBWUP_C00200_OFF

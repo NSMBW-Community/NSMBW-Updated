@@ -50,13 +50,26 @@
 // keep that bit set and change the behavior through a completely
 // different mechanism (see further below).
 
+// Also note that "passthrough" is the default option, which is why we
+// check for it with "!defined(NSMBWUP_C00504_ICEBALL)".
+
 // Determine what byte value to patch into the bitfields, if any
-#if defined(NSMBWUP_C00800) && defined(NSMBWUP_C00504_PASSTHROUGH)
-#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x5f
-#elif defined(NSMBWUP_C00800)
-#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0xdf
-#elif defined(NSMBWUP_C00504_PASSTHROUGH)
-#define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x7f
+#ifdef NSMBWUP_C00800_OFF
+    #ifdef NSMBWUP_C00504_OFF
+        // Fix neither bug
+        // (no #define)
+    #elif !defined(NSMBWUP_C00504_ICEBALL)
+        // Apply only the Yoshi passthrough bugfix
+        #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x7f
+    #endif
+#else
+    #ifdef NSMBWUP_C00504_OFF
+        // Apply only the spin-drill bugfix
+        #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0xdf
+    #elif !defined(NSMBWUP_C00504_ICEBALL)
+        // Apply both bugfixes
+        #define FALLING_ICICLE_ATTACK_BITFIELD_BYTE2 0x5f
+    #endif
 #endif
 
 // Patch it in
@@ -66,7 +79,7 @@ kmWrite8(0x80ad0ede, FALLING_ICICLE_ATTACK_BITFIELD_BYTE2);  // for 1x2 size
 #endif  // FALLING_ICICLE_ATTACK_BITFIELD_BYTE2
 
 
-#ifdef NSMBWUP_C00504_ICEBALL
+#if !defined(NSMBWUP_C00504_OFF) && defined(NSMBWUP_C00504_ICEBALL)
 // Patch field 0x36d to 5, causing it to become an iceball when eaten
 kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     nofralloc
@@ -75,4 +88,4 @@ kmBranchDefAsm(0x80a20b48, 0x80a20b4c) {
     stb r4, 0x36d(r28)
     blr
 };
-#endif  // NSMBWUP_C00504_ICEBALL
+#endif  // !defined(NSMBWUP_C00504_OFF) && defined(NSMBWUP_C00504_ICEBALL)
