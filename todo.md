@@ -33,6 +33,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * There's some bug relating to Cooligan movement speed when they spawn in water vs enter it (see AnotherSMBW 3-3, when you exit the pipe after star coin 1)
 * The unused ice blocks don't melt if you fire a fireball from right next to them
 * The unused rolling barrel actor breaks into brick shards, and alsos use a weird model compared to the normal barrels
+* Bugged liquid movement options
 
 ##### Other things
 
