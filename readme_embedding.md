@@ -24,31 +24,39 @@ For both of these reasons, NSMBW-Updated is designed to make it relatively easy 
 NSMBW-Updated's code patches are a [Kamek 2 (also known as "C# Kamek")](https://github.com/Treeki/Kamek) project. If you're using [Kamek 1 (also known as "Python Kamek")](https://github.com/Newer-Team/NewerSMBW), you'll have to switch to Kamek 2 before you can use these patches.
 
 
-## How to add NSMBW-Updated's code to your Kamek 2 project
+## Setup
 
-NSMBW-Updated's code lives in the `code` directory, with C++ files in `src` and headers in `include`. If your Kamek project is organized in the same way, you can just add NSMBW-Updated's files to those directories and ensure that your build system is aware of them. All of the filenames are prefixed with "`nsmbwup_`" to help keep them separate from your mod's other code files.
+NSMBW-Updated uses the [Kamek Ninja Template](https://github.com/NSMBW-Community/Kamek-Ninja-Template) for its code, albeit in a slightly unusual way since it's integrated into a larger overall build system (which *also* uses Python and Ninja).
+
+### If you're starting a new Kamek project
+
+If you're starting from scratch, the easiest approach is to start with a clean copy of [the template](https://github.com/NSMBW-Community/Kamek-Ninja-Template) and copy NSMBW-Updated's `src` folder, `include` folder, and `externals.txt` into it. It should work perfectly out-of-the-box.
+
+### If you want to incorporate it into an existing Kamek project
+
+If your project is using the same [template](https://github.com/NSMBW-Community/Kamek-Ninja-Template), you can just add NSMBW-Updated's files to the `src` and `include` directories (and merge its `externals.txt` with yours). All of the filenames are prefixed with "`nsmbwup_`" to help keep them separate from your mod's other code files.
+
+Otherwise, just make sure that whatever build system you're using can see the cpp files, and that the folder containing the headers from `include` is passed to CodeWarrior with `-i` (not `-I`).
+
+## Configuration
 
 By default, all bugfixes are enabled, and are configured to be built in a game-version-agnostic way. To adjust that configuration, read on.
 
+### How to set preprocessor symbols
 
-## How to set preprocessor variables
+Before explaining what preprocessor symbols are available, let's quickly talk about the two places where you can set them.
 
-Before explaining what preprocessor variables are available, let's quickly talk about the two places where you can set them.
+Like most other C++ compilers, CodeWarrior supports defining preprocessor symbols on the command line with `-DVARNAME` (that is, `-D` followed by the name of the symbol, with nothing in between). If you're using your own build system, you can adjust it to add NSMBW-Updated configuration symbols here.
 
-Like most other C++ compilers, CodeWarrior supports defining preprocessor variables on the command line with `-DVARNAME` (that is, `-D` followed by the name of the variable, with nothing in between). You can adjust your build system to add NSMBW-Updated configuration variables here.
+Alternatively, you can `#define` your symbols in `nsmbwup_user_config.h`, in the `include` directory. This is an empty header file that's `#include`d in every NSMBW-Updated C++ file, specifically for this purpose. Depending on your personal preference, this may be more convenient for you than providing more command-line arguments to CodeWarrior. You can even add more complex logic here, such as conditionally enabling or disabling a certain bugfix depending on the target game version (though I don't know why you'd want to do that).
 
-Alternatively, you can `#define` your variables in `nsmbwup_user_config.h`, in the `include` directory. This is an empty header file that's `#include`d in every NSMBW-Updated C++ file, specifically for this purpose. Depending on your personal preference, this may be more convenient for you than providing more command-line arguments to CodeWarrior. You can even add more complex logic here, such as conditionally enabling or disabling a certain bugfix depending on the target game version (though I don't know why you'd want to do that).
+### Configuration preprocessor symbols
 
+#### Target game version
 
-## Configuration preprocessor variables
+NSMBW-Updated uses the `IS_GAME_VERSION_{version}_COMPATIBLE` symbols from the [Kamek Ninja Template](https://github.com/NSMBW-Community/Kamek-Ninja-Template) to adjust compilation for specific game versions. If you're using that build system, and you keep the JSON files from the `src` folder, it'll compile specialized patches for each game version when appropriate. Otherwise, it'll assume `IS_GAME_VERSION_DYNAMIC` by default, and compile in a generic way compatible with all game versions. See the Kamek Ninja Template documentation for more information about how this system works.
 
-### Target game version
-
-The `NSMBWUP_VERSION` variable indicates the game version to target statically at compile-time. The default value is `NSMBWUP_VERSION_DYNAMIC`, which is a special "version" that ensures that each active bugfix is built in a generic way compatible with all game versions. The other valid values represent specific game versions: `NSMBWUP_VERSION_P1`, `NSMBWUP_VERSION_E2`, etc. Compiling separately for different game versions increases build time, but produces more optimized Kamekfiles. **(TODO: explain how the json files help with this)**
-
-The specific numeric values of the `NSMBWUP_VERSION_{name}` constants are subject to change. Since that prevents you from safely specifying `NSMBWUP_VERSION`'s value on the command line, you can instead set a `NSMBWUP_SET_VERSION_{name}` flag, which'll cause `NSMBWUP_VERSION` to be set to the version you named.
-
-### Bug options
+#### Bug options
 
 As mentioned earlier, by default, every bugfix is built, with its default option if applicable.
 

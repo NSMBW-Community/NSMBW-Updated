@@ -22,7 +22,7 @@
 
 #include <kamek.h>
 
-#include "nsmbwup_common.h"
+#include "game_versions_nsmbw.h"
 #include "nsmbwup_user_config.h"
 
 
@@ -45,8 +45,8 @@
 // apply the patch, because in K and later versions, it'll just
 // harmlessly overwrite the "Rrun" string with itself.
 
-#if (NSMBWUP_VERSION == NSMBWUP_VERSION_DYNAMIC) || (NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K)
+#if IS_GAME_VERSION_DYNAMIC || (GAME_REVISION < GAME_REVISION_K)
 kmWritePointer(0x802f2a4c, "Rrun");
-#endif  // (NSMBWUP_VERSION == NSMBWUP_VERSION_DYNAMIC) || (NSMBWUP_REVISION_OF(NSMBWUP_VERSION) < NSMBWUP_REVISION_K)
+#endif  // IS_GAME_VERSION_DYNAMIC || (GAME_REVISION < GAME_REVISION_K)
 
 #endif  // NSMBWUP_C00100_OFF

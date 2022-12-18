@@ -23,26 +23,23 @@
 # SOFTWARE.
 
 import argparse
-import dataclasses
-import json
 from pathlib import Path
 import subprocess
 import sys
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import db as db_lib
-from nsmbw_constants import REGIONS, VERSIONS, LANG_FOLDER_NAMES
+from nsmbw_constants import LANG_FOLDER_NAMES
 
 
 PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
 
-DEFAULT_VERSION = 'P1'
+BUILD_DIR = Path('_build')
+OUTPUT_DIR = Path('bin')
 
-BUILD_DIR = Path('build')
-
-RIIVO_DISC_ROOT = BUILD_DIR / PROJECT_SAFE_NAME
-RIIVO_CONFIG_DIR = BUILD_DIR / 'riivolution'
+RIIVO_DISC_ROOT = OUTPUT_DIR / PROJECT_SAFE_NAME
+RIIVO_CONFIG_DIR = OUTPUT_DIR / 'riivolution'
 
 RIIVO_DISC_CODE = RIIVO_DISC_ROOT / 'Code'
 RIIVO_DISC_CODE_LOADER = RIIVO_DISC_CODE / 'loader.bin'
@@ -93,49 +90,43 @@ def ninja_escape(thing: Any) -> str:
     return str(thing).replace('$', '$$').replace(':', '$:').replace(' ', '$ ')
 
 
-def winepath(unix_path: Path) -> str:
-    """
-    Call winepath on a Unix path, to convert it to an equivalent Windows
-    path
-    """
-    return subprocess.check_output(['winepath', '-w', str(unix_path)], encoding='utf-8').rstrip('\n')
-
-
 ########################################################################
 ############################# Config class #############################
 ########################################################################
 
 
-@dataclasses.dataclass
 class Config:
     """
     Class that represents configuration options provided by the user
     """
     db: db_lib.Database
-    kamek_root: Path
+    kamek_exe: Path
+    kstdlib_dir: Path
     cw_exe: Path
-    loader_root: Path
+    loader_dir: Path
     loader_base_addr: int
-    game_roots: Dict[str, Path] = dataclasses.field(default_factory=dict)
+    game_roots: Dict[str, Path]
 
-    bugfixes_default: bool = True
-    bugfixes_default_by_tag: List[Tuple[db_lib.DatabaseEntryTag, bool]] = dataclasses.field(default_factory=list)
-    bugfixes_individual: Dict[str, Union[bool, str]] = dataclasses.field(default_factory=dict)
+    bugfixes_default: bool
+    bugfixes_default_by_tag: List[Tuple[db_lib.DatabaseEntryTag, bool]]
+    bugfixes_individual: Dict[str, Union[bool, str]]
 
     @staticmethod
     def set_up_arg_parser(db: db_lib.Database, parser: argparse.ArgumentParser) -> None:
         """
         Add arguments to the ArgumentParser
         """
-        env_group = parser.add_argument_group('Environment setup')
+        env_group = parser.add_argument_group('Specifying the environment')
         env_group.add_argument('--game-root', metavar='DIR', type=Path, action='append',
             help='the path to an extracted game root (with "Effect", "Env", "HomeButton2", etc. subdirectories).'
             ' You can specify this multiple times for different game versions, and the resulting Riivolution patch will include assets for all of them.')
-        env_group.add_argument('--kamek-root', type=Path, required=True,
-            help='the Kamek directory (with "k_stdlib", "Kamek", etc. subdirectories)')
+        env_group.add_argument('--kamek', type=Path, required=True,
+            help='the Kamek binary ("Kamek.exe" on Windows, "Kamek" on other platforms)')
+        env_group.add_argument('--kstdlib', type=Path, required=True,
+            help='Kamek\'s "k_stdlib" directory')
         env_group.add_argument('--cw', type=Path, metavar='MWCCEPPC', required=True,
             help='CodeWarrior\'s "mwcceppc.exe"')
-        env_group.add_argument('--loader-root', metavar='DIR', type=Path, required=True,
+        env_group.add_argument('--loader-dir', metavar='DIR', type=Path, required=True,
             help='the path to the Kamek loader folder (should contain "kamekLoader.cpp" and "nsmbw.cpp")')
 
         config_group = parser.add_argument_group('Build configuration')
@@ -219,16 +210,18 @@ class Config:
 
                 bugfixes_individual[bug_id] = choice
 
-        return cls(
-            db,
-            args.kamek_root,
-            args.cw,
-            args.loader_root,
-            int(args.loader_base_addr, 16),
-            game_roots,
-            bugfixes_default,
-            bugfixes_default_by_tag,
-            bugfixes_individual)
+        self = cls()
+        self.db = db
+        self.kamek_exe = args.kamek.resolve()
+        self.kstdlib_dir = args.kstdlib.resolve()
+        self.cw_exe = args.cw.resolve()
+        self.loader_dir = args.loader_dir.resolve()
+        self.loader_base_addr = int(args.loader_base_addr, 16)
+        self.game_roots = {k: v.resolve() for k, v in game_roots.items()}
+        self.bugfixes_default = bugfixes_default
+        self.bugfixes_default_by_tag = bugfixes_default_by_tag
+        self.bugfixes_individual = bugfixes_individual
+        return self
 
     def get_selected_bugfixes(self) -> Dict[str, Union[bool, str]]:
         """
@@ -256,33 +249,10 @@ class Config:
 
         return state
 
-    def get_kamek_executable(self) -> Path:
-        """
-        Return the path to the Kamek executable
-        """
-        # TODO: make this better somehow...?
-        bin_folder = self.kamek_root / 'Kamek' / 'bin'
-        if not bin_folder.is_dir():
-            raise RuntimeError(f'{bin_folder} not found. Please build Kamek itself first!')
-
-        if sys.platform == 'win32':
-            return bin_folder / 'Debug' / 'net6.0' / 'Kamek.exe'
-        else:
-            return bin_folder / 'Debug' / 'net6.0' / 'Kamek'
-
-    def get_kstdlib_dir(self) -> Path:
-        """
-        Return the path to the k_stdlib dir
-        """
-        return self.kamek_root / 'k_stdlib'
-
     def get_loader_xml_path(self) -> Path:
-        """
-        Return the path to loader.xml. This is an intermediate output,
-        so the exact choice here doesn't matter as long as we're
-        consistent.
-        """
-        return self.loader_root / 'loader.xml'
+        # This is an intermediate output path, so the exact choice here
+        # doesn't matter as long as we're consistent.
+        return BUILD_DIR / 'loader.xml'
 
 
 ########################################################################
@@ -290,83 +260,23 @@ class Config:
 ########################################################################
 
 
-CODE_BUILD_VERSIONS = ['P1', 'E1', 'J1', 'P2', 'E2', 'J2', 'K', 'W']
-
 CODE_ROOT_DIR = Path('code')
-
-ADDRESS_MAP_TXT = CODE_ROOT_DIR / 'address-map.txt'
-EXTERNALS_TXT = CODE_ROOT_DIR / 'externals.txt'
-
-CODE_SRC_DIR = CODE_ROOT_DIR / 'src'
-CODE_INCLUDE_DIR = CODE_ROOT_DIR / 'include'
-
-
-@dataclasses.dataclass
-class TranslationUnit:
-    """
-    Represents one translation unit (.cpp file)
-    """
-    cpp_file: Path
-
-    # Sometimes we need different builds for different game versions
-    # (such as when actor IDs are referenced in the code), but often we
-    # can just build for P1 and reuse it everywhere. This dict defines
-    # that relationship.
-    builds: Dict[str, str] = dataclasses.field(
-        default_factory=lambda: {v: DEFAULT_VERSION for v in CODE_BUILD_VERSIONS})
-
-    def read_config(self, path: Path) -> None:
-        """
-        Read additional config data from an optional .json file
-        """
-        if not path.is_file():
-            return
-        with path.open(encoding='utf-8') as f:
-            j = json.load(f)
-
-        if builds_list := j.get('builds'):
-            # Invert it
-            self.builds = {}
-            for build, users in builds_list.items():
-                for user in users:
-                    self.builds[user] = build
-
-            if set(self.builds) != set(CODE_BUILD_VERSIONS):
-                raise ValueError(f"{path.name} doesn't specify the right set of build versions:"
-                    f' {sorted(self.builds)} vs {sorted(CODE_BUILD_VERSIONS)}')
-
-    def iter_builds(self):
-        """
-        Iterator over the .o files that need to be built for this TU.
-        Yields (version string, .o file path) pairs.
-        """
-        for version in set(self.builds.values()):
-            yield version, self.o_file_for_version(version)
-
-    def o_file_for_version(self, version: str) -> Path:
-        """
-        Return the .o file that should be linked for the specified game
-        version.
-        """
-        if len(set(self.builds.values())) == 1:
-            # No need to mangle the version name into the .o filename
-            return self.cpp_file.with_suffix('.o')
-        else:
-            return self.cpp_file.parent / (self.cpp_file.stem + f'_{self.builds[version]}.o')
+CODE_NINJA_FILE = CODE_ROOT_DIR / 'build.ninja'
+CODE_TEMPLATE_REPO_DIR = CODE_ROOT_DIR / 'Kamek-Ninja-Template'
+CODE_CONFIGURE_SCRIPT = CODE_TEMPLATE_REPO_DIR / 'configure.py'
+CODE_CW_WINE_WRAPPER = CODE_TEMPLATE_REPO_DIR / 'mwcceppc_wine_wrapper.py'
 
 
 def make_code_rules(config: Config) -> str:
     """
     Create Ninja rules to build the .bin files in the Code directory
     """
-    # Find all TUs, and read any configs
-    tus = []
-    for fp in sorted(CODE_SRC_DIR.glob('**/*.cpp')):
-        tu = TranslationUnit(fp)
-        tu.read_config(fp.with_suffix('.json'))
-        tus.append(tu)
 
-    use_wine = (sys.platform != 'win32')
+    lines = []
+
+    # ------------------------------------------------------------------
+    # Project code files: built using the project template; we don't
+    # actually touch CodeWarrior or Kamek ourselves
 
     # The goal here is to detect the following cases:
     # - Bug is unselected: add "BUGNAME_OFF" flag
@@ -382,26 +292,53 @@ def make_code_rules(config: Config) -> str:
         else:
             bug_flags.add(f'{id}_{choice.upper()}')
 
-    def winepath_if_wine(path: Path) -> str:
-        if use_wine:
-            return winepath(path)
-        else:
-            return str(path)
+    # Run the code template's separate configure.py script
+    proc = subprocess.run([sys.executable, str(CODE_CONFIGURE_SCRIPT),
+        '--kamek', str(config.kamek_exe),
+        '--kstdlib', str(config.kstdlib_dir),
+        '--cw', str(config.cw_exe),
+        '--project-dir', str(CODE_ROOT_DIR),
+        '--output-dir', str(RIIVO_DISC_CODE),
+        *[f'-DNSMBWUP_{bf}' for bf in bug_flags],
+    ])
+    if proc.returncode != 0:
+        exit(proc.returncode)
 
-    lines = [f"""
+    # Now we can just include the build.ninja it just created, as a
+    # "subninja".
+
+    lines.append(f'subninja {CODE_NINJA_FILE}')
+    lines.append('')
+
+    # Note that this only works correctly because the configure.py for
+    # the Kamek project obsessively uses absolute paths for everything.
+    # Ideally Ninja would support setting the current working directory
+    # within a subninja, but unfortunately it doesn't:
+    # https://github.com/ninja-build/ninja/pull/456
+
+    # ------------------------------------------------------------------
+    # Loader: we do handle this one manually
+
+    use_wine = (sys.platform != 'win32')
+
+    if use_wine:
+        cc = CODE_CW_WINE_WRAPPER
+        cc = f"{ninja_escape(sys.executable)} '{ninja_escape(cc)}' '$mwcceppc'"
+    else:
+        cc = '$mwcceppc'
+
+    lines.append(f"""
 mwcceppc = {ninja_escape(config.cw_exe)}
-cc = {'wine ' if use_wine else ''}$mwcceppc
-kamek = {ninja_escape(config.get_kamek_executable())}
-kstdlib_win = {ninja_escape(winepath_if_wine(config.get_kstdlib_dir()))}
-addrmap = {ninja_escape(ADDRESS_MAP_TXT)}
-externals = {ninja_escape(EXTERNALS_TXT)}
-includedir_win = {ninja_escape(winepath_if_wine(CODE_INCLUDE_DIR))}
-loaderdir_win = {ninja_escape(winepath_if_wine(config.loader_root))}
+cc = {cc}
+kamek = {ninja_escape(config.kamek_exe)}
+kstdlib = {ninja_escape(config.kstdlib_dir)}
+loaderdir = {ninja_escape(config.loader_dir)}
 loaderaddr = {config.loader_base_addr:#08x}
 
 cflags = $
   -I- $
-  -i '$kstdlib_win' $
+  -i '$kstdlib' $
+  -i '$loaderdir' $
   -Cpp_exceptions off $
   -enum int $
   -O4,s $
@@ -412,52 +349,13 @@ cflags = $
   -sdata2 0 $
   -RTTI off
 
-cflags_bugs = {' '.join(f'-DNSMBWUP_{v}' for v in sorted(bug_flags))}
-
-cflags_proj_include = -i '$includedir_win'
-cflags_loader_include = -i '$loaderdir_win'
-
 rule cw
-  command = $cc $cflags -c -o $out $in
-  description = $cc $in
-"""]
+  command = $cc $cflags -c -o $out -MDfile $out.d $in
+  depfile = $out.d
+  description = {ninja_escape(config.cw_exe.name)} -o $out_shortname $in_shortname
+""".strip('\n'))
 
-    # ------------------------------------------------------------------
-    # Project code files
-
-    # Add "cw" edges for all .cpp -> .o files
-    for tu in tus:
-        for version, o_file in tu.iter_builds():
-            lines.append('build'
-                f' {ninja_escape(o_file)}:'
-                f' cw {ninja_escape(tu.cpp_file)}')
-            lines.append(f'  cflags = $cflags $cflags_proj_include -DNSMBWUP_SET_VERSION_{version} $cflags_bugs')
-    lines.append('')
-
-    lines.append(f"""
-rule kmdynamic
-  command = '$kamek' $in -dynamic -versions=$addrmap -externals=$externals -output-kamek=$out -select-version=$selectversion
-  description = $kamek -> $out
-""")
-
-    # Add "km" edges for all .o -> .bin files
-    for version in CODE_BUILD_VERSIONS:
-        lines.append('build')
-        out_fp = RIIVO_DISC_CODE / f'{version}.bin'
-        lines[-1] += f' $builddir/{ninja_escape(out_fp.relative_to(BUILD_DIR))}'
-
-        lines[-1] += ': kmdynamic'
-        for tu in tus:
-            o_file = tu.o_file_for_version(version)
-            lines[-1] += f' {ninja_escape(o_file)}'
-        lines[-1] += ' | $addrmap $externals'
-        lines.append(f'  selectversion = {version}')
-        lines.append('')
-
-    # ------------------------------------------------------------------
-    # Loader
-
-    cpp_files = set(config.loader_root.glob('*.cpp'))
+    cpp_files = set(config.loader_dir.glob('*.cpp'))
 
     # Add "cw" edges for all .cpp -> .o files
     for cpp_file in cpp_files:
@@ -466,24 +364,25 @@ rule kmdynamic
             print(f'WARNING: Unexpected loader cpp file "{cpp_file}"')
 
         o_file = cpp_file.with_suffix('.o')
-        lines.append('build'
-            f' {ninja_escape(o_file)}:'
-            f' cw {ninja_escape(cpp_file)}')
-        lines.append('  cflags = $cflags $cflags_loader_include')
+        lines.append(f'build {ninja_escape(o_file)}: cw {ninja_escape(cpp_file)}')
+        lines.append(f'  out_shortname = {ninja_escape(o_file.name)}')
+        lines.append(f'  in_shortname = {ninja_escape(cpp_file.name)}')
 
     lines.append(f"""
 rule kmstatic
   command = '$kamek' $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
-  description = $kamek -> $outxml + $outbin
-""")
+  description = {ninja_escape(config.kamek_exe.name)} -> $outxml_filename + $outbin_filename
+""".strip('\n'))
 
-    # Add a "km" edge for loader.bin
+    # Add a "kmstatic" edge for loader.bin
     lines.append(f'build {ninja_escape(config.get_loader_xml_path())} {ninja_escape(RIIVO_DISC_CODE_LOADER)}: kmstatic')
     for cpp_file in cpp_files:
         o_file = cpp_file.with_suffix('.o')
         lines[-1] += f' {ninja_escape(o_file)}'
     lines.append(f'  outxml = {ninja_escape(config.get_loader_xml_path())}')
+    lines.append(f'  outxml_filename = {ninja_escape(config.get_loader_xml_path().name)}')
     lines.append(f'  outbin = {ninja_escape(RIIVO_DISC_CODE_LOADER)}')
+    lines.append(f'  outbin_filename = {ninja_escape(RIIVO_DISC_CODE_LOADER.name)}')
     lines.append(f'  baseaddr = $loaderaddr')
     
     return '\n'.join(lines)
@@ -508,7 +407,7 @@ def make_credits_rules(config: Config) -> str:
 rule credits
   command = '$py' {CREDITS_PY} $in $out $bugs
   description = Editing credits...
-"""]
+""".strip('\n')]
 
     already_covered_staffrolls = set()
 
@@ -533,7 +432,7 @@ rule credits
             if staffroll_relative in already_covered_staffrolls:
                 continue
 
-            target_dir = f'$builddir/{ninja_escape((RIIVO_DISC_ROOT / staffroll_relative).relative_to(BUILD_DIR))}'
+            target_dir = f'$outdir/{ninja_escape((RIIVO_DISC_ROOT / staffroll_relative).relative_to(OUTPUT_DIR))}'
             lines.append(f'build {target_dir}: credits {ninja_escape(staffroll)}')
 
             already_covered_staffrolls.add(staffroll_relative)
@@ -554,7 +453,8 @@ def make_riivolution_xml_rules(config: Config) -> str:
     """
     lines = [f"""
 rule riixml
-  command = '$py' {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}"""]
+  command = '$py' {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}
+""".strip('\n')]
 
     lines[-1] += f" '--title={PROJECT_DISPLAY_NAME}'"
     lines[-1] += f" '--loader-xml=$in'"
@@ -563,7 +463,8 @@ rule riixml
     lines.append('  description = Generating Riivolution XML...')
     lines.append('')
 
-    lines.append(f'build $builddir/{ninja_escape(RIIVO_XML.relative_to(BUILD_DIR))}: riixml {ninja_escape(config.get_loader_xml_path())}')
+    lines.append(f'build $outdir/{ninja_escape(RIIVO_XML.relative_to(OUTPUT_DIR))}:'
+                 f' riixml {ninja_escape(config.get_loader_xml_path())}')
     
     return '\n'.join(lines)
 
@@ -586,24 +487,26 @@ def make_ninja_file(config: Config) -> str:
         else:
             bug_items.append(k)
 
-    txt = f"""# NOTE: This file is generated by {Path(__file__).name}.
+    txt = f"""
+# NOTE: This file is generated by {Path(__file__).name}.
 
 py = {sys.executable}
 
 # NOTE: "builddir" has special significance to Ninja (see the manual)
 builddir = {BUILD_DIR}
+outdir = {OUTPUT_DIR}
 
 bugs = {' '.join(sorted(bug_items))}
 
 {make_code_rules(config)}
 {make_credits_rules(config)}
 {make_riivolution_xml_rules(config)}
-"""
+""".strip('\n')
 
     while '\n\n\n' in txt:
         txt = txt.replace('\n\n\n', '\n\n')
 
-    return txt
+    return txt + '\n'
 
 
 def main(argv=None) -> None:
@@ -621,7 +524,6 @@ def main(argv=None) -> None:
     config = Config.from_args(db, args)
 
     NINJA_FILE.write_text(make_ninja_file(config), encoding='utf-8')
-    print(f'Wrote {NINJA_FILE}')
 
 
 if __name__ == '__main__':

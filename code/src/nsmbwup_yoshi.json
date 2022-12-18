@@ -1,7 +1,6 @@
 {
+    "json_version": 1,
     "builds": {
-        "P1": ["P1", "E1", "J1", "P2", "E2", "J2"],
-        "K": ["K", "W"]
-    },
-    "//": "TODO: add C to the K builds list"
+        "P1": ["P1", "E1", "J1", "P2", "E2", "J2"]
+    }
 }

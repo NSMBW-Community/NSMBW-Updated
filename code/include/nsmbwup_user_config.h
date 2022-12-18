@@ -27,8 +27,18 @@
 
 // Here are some examples:
 
-// To compile for a specific game version:
-// #define NSMBWUP_VERSION NSMBWUP_VERSION_E2
-
 // To deactivate the fix for a particular bug:
+
 // #define NSMBWUP_C00900_OFF
+
+// To deactivate the fix for a particular bug, but only for a certain
+// game version:
+
+// #if !defined(IS_GAME_VERSION_E2_COMPATIBLE)
+// #define NSMBWUP_C00900_OFF
+// #endif
+
+// In this case, you'd also need to add a JSON config file for the cpp
+// file containing that particular bugfix, to indicate that it should be
+// compiled separately for different versions (once for E2, and once for
+// everything else).
