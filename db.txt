@@ -77,6 +77,14 @@ options: passthrough, iceball
 Yoshi is able to swallow Falling Icicles (sprite 265)
 
 --------
+C00505
+tags: M
+options: passthrough, iceball
+
+Yoshi is able to swallow Icicles (sprite 201)
+
+
+--------
 C00600
 tags: E
 
@@ -98,6 +106,12 @@ C00801
 tags: F
 
 Boo Circle Boos (spawned by sprite 323) can be killed with a Propeller Suit spin-drill
+
+--------
+C00802
+tags: F
+
+Icicles (sprite 201) can be killed with a Propeller Suit spin-drill
 
 --------
 C00900

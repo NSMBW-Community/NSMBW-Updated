@@ -47,10 +47,12 @@ ID | Description | Tags | Versions | Options
 **C00502** | Yoshi is able to swallow Giant Floating Logs (sprite 173) | M | | on, off
 **C00503** | Yoshi is able to swallow Toad House Chests (sprite 203) | M | | on, off
 **C00504** | Yoshi is able to swallow Falling Icicles (sprite 265) | M | | passthrough, iceball, off
+**C00505** | Yoshi is able to swallow Icicles (sprite 201) | M | | passthrough, iceball, off
 **C00600** | Save files are region-locked | E | | on, off
 **C00700** | The Bowser Boss Door (sprite 452) is not considered a "wide" door for the purposes of fine-tuning player walking animations | | | on, off
 **C00800** | Falling Icicles (sprite 265) can be killed with a Propeller Suit spin-drill | F | | on, off
 **C00801** | Boo Circle Boos (spawned by sprite 323) can be killed with a Propeller Suit spin-drill | F | | on, off
+**C00802** | Icicles (sprite 201) can be killed with a Propeller Suit spin-drill | F | | on, off
 **C00900** | Bushes (sprite 387) with sizes larger than the default ("small") spawn too late when approached from above | M | | on, off
 **C01000** | The unused Jumbo Ray Respawner 2 deletes all of its existing Jumbo Rays whenever it spawns new ones | M | | on, off
 **C01100** | "Direct Pipe" entrances use the wrong path nodes | M | | on, off
