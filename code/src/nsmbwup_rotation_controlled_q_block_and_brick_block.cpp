@@ -40,6 +40,13 @@
 // More information on this type of bug can be found here:
 #include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
+// TODO: This patch breaks the following retail stages:
+// - Coin-2: this stage uses lots of intentionally confusing
+//   rotation-controlled blocks and coins.
+// - 8-3: there's a pair of location-triggered brick blocks at the end
+//   of the stage.
+// The stages should be modified (under this same bug ID) to compensate.
+
 kmWrite32(0x809c15c4, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x809c15dc, 0x3860c000);  // li r3, -0x4000
 

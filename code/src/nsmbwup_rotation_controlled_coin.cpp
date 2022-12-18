@@ -37,6 +37,18 @@
 // More information on this type of bug can be found here:
 #include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
 
+// TODO: This patch breaks the following retail stages:
+// - 1-castle: the rotation controllers attached to the gears and coins
+//   use a starting angle value of "1".
+// - Coin-2: this stage uses lots of intentionally confusing
+//   rotation-controlled blocks and coins.
+// - 7-2, 8-1, 8-3: the location-triggered bonus coins that rotate in
+//   from below the stage use a starting angle value of "4" to mean 180
+//   degrees. One structure in 8-3 nonsensically uses starting_angle = 8
+//   to mean 0 degrees. (That one should really be redone, since it's
+//   the only one where the blocks and coins end up upside-down.)
+// The stages should be modified (under this same bug ID) to compensate.
+
 kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
 
