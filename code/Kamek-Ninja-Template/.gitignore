@@ -1,7 +1,5 @@
 __pycache__
-Kamek
 _build
 bin
-*.ninja*
 *.o
 *.o.d
