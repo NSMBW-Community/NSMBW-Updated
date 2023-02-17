@@ -33,6 +33,8 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * The unused ice blocks don't melt if you fire a fireball from right next to them
 * The unused rolling barrel actor breaks into brick shards, and also uses a weird model compared to the normal barrels
 * Bugged liquid movement options
+* [Upside-down Spinies get very confused if you destroy the ceiling while they're frozen](https://www.suppermariobroth.com/post/707457546930290688)
+* If you slide into a horizontal pipe, the particle effect isn't canceled ([video 1](https://cdn.discordapp.com/attachments/1072714148275822652/1076065027120975953/slide_effect_horiz_pipe.mp4), [video 2](https://cdn.discordapp.com/attachments/1072714148275822652/1076066171058655262/slide_effect_horiz_pipe_2.mp4))
 
 ##### Other things
 
