@@ -321,9 +321,11 @@ def make_code_rules(config: Config) -> str:
 
     use_wine = (sys.platform != 'win32')
 
+    quote = "'" if use_wine else '"'
+
     if use_wine:
         cc = CODE_CW_WINE_WRAPPER
-        cc = f"{ninja_escape(sys.executable)} '{ninja_escape(cc)}' '$mwcceppc'"
+        cc = f"{ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
     else:
         cc = '$mwcceppc'
 
@@ -337,8 +339,8 @@ loaderaddr = {config.loader_base_addr:#08x}
 
 cflags = $
   -I- $
-  -i '$kstdlib' $
-  -i '$loaderdir' $
+  -i {quote}$kstdlib{quote} $
+  -i {quote}$loaderdir{quote} $
   -Cpp_exceptions off $
   -enum int $
   -O4,s $
@@ -370,7 +372,7 @@ rule cw
 
     lines.append(f"""
 rule kmstatic
-  command = '$kamek' $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
+  command = {quote}$kamek{quote} $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
   description = {ninja_escape(config.kamek_exe.name)} -> $outxml_filename + $outbin_filename
 """.strip('\n'))
 
@@ -403,9 +405,12 @@ def make_credits_rules(config: Config) -> str:
     if not config.game_roots:
         return ''
 
+    use_wine = (sys.platform != 'win32')
+    quote = "'" if use_wine else '"'
+
     lines = [f"""
 rule credits
-  command = '$py' {CREDITS_PY} $in $out $bugs
+  command = {quote}$py{quote} {CREDITS_PY} $in $out $bugs
   description = Editing credits...
 """.strip('\n')]
 
@@ -451,14 +456,18 @@ def make_riivolution_xml_rules(config: Config) -> str:
     """
     Create Ninja rules to build the Riivolution XML
     """
+
+    use_wine = (sys.platform != 'win32')
+    quote = "'" if use_wine else '"'
+
     lines = [f"""
 rule riixml
-  command = '$py' {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}
+  command = {quote}$py{quote} {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}
 """.strip('\n')]
 
-    lines[-1] += f" '--title={PROJECT_DISPLAY_NAME}'"
-    lines[-1] += f" '--loader-xml=$in'"
-    lines[-1] += f" '--loader-bin={RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}'"
+    lines[-1] += f" {quote}--title={PROJECT_DISPLAY_NAME}{quote}"
+    lines[-1] += f" {quote}--loader-xml=$in{quote}"
+    lines[-1] += f" {quote}--loader-bin={RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}{quote}"
 
     lines.append('  description = Generating Riivolution XML...')
     lines.append('')
