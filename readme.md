@@ -32,6 +32,8 @@ See [todo.md](todo.md).
 
 ## Full list of fixed bugs
 
+[Explanations of IDs, tags, versions, and options](readme_bug_organization.md)
+
 ID | Description | Tags | Versions | Options
 -- | ----------- | ---- | -------- | -------
 **C00000** | Unused Rotation-Controlled Solid Platforms (sprite 107) ignore the starting-rotation setting | B, M | | on, off
