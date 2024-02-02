@@ -36,8 +36,8 @@
 // actor effectively ignoring starting-rotation. All the others add it
 // instead, causing the starting-rotation to double.
 
-// -0x4000 is used below as a replacement for instructions that read the
-// rot. controller's starting-rotation value, because it's the
-// difference between "up" (the default angle) and "right" (0 radians).
-// This constant shows up frequently in Nintendo's own rotation-control
-// code, too.
+// -0x4000 is used in these patches as a replacement for instructions
+// that read the rot. controller's starting-rotation value, because it's
+// the difference between "up" (the default angle) and "right" (0
+// radians). This constant shows up frequently in Nintendo's own
+// rotation-control code, too.
