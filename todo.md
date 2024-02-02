@@ -35,6 +35,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Bugged liquid movement options
 * [Upside-down Spinies get very confused if you destroy the ceiling while they're frozen](https://www.suppermariobroth.com/post/707457546930290688)
 * If you slide into a horizontal pipe, the particle effect isn't canceled ([video 1](https://cdn.discordapp.com/attachments/1072714148275822652/1076065027120975953/slide_effect_horiz_pipe.mp4), [video 2](https://cdn.discordapp.com/attachments/1072714148275822652/1076066171058655262/slide_effect_horiz_pipe_2.mp4))
+* "If you groundpound a ? Block containing a star while other tiles are under it, the star comes out the top of the block but you can't collect it"
 
 ##### Other things
 
@@ -65,6 +66,8 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * [Mushroom platform propeller flight collision issue](https://youtu.be/mgNl4yeJO1E)
 * The animation bug that occurs if you just barely jump onto a platform which is moving downwards (easy to do in 5-1)
 * Clipping through platforms in 5-5 (by the POW) and the 8-7 bonecoaster
+* A player in a "slow tumble" state can jump in mid-air ([video 1](https://cdn.discordapp.com/attachments/1072714148275822652/1078848331368898570/wall_throw_glitch.mp4), [video 2](https://cdn.discordapp.com/attachments/1072714148275822652/1078848510209830943/mid_air_jump_nsmbw.mp4))
+* [Animation glitch when ground-pounded while on a Yoshi in mid-air](https://twitter.com/MarioBrothBlog/status/1612119090667077632)
 
 ### Assets
 
