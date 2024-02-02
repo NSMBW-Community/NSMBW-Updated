@@ -4,7 +4,7 @@ import db as db_lib
 
 
 README_PATH = Path('readme.md')
-SPLIT_AT_STR = '## Full list of fixed bugs'
+SPLIT_AT_STR = 'ID | Description | Tags | Versions | Options'
 
 
 def make_table() -> str:
@@ -56,7 +56,7 @@ def main() -> None:
     if SPLIT_AT_STR not in readme:
         raise ValueError(f"Couldn't find {SPLIT_AT_STR!r} in the readme")
 
-    new_readme = readme.split(SPLIT_AT_STR)[0] + SPLIT_AT_STR + '\n\n' + make_table()
+    new_readme = readme.split(SPLIT_AT_STR)[0] + make_table()
 
     README_PATH.write_text(new_readme, encoding='utf-8')
 

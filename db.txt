@@ -147,25 +147,25 @@ tags: B, M
 C01400
 tags: M
 
-Star Coins that activate timed events cancel P-Switch music when the time expires
+Star Coins (sprite 32) that activate timed events cancel P-Switch music when the time expires
 
 --------
 C01401
 tags: M
 
-"Event Controller - Zone Enter"s that activate timed events cancel P-Switch music when the time expires
+"Event Controller - Zone Enter"s (sprite 33) that activate timed events cancel P-Switch music when the time expires
 
 --------
 C01402
 tags: M
 
-"Event Controller - Chainer"s that activate timed events cancel P-Switch music when the time expires
+"Event Controller - Chainer"s (sprite 37) that activate timed events cancel P-Switch music when the time expires
 
 --------
 C01403
 tags: M
 
-Red Rings that activate events cancel P-Switch music when the event expires
+Red Rings (sprite 156) that activate events cancel P-Switch music when the event expires
 
 --------
 P00000

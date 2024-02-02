@@ -60,9 +60,9 @@ ID | Description | Tags | Versions | Options
 **C01100** | "Direct Pipe" entrances use the wrong path nodes | M | | on, off
 **C01200** | "Direct Pipe" entrances are exited in the direction of the entered pipe, rather than the exited pipe | B, M | | on, off
 **C01300** | "Direct Pipe" entrances that should exit upward actually exit downward | B, M | | on, off
-**C01400** | Star Coins that activate timed events cancel P-Switch music when the time expires | M | | on, off
-**C01401** | "Event Controller - Zone Enter"s that activate timed events cancel P-Switch music when the time expires | M | | on, off
-**C01402** | "Event Controller - Chainer"s that activate timed events cancel P-Switch music when the time expires | M | | on, off
-**C01403** | Red Rings that activate events cancel P-Switch music when the event expires | M | | on, off
+**C01400** | Star Coins (sprite 32) that activate timed events cancel P-Switch music when the time expires | M | | on, off
+**C01401** | "Event Controller - Zone Enter"s (sprite 33) that activate timed events cancel P-Switch music when the time expires | M | | on, off
+**C01402** | "Event Controller - Chainer"s (sprite 37) that activate timed events cancel P-Switch music when the time expires | M | | on, off
+**C01403** | Red Rings (sprite 156) that activate events cancel P-Switch music when the event expires | M | | on, off
 **P00000** | Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits | | Fixed in: K, W | on, off
 **P00100** | The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits | | Only in: C | on, off
