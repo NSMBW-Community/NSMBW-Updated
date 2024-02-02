@@ -144,6 +144,30 @@ tags: B, M
 "Direct Pipe" entrances that should exit upward actually exit downward
 
 --------
+C01400
+tags: M
+
+Star Coins that activate timed events cancel P-Switch music when the time expires
+
+--------
+C01401
+tags: M
+
+"Event Controller - Zone Enter"s that activate timed events cancel P-Switch music when the time expires
+
+--------
+C01402
+tags: M
+
+"Event Controller - Chainer"s that activate timed events cancel P-Switch music when the time expires
+
+--------
+C01403
+tags: M
+
+Red Rings that activate events cancel P-Switch music when the event expires
+
+--------
 P00000
 fixed-in: K, W
 
