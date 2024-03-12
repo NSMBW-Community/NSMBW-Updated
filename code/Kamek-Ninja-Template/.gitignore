@@ -1,0 +1,5 @@
+__pycache__
+_build
+bin
+*.o
+*.o.d
