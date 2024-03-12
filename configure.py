@@ -176,7 +176,8 @@ def get_version_names_list_from_address_map(path: Path) -> List[str]:
 
     versions = []
     for line in path.read_text(encoding='utf-8').splitlines():
-        if match := address_map_version_header_line.fullmatch(line):
+        match = address_map_version_header_line.fullmatch(line)
+        if match:
             versions.append(match[1])
 
     return versions
@@ -220,7 +221,8 @@ class TranslationUnit:
         elif j['json_version'] != 1:
             raise ValueError(f'{path.name}: unsupported json_version ({j["json_version"]})')
 
-        if builds_list := j.get('builds'):
+        builds_list = j.get('builds')
+        if builds_list:
             self.use_static_version_builds = True
             self.static_version_builds = {k: set(v) for k, v in builds_list.items()}
 
@@ -373,7 +375,8 @@ rule kmdynamic
         lines.append(f'build $outdir/{version}.bin: kmdynamic')
 
         for tu in tus:
-            if o_file := tu.o_file_for_version(version, config):
+            o_file = tu.o_file_for_version(version, config)
+            if o_file:
                 lines[-1] += f' {ninja_escape(o_file)}'
 
         implicit_deps = []
