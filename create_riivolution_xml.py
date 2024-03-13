@@ -96,7 +96,7 @@ def main(argv=None) -> None:
     parser.add_argument('--loader-xml', type=Path, required=True,
         help='host path to the loader XML file')
     parser.add_argument('--loader-bin', required=True,
-        help='disc path to the loader bin file')
+        help='disc path to the loader bin file (using forward slashes regardless of host OS)')
 
     args = parser.parse_args(argv)
 

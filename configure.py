@@ -465,9 +465,11 @@ rule riixml
   command = {quote}$py{quote} {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}
 """.strip('\n')]
 
+    loader_bin_disc_path = RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT).as_posix()
+
     lines[-1] += f" {quote}--title={PROJECT_DISPLAY_NAME}{quote}"
     lines[-1] += f" {quote}--loader-xml=$in{quote}"
-    lines[-1] += f" {quote}--loader-bin={RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT)}{quote}"
+    lines[-1] += f" {quote}--loader-bin={loader_bin_disc_path}{quote}"
 
     lines.append('  description = Generating Riivolution XML...')
     lines.append('')
