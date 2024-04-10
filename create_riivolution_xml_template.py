@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 RoadrunnerWMC
+# Copyright (c) 2022, 2024 RoadrunnerWMC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -32,32 +32,11 @@ PROJECT_SAFE_NAME = 'nsmbw_updated'
 PROJECT_DISPLAY_NAME = 'NSMBW Updated'
 
 
-def iter_memory_lines(args: argparse.Namespace) -> Iterator[str]:
-    """
-    Generate <memory> lines
-    """
-    with args.loader_xml.open('r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip().replace("'", '"')
-
-            if not line:
-                continue
-
-            if len(line) > 100:
-                # Probably the inlined loader.bin...
-                NEEDLE = 'value="'
-                value_start = line.index(NEEDLE)
-                value_end = line.index('"', value_start + len(NEEDLE)) + 1
-                yield line[:value_start] + f'valuefile="{args.loader_bin}"' + line[value_end:]
-            else:
-                yield line
-
-
 def make_xml(args: argparse.Namespace) -> str:
     """
     Create the XML data
     """
-    xml = [f"""
+    return f"""
 <wiidisc version="1" shiftfiles="true" root="{args.root_dir}" log="true">
     <id game="SMN" />
     <options>
@@ -69,23 +48,16 @@ def make_xml(args: argparse.Namespace) -> str:
     </options>
     <patch id="{PROJECT_SAFE_NAME}">
         <folder external="./" disc="/" create="true" recursive="true" />
-""".strip('\n')]
-
-    for line in iter_memory_lines(args):
-        xml.append(f'        {line}')
-
-    xml.append("""
+        $KX$
     </patch>
 </wiidisc>
-""".strip('\n'))
-
-    return '\n'.join(xml)
+""".strip('\n')
 
 
 def main(argv=None) -> None:
 
     parser = argparse.ArgumentParser(
-        description=f'Create a Riivolution XML for {PROJECT_DISPLAY_NAME}.')
+        description=f'Create a Riivolution XML template for {PROJECT_DISPLAY_NAME}.')
 
     parser.add_argument('output_file', type=Path,
         help='XML file to write output to')
@@ -93,10 +65,6 @@ def main(argv=None) -> None:
         help='"root" directory (you should probably start it with "/")')
     parser.add_argument('--title', required=True,
         help='name to use in the Riivolution menu')
-    parser.add_argument('--loader-xml', type=Path, required=True,
-        help='host path to the loader XML file')
-    parser.add_argument('--loader-bin', required=True,
-        help='disc path to the loader bin file (using forward slashes regardless of host OS)')
 
     args = parser.parse_args(argv)
 

@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 RoadrunnerWMC
+# Copyright (c) 2022, 2024 RoadrunnerWMC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -249,10 +249,10 @@ class Config:
 
         return state
 
-    def get_loader_xml_path(self) -> Path:
+    def get_xml_template_path(self) -> Path:
         # This is an intermediate output path, so the exact choice here
         # doesn't matter as long as we're consistent.
-        return BUILD_DIR / 'loader.xml'
+        return BUILD_DIR / 'riivo_template.xml'
 
 
 ########################################################################
@@ -372,19 +372,21 @@ rule cw
 
     lines.append(f"""
 rule kmstatic
-  command = {quote}$kamek{quote} $in -static=$baseaddr -output-riiv=$outxml -output-code=$outbin
+  command = {quote}$kamek{quote} $in -static=$baseaddr -input-riiv=$inxml -output-riiv=$outxml -output-code=$outbin -valuefile=$outbin_disc -quiet
   description = {ninja_escape(config.kamek_exe.name)} -> $outxml_filename + $outbin_filename
 """.strip('\n'))
 
     # Add a "kmstatic" edge for loader.bin
-    lines.append(f'build {ninja_escape(config.get_loader_xml_path())} {ninja_escape(RIIVO_DISC_CODE_LOADER)}: kmstatic')
+    lines.append(f'build $outdir/{ninja_escape(RIIVO_XML.relative_to(OUTPUT_DIR))} {ninja_escape(RIIVO_DISC_CODE_LOADER)}: kmstatic')
     for cpp_file in cpp_files:
         o_file = cpp_file.with_suffix('.o')
         lines[-1] += f' {ninja_escape(o_file)}'
-    lines.append(f'  outxml = {ninja_escape(config.get_loader_xml_path())}')
-    lines.append(f'  outxml_filename = {ninja_escape(config.get_loader_xml_path().name)}')
+    lines.append(f'  inxml = {ninja_escape(config.get_xml_template_path())}')
+    lines.append(f'  outxml = $outdir/{ninja_escape(RIIVO_XML.relative_to(OUTPUT_DIR))}')
+    lines.append(f'  outxml_filename = {ninja_escape(RIIVO_XML.name)}')
     lines.append(f'  outbin = {ninja_escape(RIIVO_DISC_CODE_LOADER)}')
     lines.append(f'  outbin_filename = {ninja_escape(RIIVO_DISC_CODE_LOADER.name)}')
+    lines.append(f'  outbin_disc = {ninja_escape(RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT).as_posix())}')
     lines.append(f'  baseaddr = $loaderaddr')
     
     return '\n'.join(lines)
@@ -446,38 +448,27 @@ rule credits
 
 
 ########################################################################
-############################ Riivolution XML ###########################
+####################### Riivolution XML template #######################
 ########################################################################
 
 
-CREATE_RIIVOLUTION_XML_PY = Path('create_riivolution_xml.py')
+CREATE_RIIVOLUTION_XML_TEMPLATE_PY = Path('create_riivolution_xml_template.py')
 
-def make_riivolution_xml_rules(config: Config) -> str:
+def make_riivolution_xml_template_rules(config: Config) -> str:
     """
-    Create Ninja rules to build the Riivolution XML
+    Create Ninja rules to build the Riivolution XML template
     """
 
     use_wine = (sys.platform != 'win32')
     quote = "'" if use_wine else '"'
 
-    lines = [f"""
+    return f"""
 rule riixml
-  command = {quote}$py{quote} {ninja_escape(CREATE_RIIVOLUTION_XML_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)}
-""".strip('\n')]
+  command = {quote}$py{quote} {ninja_escape(CREATE_RIIVOLUTION_XML_TEMPLATE_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)} {quote}--title={PROJECT_DISPLAY_NAME}{quote}
+  description = Generating Riivolution XML template...
 
-    loader_bin_disc_path = RIIVO_DISC_CODE_LOADER.relative_to(RIIVO_DISC_ROOT).as_posix()
-
-    lines[-1] += f" {quote}--title={PROJECT_DISPLAY_NAME}{quote}"
-    lines[-1] += f" {quote}--loader-xml=$in{quote}"
-    lines[-1] += f" {quote}--loader-bin={loader_bin_disc_path}{quote}"
-
-    lines.append('  description = Generating Riivolution XML...')
-    lines.append('')
-
-    lines.append(f'build $outdir/{ninja_escape(RIIVO_XML.relative_to(OUTPUT_DIR))}:'
-                 f' riixml {ninja_escape(config.get_loader_xml_path())}')
-    
-    return '\n'.join(lines)
+build {ninja_escape(config.get_xml_template_path())}: riixml
+""".strip('\n')
 
 
 ########################################################################
@@ -509,9 +500,9 @@ outdir = {OUTPUT_DIR}
 
 bugs = {' '.join(sorted(bug_items))}
 
+{make_riivolution_xml_template_rules(config)}
 {make_code_rules(config)}
 {make_credits_rules(config)}
-{make_riivolution_xml_rules(config)}
 """.strip('\n')
 
     while '\n\n\n' in txt:
