@@ -354,7 +354,7 @@ rule cw
             lines.append(f'  in_filename = {ninja_escape(tu.cpp_file.relative_to(config.get_src_dir()))}')
             lines.append('')
 
-    rule_command = f"{quote}$kamek{quote} $in -dynamic"
+    rule_command = f"{quote}$kamek{quote} $in -quiet -dynamic"
     if use_addrmap:
         rule_command += f" {quote}-versions=$addrmap{quote}"
     if use_externals:
