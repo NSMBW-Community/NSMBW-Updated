@@ -336,7 +336,8 @@ cflags = $
   -rostr $
   -sdata 0 $
   -sdata2 0 $
-  -RTTI off{(dumb_constant + ' '.join(config.extra_cflags)) if config.extra_cflags else ''}
+  -RTTI off{(dumb_constant + ' '.join(config.extra_cflags)) if config.extra_cflags else ''} $
+  -maxerrors 1
 
 rule cw
   command = $cc $cflags -c -o $out -MDfile $out.d $in
