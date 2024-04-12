@@ -349,7 +349,8 @@ cflags = $
   -rostr $
   -sdata 0 $
   -sdata2 0 $
-  -RTTI off
+  -RTTI off $
+  -maxerrors 1
 
 rule cw
   command = $cc $cflags -c -o $out -MDfile $out.d $in
