@@ -83,7 +83,6 @@ options: passthrough, iceball
 
 Yoshi is able to swallow Icicles (sprite 201)
 
-
 --------
 C00600
 tags: E
@@ -166,6 +165,12 @@ C01403
 tags: M
 
 Red Rings (sprite 156) that activate events cancel P-Switch music when the event expires
+
+--------
+C01500
+tags: M
+
+The unused Water Current Controller (sprite 243) applies a fixed rightward force to players with Penguin Suits, regardless of sprite settings
 
 --------
 P00000

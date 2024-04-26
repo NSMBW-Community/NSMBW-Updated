@@ -64,5 +64,6 @@ ID | Description | Tags | Versions | Options
 **C01401** | "Event Controller - Zone Enter"s (sprite 33) that activate timed events cancel P-Switch music when the time expires | M | | on, off
 **C01402** | "Event Controller - Chainer"s (sprite 37) that activate timed events cancel P-Switch music when the time expires | M | | on, off
 **C01403** | Red Rings (sprite 156) that activate events cancel P-Switch music when the event expires | M | | on, off
+**C01500** | The unused Water Current Controller (sprite 243) applies a fixed rightward force to players with Penguin Suits, regardless of sprite settings | M | | on, off
 **P00000** | Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits | | Fixed in: K, W | on, off
 **P00100** | The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits | | Only in: C | on, off
