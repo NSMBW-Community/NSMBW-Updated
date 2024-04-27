@@ -39,4 +39,4 @@
 
 kmWrite32(0x80aaa488, 0x39200001);  // li r9, 1
 
-#endif  // NSMBWUP_C01400_OFF
+#endif  // !NSMBWUP_C01400_OFF

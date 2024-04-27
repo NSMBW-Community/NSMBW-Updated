@@ -113,7 +113,7 @@ kmWrite32(0x80050928, 0x7c052214);  // add r0, r5, r4                 // r0 = pa
 kmWrite32(0x8005092c, 0x54002036);  // slwi r0, r0, 4                 // (left-shift to prepare for indexing)
 kmWrite32(0x80050930, 0x7ca60214);  // add r5, r6, r0                 // r5 = area->pathNodesBlock[r0];
 
-#endif  // NSMBWUP_C01100_OFF
+#endif  // !NSMBWUP_C01100_OFF
 
 
 #ifndef NSMBWUP_C01200_OFF
@@ -145,7 +145,7 @@ kmCallDefCpp(0x80050a50, NextGoto*, dCdFile_c *area, unsigned char src_entrance_
     return area->getNextGotoP(src_ent->dest_id);
 }
 
-#endif  // NSMBWUP_C01200_OFF
+#endif  // !NSMBWUP_C01200_OFF
 
 
 #ifndef NSMBWUP_C01300_OFF
@@ -189,4 +189,4 @@ kmBranchDefAsm(0x80050a88, 0x80050a8c) {
     ori r4, r4, StateID_DemoInDokanD__10daPlBase_c@l
 }
 
-#endif  // NSMBWUP_C01300_OFF
+#endif  // !NSMBWUP_C01300_OFF

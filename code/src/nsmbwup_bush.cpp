@@ -43,4 +43,4 @@
 kmWrite32(0x8030dfc8, 64);  // Move spawn range 4 tiles up
 kmWrite32(0x8030dfd4, 64);  // Increase spawn range height by 4 tiles
 
-#endif  // NSMBWUP_C00900_OFF
+#endif  // !NSMBWUP_C00900_OFF

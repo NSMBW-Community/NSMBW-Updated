@@ -59,4 +59,4 @@
 
 kmWrite32(0x8013f41c, 0x28000002);  // cmplwi r0, 2
 
-#endif  // NSMBWUP_C00700_OFF
+#endif  // !NSMBWUP_C00700_OFF

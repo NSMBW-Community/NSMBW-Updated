@@ -39,4 +39,4 @@
 
 kmWrite8(0x80ad415a, 0x88);
 
-#endif  // NSMBWUP_C00801_OFF
+#endif  // !NSMBWUP_C00801_OFF

@@ -54,4 +54,4 @@ kmBranchDefAsm(0x80077290, 0x80077294) {
     blr
 };
 
-#endif  // NSMBWUP_C00300_OFF
+#endif  // !NSMBWUP_C00300_OFF

@@ -57,4 +57,4 @@ kmBranchDefAsm(0x802cc5f4, 0x802cc5f8) {
     blr
 };
 
-#endif  // NSMBWUP_C00400_OFF
+#endif  // !NSMBWUP_C00400_OFF

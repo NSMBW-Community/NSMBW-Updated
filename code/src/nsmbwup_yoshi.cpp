@@ -49,4 +49,4 @@
 kmWritePointer(0x802f2a4c, "Rrun");
 #endif  // IS_GAME_VERSION_DYNAMIC || (GAME_REVISION < GAME_REVISION_K)
 
-#endif  // NSMBWUP_C00100_OFF
+#endif  // !NSMBWUP_C00100_OFF

@@ -72,4 +72,4 @@ kmWrite32(0x80131404, 0x60000000);  // nop
 kmWrite32(0x80131408, 0x60000000);  // nop
 kmWrite32(0x8013140c, 0x60000000);  // nop
 
-#endif  // NSMBWUP_C01500_OFF
+#endif  // !NSMBWUP_C01500_OFF

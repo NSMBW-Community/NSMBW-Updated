@@ -39,4 +39,4 @@
 // Patch the attack bitfield
 kmWrite8(0x80939b8a, 0x7f);
 
-#endif  // NSMBWUP_C00500_OFF
+#endif  // !NSMBWUP_C00500_OFF

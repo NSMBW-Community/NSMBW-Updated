@@ -40,4 +40,4 @@
 
 kmWrite32(0x80a93034, 0x39200001);  // li r9, 1
 
-#endif  // NSMBWUP_C01403_OFF
+#endif  // !NSMBWUP_C01403_OFF

@@ -87,4 +87,4 @@ kmBranchDefAsm(0x809fdf70, 0x809fdf74) {
     stb r4, 0x36d(r30)
     blr
 };
-#endif  // !defined(NSMBWUP_C00505_OFF) && defined(NSMBWUP_C00505_ICEBALL)
+#endif  // !NSMBWUP_C00505_OFF && NSMBWUP_C00505_ICEBALL
