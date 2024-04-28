@@ -299,7 +299,7 @@ def make_code_rules(config: Config) -> str:
         '--cw', str(config.cw_exe),
         '--project-dir', str(CODE_ROOT_DIR),
         '--output-dir', str(RIIVO_DISC_CODE),
-        *[f'-DNSMBWUP_{bf}' for bf in bug_flags],
+        *[f'-DNSMBWUP_{bf}' for bf in sorted(bug_flags)],
     ])
     if proc.returncode != 0:
         exit(proc.returncode)
