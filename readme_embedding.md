@@ -38,7 +38,7 @@ If your project is using the same [template](https://github.com/NSMBW-Community/
 
 Otherwise, just make sure that whatever build system you're using can see the cpp files, and that the folder containing the headers from `include` is passed to CodeWarrior with `-i` (not `-I`).
 
-If you only want a few specific source code files instead of all of them, it's possible to extract them individually, as they're intentionally mostly independent of each other. Just be sure to also take `include/nsmbwup_user_config.h`.
+If you only want a few specific source code files instead of all of them, it's possible to extract them individually, as they're intentionally mostly independent of each other. Just be sure to also take `src/nsmbwup_common.cpp`, `include/nsmbwup_common.h`, and `include/nsmbwup_user_config.h`.
 
 ## Configuration
 
