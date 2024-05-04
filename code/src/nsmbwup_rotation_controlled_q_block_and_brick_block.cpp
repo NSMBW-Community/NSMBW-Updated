@@ -37,8 +37,8 @@
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
 
-// More information on this type of bug can be found here:
-#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
+// More information on this type of bug can be found in
+// nsmbwup_rotation_controlled_actors_starting_rotation.h.
 
 // TODO: This patch breaks the following retail stages:
 // - Coin-2: this stage uses lots of intentionally confusing

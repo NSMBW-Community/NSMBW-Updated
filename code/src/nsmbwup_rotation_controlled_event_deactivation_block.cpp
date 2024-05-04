@@ -35,8 +35,8 @@
 // The actor misuses the rotation controller's "starting rotation"
 // spritedata field.
 
-// More information on this type of bug can be found here:
-#include "nsmbwup_rotation_controlled_actors_starting_rotation.h"
+// More information on this type of bug can be found in
+// nsmbwup_rotation_controlled_actors_starting_rotation.h.
 
 kmWrite32(0x80a7b558, 0x3860c000);  // li r3, -0x4000
 kmWrite32(0x80a7b570, 0x3860c000);  // li r3, -0x4000

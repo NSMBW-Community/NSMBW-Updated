@@ -34,8 +34,8 @@
 
 // daEnRotarionGhost_c can be killed by a Propeller Suit spin-drill.
 
-// More information on this type of bug can be found here:
-#include "nsmbwup_propeller_suit_drillable_actors.h"
+// More information on this type of bug can be found in
+// nsmbwup_propeller_suit_drillable_actors.h.
 
 kmWrite8(0x80ad415a, 0x88);
 

@@ -5,10 +5,10 @@ This page explains how to include NSMBW-Updated's bugfixes in your own NSMBW mod
 
 ## The problem with asset bugfixes
 
-Every bugfix in NSMBW-Updated can be categorized as one of the following:
+Every bugfix in NSMBW-Updated either:
 
-* Bugfixes that patch code
-* Bugfixes that patch assets
+* Patches code, or
+* Patches assets.
 
 The code patches are produced as a Kamek 2 patch file. These are easy to apply with Riivolution, and don't contain any copyrighted Nintendo code.
 
@@ -37,6 +37,8 @@ If you're starting from scratch, the easiest approach is to start with a clean c
 If your project is using the same [template](https://github.com/NSMBW-Community/Kamek-Ninja-Template), you can just add NSMBW-Updated's files to the `src` and `include` directories (and merge its `externals.txt` with yours). All of the filenames are prefixed with "`nsmbwup_`" to help keep them separate from your mod's other code files.
 
 Otherwise, just make sure that whatever build system you're using can see the cpp files, and that the folder containing the headers from `include` is passed to CodeWarrior with `-i` (not `-I`).
+
+If you only want a few specific source code files instead of all of them, it's possible to extract them individually, as they're intentionally mostly independent of each other. Just be sure to also take `include/nsmbwup_user_config.h`.
 
 ## Configuration
 

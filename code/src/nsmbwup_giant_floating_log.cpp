@@ -33,8 +33,8 @@
 
 // The actor can be eaten by Yoshi.
 
-// More information on this type of bug can be found here:
-#include "nsmbwup_yoshi_edible_actors.h"
+// More information on this type of bug can be found in
+// nsmbwup_yoshi_edible_actors.h.
 
 // Patch the attack bitfield
 kmWrite8(0x80ad2e5e, 0x5f);

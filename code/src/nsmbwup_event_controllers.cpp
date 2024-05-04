@@ -39,8 +39,8 @@
 // it accidentally cancels P-Switch music if any is playing when the
 // time expires.
 
-// More information on this type of bug can be found here:
-#include "nsmbwup_timed_events_canceling_p_switch_music.h"
+// More information on this type of bug can be found in
+// nsmbwup_timed_events_canceling_p_switch_music.h.
 
 #ifndef NSMBWUP_C01401_OFF
 // Zone Enter:
