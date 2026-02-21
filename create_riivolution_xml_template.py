@@ -48,7 +48,7 @@ def make_xml(args: argparse.Namespace) -> str:
     </options>
     <patch id="{PROJECT_SAFE_NAME}">
         <folder external="./" disc="/" create="true" recursive="true" />
-        $KX$
+        $KF$
     </patch>
 </wiidisc>
 """.strip('\n')
