@@ -43,8 +43,8 @@
 // Once frozen, the Climbing Koopa is no longer climbing its fence, and
 // falls to the ground along with the ice (daIce_c), with which it
 // shares an "ice manager" (dIceMng_c). The ice, while it's falling,
-// checks once per frame whether it's hit the ground. If it has, it
-// should shatter, so it spawns a coin and sets the ice manager's
+// checks once per frame whether it's hit the ground fast enough to
+// shatter. If it has, it spawns a coin and sets the ice manager's
 // destroy mode to "break".
 
 // The enemy is supposed to check the ice manager's destroy mode each
