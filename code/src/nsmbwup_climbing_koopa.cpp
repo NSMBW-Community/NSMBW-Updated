@@ -32,6 +32,10 @@
 
 #ifndef NSMBWUP_C01700_OFF
 
+// Ryguy was the first to create a patch for this bug. However, the
+// patch below -- including the deep-dive explanatory comments -- was
+// created independently by Meatball132 over a year later.
+
 // Climbing Koopas, when a flip panel is turning, change to the
 // state daNetEnemy_c::StateID_NetWait, or if "attached" to the panel,
 // to daNetEnemy_c::StateID_NetMove. If, however, a Climbing Koopa is
