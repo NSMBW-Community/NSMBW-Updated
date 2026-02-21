@@ -179,6 +179,12 @@ fixed-in: K, W, C
 The world map HUD animation for entering "View Map" mode is bugged
 
 --------
+C01700
+tags: F
+
+Climbing Koopas (sprites 125 and 126) frozen in ice don't shatter and start spawning infinite coins if they're in front of a flip panel when the player punches it.
+
+--------
 P00000
 fixed-in: K, W
 

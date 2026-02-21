@@ -66,5 +66,6 @@ ID | Description | Tags | Versions | Options
 **C01403** | Red Rings (sprite 156) that activate events cancel P-Switch music when the event expires | M | | on, off
 **C01500** | The unused Water Current Controller (sprite 243) applies a fixed rightward force to players with Penguin Suits, regardless of sprite settings | M | | on, off
 **C01600** | The world map HUD animation for entering "View Map" mode is bugged | | Fixed in: K, W, C | on, off
+**C01700** | Climbing Koopas (sprites 125 and 126) frozen in ice don't shatter and start spawning infinite coins if they're in front of a flip panel when the player punches it. | F | | on, off
 **P00000** | Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits | | Fixed in: K, W | on, off
 **P00100** | The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits | | Only in: C | on, off
