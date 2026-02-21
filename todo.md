@@ -38,7 +38,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * "If you groundpound a ? Block containing a star while other tiles are under it, the star comes out the top of the block but you can't collect it"
 * Upside-down swinging platforms can be stood on. (Fix should be applied to the line-collider code.)
 * Sprite ? blocks containing vines spawn mushrooms in multiplayer, because MP uses a different item-spawning function that doesn't include vines
-* The famous chain-link fence + frozen Koopas = infinite coin glitch ([patch available here](https://github.com/Ryguy0777/nsmbw-utils/blob/main/sprites/Shyguys/heiho_net.S#L45))
 * There's a gap between the flat and sloped collision parts of the purple screw mushroom platform, which can be clipped through
 * Jellybeams in non-darkness zones make a giant white rectangle ([patch available here](https://github.com/MandyIGuess/NewerSMBW-Modding/tree/master/Bugfixes/Jellybeam-Lighting))
 * [Sliding Penguin Mario can sometimes (?) collect coins behind a metal grate, while in front](https://cdn.discordapp.com/attachments/601539713169489932/1261394439369261260/coins.mp4?ex=66be4e1d&is=66bcfc9d&hm=d7d06a9da0f7c0fa00905240ea27ec84b419cfd948800fe9db7dc39efcb62e15&)
