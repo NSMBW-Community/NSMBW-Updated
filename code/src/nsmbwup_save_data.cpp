@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <kamek.h>
+#include <k_sdk/types.h>
 
 #include "nsmbwup_user_config.h"
 
@@ -37,13 +38,31 @@
 // other differences between different regions' savegames.
 
 // The bytes are checked one by one in dNandThread_c::load(). This patch
-// nops out the check for the fourth byte, so that files from any
-// region will pass the validation.
+// removes the check for the fourth byte, so that files from any region
+// will pass the validation.
 
-kmWrite32(0x800cf8a4, 0x60000000);  // nop
-kmWrite32(0x800cf8a8, 0x60000000);  // nop
-kmWrite32(0x800cf8ac, 0x60000000);  // nop
-kmWrite32(0x800cf8b0, 0x60000000);  // nop
-kmWrite32(0x800cf8b4, 0x60000000);  // nop
+// Nvidia changed this in the Shield release -- it now only checks the
+// first three bytes, so that version can already load savefiles from
+// other regions without any custom patches.
+
+#if IS_GAME_VERSION_DYNAMIC
+
+// Ideally we could do something like "kmBranchIfEq(0x800cf890, 0x800cf8cc)"
+// and the dynamic loader would be able to handle that automatically,
+// but that doesn't exist, so I think this is the closest we can do for now:
+
+extern "C" void load__13dNandThread_cFv__magic_check_success();
+
+kmBranchDefAsm(0x800cf890, NULL) {
+    bne fail
+    b load__13dNandThread_cFv__magic_check_success
+fail:
+}
+
+#elif GAME_REVISION < GAME_REVISION_C
+
+kmWrite32(0x800cf890, 0x4182003c);  // beq 0x800cf8cc
+
+#endif  // game version checks
 
 #endif  // !NSMBWUP_C00600_OFF
