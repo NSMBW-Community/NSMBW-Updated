@@ -185,6 +185,12 @@ tags: F
 Climbing Koopas (sprites 125 and 126) don't shatter and start spawning infinite coins if they're frozen when the player punches a flip panel.
 
 --------
+C01800
+tags: M
+
+The size setting for the Airship Nut Platform (sprite 295) is unfinished and doesn't work properly for sizes other than 6x2
+
+--------
 P00000
 fixed-in: K, W
 

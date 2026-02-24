@@ -67,5 +67,6 @@ ID | Description | Tags | Versions | Options
 **C01500** | The unused Water Current Controller (sprite 243) applies a fixed rightward force to players with Penguin Suits, regardless of sprite settings | M | | on, off
 **C01600** | The world map HUD animation for entering "View Map" mode is bugged | | Fixed in: K, W, C | on, off
 **C01700** | Climbing Koopas (sprites 125 and 126) don't shatter and start spawning infinite coins if they're frozen when the player punches a flip panel. | F | | on, off
+**C01800** | The size setting for the Airship Nut Platform (sprite 295) is unfinished and doesn't work properly for sizes other than 6x2 | M | | on, off
 **P00000** | Voice actress Caety Sagoian's name is misspelled as "Catey Sagoian" in the credits | | Fixed in: K, W | on, off
 **P00100** | The "SOUND EFFECTS" section is mis-titled as "SOUND EFFECT" in the credits | | Only in: C | on, off
