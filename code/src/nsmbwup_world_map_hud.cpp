@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <kamek.h>
+#include <k_sdk/types.h>
 
 #include "game_versions_nsmbw.h"
 #include "nsmbwup_common.h"

@@ -32,8 +32,8 @@
 
 #ifdef IS_GAME_VERSION_DYNAMIC
 
-u32 _nsmbwup_check_game_version() {
-    switch (*((u32*)0x800cf6cc))
+unsigned int _nsmbwup_check_game_version() {
+    switch (*((unsigned int*)0x800cf6cc))
     {
         case 0x40820030: return _NSMBWUP_GAME_REGION_P | _NSMBWUP_GAME_REVISION_V1;
         case 0x40820038: return _NSMBWUP_GAME_REGION_P | _NSMBWUP_GAME_REVISION_V2;
@@ -42,7 +42,7 @@ u32 _nsmbwup_check_game_version() {
         case 0x480000b4: return _NSMBWUP_GAME_REGION_J | _NSMBWUP_GAME_REVISION_V1;
         case 0x4082000c: return _NSMBWUP_GAME_REGION_J | _NSMBWUP_GAME_REVISION_V2;
         case 0x38a00001:
-            switch (*((u8*)0x8000423a))
+            switch (*((unsigned char*)0x8000423a))
             {
                 case 0xc8: return _NSMBWUP_GAME_REGION_K | _NSMBWUP_GAME_REVISION_K;
                 case 0xac: return _NSMBWUP_GAME_REGION_W | _NSMBWUP_GAME_REVISION_W;

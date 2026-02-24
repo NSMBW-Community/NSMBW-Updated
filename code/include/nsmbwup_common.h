@@ -62,7 +62,7 @@
 /// Returns 0 if it's not recognized.
 /// Doesn't check for P3/J3 (the Wii U eShop versions) -- these are
 /// returned as P2/J2, respectively.
-u32 _nsmbwup_check_game_version();
+unsigned int _nsmbwup_check_game_version();
 
 #endif  // IS_GAME_VERSION_DYNAMIC
 
