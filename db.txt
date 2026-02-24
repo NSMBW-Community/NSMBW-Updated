@@ -191,6 +191,18 @@ tags: M
 The size setting for the Airship Nut Platform (sprite 295) is unfinished and doesn't work properly for sizes other than 6x2
 
 --------
+C01900
+tags: M
+
+Tile collision checks on layers that don't contain any tiles crash the game
+
+--------
+C02000
+tags: E
+
+The game wastes memory by allocating every tile block that touches any zone, whether or not it actually contains any tiles
+
+--------
 P00000
 fixed-in: K, W
 
