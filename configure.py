@@ -264,7 +264,7 @@ CODE_ROOT_DIR = Path('code')
 CODE_NINJA_FILE = CODE_ROOT_DIR / 'build.ninja'
 CODE_TEMPLATE_REPO_DIR = CODE_ROOT_DIR / 'Kamek-Ninja-Template'
 CODE_CONFIGURE_SCRIPT = CODE_TEMPLATE_REPO_DIR / 'configure.py'
-CODE_CW_WINE_WRAPPER = CODE_TEMPLATE_REPO_DIR / 'mwcceppc_wine_wrapper.py'
+CODE_CW_WRAPPER = CODE_TEMPLATE_REPO_DIR / 'mwcceppc_wrapper.py'
 
 
 def make_code_rules(config: Config) -> str:
@@ -319,15 +319,10 @@ def make_code_rules(config: Config) -> str:
     # ------------------------------------------------------------------
     # Loader: we do handle this one manually
 
-    use_wine = (sys.platform != 'win32')
+    quote = '"' if sys.platform == 'win32' else "'"
 
-    quote = "'" if use_wine else '"'
-
-    if use_wine:
-        cc = CODE_CW_WINE_WRAPPER
-        cc = f"{ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
-    else:
-        cc = '$mwcceppc'
+    cc = CODE_CW_WRAPPER
+    cc = f"{ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
 
     lines.append(f"""
 mwcceppc = {ninja_escape(config.cw_exe)}
@@ -408,8 +403,7 @@ def make_credits_rules(config: Config) -> str:
     if not config.game_roots:
         return ''
 
-    use_wine = (sys.platform != 'win32')
-    quote = "'" if use_wine else '"'
+    quote = '"' if sys.platform == 'win32' else "'"
 
     lines = [f"""
 rule credits
@@ -460,8 +454,7 @@ def make_riivolution_xml_template_rules(config: Config) -> str:
     Create Ninja rules to build the Riivolution XML template
     """
 
-    use_wine = (sys.platform != 'win32')
-    quote = "'" if use_wine else '"'
+    quote = '"' if sys.platform == 'win32' else "'"
 
     return f"""
 rule riixml
