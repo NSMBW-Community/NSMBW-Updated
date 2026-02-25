@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import argparse
 from pathlib import Path
 import sys
 import subprocess
@@ -34,6 +33,10 @@ from typing import Any
 # an obscure feature with weird CLI syntax, and probably nobody uses it.
 ARGS_INDICATING_MAKEFILES = {'-Mfile', '-MMfile', '-MDfile', '-MMDfile'}
 ARGS_INDICATING_PATHS = {'-i', '-include', '-ir', *ARGS_INDICATING_MAKEFILES, '-o', '-precompile', '-prefix'}
+
+
+def is_windows():
+    return sys.platform == 'win32'
 
 
 def makefile_escape(thing: Any) -> str:
@@ -51,28 +54,32 @@ def makefile_unescape(thing: str) -> str:
     return str(thing).replace('\\ ', ' ').replace('\\\\', '\\')
 
 
-def winepath_u2w(unix_path: Path) -> str:
+def host_to_guest(path: Path) -> str:
     """
-    Call winepath on a Unix path, to convert it to an equivalent Windows
-    path
+    Convert a host path to a string CodeWarrior will be happy with
     """
-    return subprocess.check_output(
-        ['winepath', '-w', str(unix_path)],
-        encoding='utf-8',
-        stderr=subprocess.DEVNULL,
-    ).rstrip('\n')
+    if is_windows():
+        return str(path.resolve())
+    else:
+        return subprocess.check_output(
+            ['winepath', '-w', str(path)],
+            encoding='utf-8',
+            stderr=subprocess.DEVNULL,
+        ).rstrip('\n')
 
 
-def winepath_w2u(windows_path: str) -> Path:
+def guest_to_host(path_str: str) -> Path:
     """
-    Call winepath on a Windows path, to convert it to an equivalent Unix
-    path
+    Convert a path string from CodeWarrior to a path for the host system
     """
-    return Path(subprocess.check_output(
-        ['winepath', '-u', windows_path],
-        encoding='utf-8',
-        stderr=subprocess.DEVNULL,
-    ).rstrip('\n'))
+    if is_windows():
+        return Path(path_str)
+    else:
+        return Path(subprocess.check_output(
+            ['winepath', '-u', path_str],
+            encoding='utf-8',
+            stderr=subprocess.DEVNULL,
+        ).rstrip('\n'))
 
 
 def fix_makefile(text: str, filename: str) -> str:
@@ -95,11 +102,11 @@ def fix_makefile(text: str, filename: str) -> str:
                 line = line[:-2]
             line = line.rstrip()
 
-            o_file_win = makefile_unescape(line[:split_point])
-            cpp_file_win = makefile_unescape(line[split_point + 2 :])
+            o_file_guest = makefile_unescape(line[:split_point])
+            cpp_file_guest = makefile_unescape(line[split_point + 2 :])
 
-            o_file_host = winepath_w2u(o_file_win).resolve()
-            cpp_file_host = winepath_w2u(cpp_file_win).resolve()
+            o_file_host = guest_to_host(o_file_guest).resolve()
+            cpp_file_host = guest_to_host(cpp_file_guest).resolve()
 
             SPACE_BACKSLASH = ' \\'
             new_lines.append(f'{makefile_escape(o_file_host)}: {makefile_escape(cpp_file_host)}{SPACE_BACKSLASH if ends_with_slash else ""}')
@@ -113,8 +120,8 @@ def fix_makefile(text: str, filename: str) -> str:
                 line = line[:-2]
             line = line.rstrip()
 
-            h_file_win = makefile_unescape(line)
-            h_file_host = winepath_w2u(h_file_win).resolve()
+            h_file_guest = makefile_unescape(line)
+            h_file_host = guest_to_host(h_file_guest).resolve()
             SPACE_BACKSLASH = ' \\'
             new_lines.append(f'\t{makefile_escape(h_file_host)}{SPACE_BACKSLASH if ends_with_slash else ""}')
 
@@ -149,19 +156,22 @@ def main(argv=None):
             if prev_arg in ARGS_INDICATING_MAKEFILES:
                 makefile_paths.append(Path(arg))
 
-            argv[i] = winepath_u2w(arg)
+            argv[i] = host_to_guest(Path(arg))
 
         # I hate this, but I don't know how else to detect the .cpp, .c,
         # .S, etc. input file argument(s)
         elif Path(arg).is_file():
-            argv[i] = winepath_u2w(arg)
+            argv[i] = host_to_guest(Path(arg))
 
         # And a special case for "-I/path/to/include/dir"
         elif arg.startswith('-I') and arg != '-I-':
-            argv[i] = '-I' + winepath_u2w(arg[2:])
+            argv[i] = '-I' + host_to_guest(Path(arg[2:]))
 
     # Time to invoke CodeWarrior!
-    proc = subprocess.run(['wine', cw_exe, *argv])
+    cmd = [cw_exe, *argv]
+    if not is_windows():
+        cmd.insert(0, 'wine')
+    proc = subprocess.run(cmd)
     if proc.returncode != 0:
         exit(proc.returncode)
 

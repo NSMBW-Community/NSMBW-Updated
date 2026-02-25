@@ -35,6 +35,12 @@ As explained in the tutorial, `"builds"` is an object that uses version names fo
 
 Note that "every version must be included in some group" is intentionally *not* a rule. Omitting a version will result in the C++ file not being linked into that version's Kamek file at all.
 
+### Searching
+
+JSON metadata can be defined for individual C++ files, or for entire folders. For `/a/b/c/d.cpp`, JSON data will be read from `/a/b/c/d.json`, `/a/b/c.json`, `/a/b.json`, or `/a.json`, whichever one of those exists first (stopping at the source code root directory if no JSON files are found by then).
+
+If no JSON file is found at all, the default is equivalent to `{"json_version": 1}`.
+
 
 ## Preprocessor game version flag semantics
 
