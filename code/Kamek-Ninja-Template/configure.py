@@ -30,7 +30,7 @@ import sys
 from typing import Any, Dict, List, Optional, Set
 
 
-WINE_WRAPPER_SCRIPT_NAME = 'mwcceppc_wine_wrapper.py'
+CW_WRAPPER_SCRIPT_NAME = 'mwcceppc_wrapper.py'
 
 DEFAULT_BUILD_DIR_NAME = '_build'
 DEFAULT_OUTPUT_DIR_NAME = 'bin'
@@ -193,7 +193,7 @@ class TranslationUnit:
     # {"compile_for_this_version": {"for", "these", "build", "versions"}, ...}
     static_version_builds: Dict[str, Set[str]]
 
-    def __init__(self, cpp_file: Path, game_versions: List[str]) -> 'TranslationUnit':
+    def __init__(self, src_root_dir: Path, cpp_file: Path, game_versions: List[str]) -> 'TranslationUnit':
         """
         Create a TranslationUnit from a .cpp file path, including
         checking for the existence of a corresponding .json file
@@ -203,9 +203,17 @@ class TranslationUnit:
         self.use_static_version_builds = False
         self.static_version_builds = {}
 
-        json_file = cpp_file.with_suffix('.json')
-        if json_file.is_file():
-            self.read_config(json_file, game_versions)
+        inspect_path = cpp_file
+        while True:
+            json_path = inspect_path.with_suffix('.json')
+            if json_path.is_file():
+                self.read_config(json_path, game_versions)
+                return
+
+            if inspect_path == src_root_dir or inspect_path == inspect_path.parent:
+                break
+            else:
+                inspect_path = inspect_path.parent
 
     def read_config(self, path: Path, game_versions: List[str]) -> None:
         """
@@ -294,13 +302,12 @@ def make_ninja_file(config: Config) -> str:
     # Find all TUs, and read any configs
     tus = []
     for fp in sorted(config.get_src_dir().glob('**/*.cpp')):
-        tus.append(TranslationUnit(fp, config.get_version_names_list()))
+        tus.append(TranslationUnit(config.get_src_dir(), fp, config.get_version_names_list()))
 
-    use_wine = (sys.platform != 'win32')
     use_addrmap = config.have_address_map_txt()
     use_externals = config.have_externals_txt()
 
-    quote = "'" if use_wine else '"'
+    quote = '"' if sys.platform == 'win32' else "'"
 
     lines = []
     lines.append(f'# NOTE: "builddir" has special significance to Ninja (see the manual)')
@@ -308,11 +315,8 @@ def make_ninja_file(config: Config) -> str:
     lines.append(f'outdir = {ninja_escape(config.output_dir)}')
     lines.append(f'')
     lines.append(f'mwcceppc = {ninja_escape(config.cw_exe)}')
-    if use_wine:
-        cc = Path(__file__).parent / WINE_WRAPPER_SCRIPT_NAME
-        lines.append(f"cc = {ninja_escape(sys.executable)} '{ninja_escape(cc)}' '$mwcceppc'")
-    else:
-        lines.append('cc = "$mwcceppc"')
+    cc = Path(__file__).parent / CW_WRAPPER_SCRIPT_NAME
+    lines.append(f"cc = {ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}")
     lines.append(f'kamek = {ninja_escape(config.kamek_exe)}')
     lines.append(f'kstdlib = {ninja_escape(config.kstdlib_dir)}')
     if use_addrmap:
