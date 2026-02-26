@@ -34,10 +34,8 @@ configure.py's arguments logically fall into two categories: ones that describe 
 
 Required environment-configuration arguments include:
 
-* `--kamek KAMEK`: the Kamek binary ("Kamek.exe" on Windows, "Kamek" on other platforms)
-* `--kstdlib KSTDLIB`: Kamek's "k_stdlib" directory
-* `--cw MWCCEPPC`: CodeWarrior's "mwcceppc.exe"
-* `--loader-dir DIR`: the Kamek loader folder (should contain "kamekLoader.cpp" and "nsmbw.cpp")
+* `--kamek KAMEK`: the Kamek folder, containing the Kamek binary ("Kamek.exe" or "Kamek") and the k_stdlib directory
+* `--cw MWCCEPPC`: the CodeWarrior folder, containing mwcceppc.exe, mwasmeppc.exe, and license.dat, at minimum
 
 In addition, you should provide the paths to one or more extracted NSMBW root folders (a folder with "Effect", "Env", "HomeButton2", etc. subdirectories) with `--game-root DIR`. While you *can* build NSMBW-Updated without any, it's not recommended, because only the code patches can be built with this configuration. Providing at least one game root folder is required to build the patches for asset files, such as levels and tilesets.
 

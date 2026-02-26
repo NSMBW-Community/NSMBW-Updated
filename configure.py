@@ -48,8 +48,6 @@ RIIVO_DISC_STAGE = RIIVO_DISC_ROOT / 'Stage'
 
 RIIVO_XML = RIIVO_CONFIG_DIR / f'{PROJECT_SAFE_NAME}.xml'
 
-DEFAULT_LOADER_BASE_ADDR = 0x80001900
-
 
 ########################################################################
 ########################### Utility functions ##########################
@@ -100,11 +98,8 @@ class Config:
     Class that represents configuration options provided by the user
     """
     db: db_lib.Database
-    kamek_exe: Path
-    kstdlib_dir: Path
-    cw_exe: Path
-    loader_dir: Path
-    loader_base_addr: int
+    kamek_dir: Path
+    cw_dir: Path
     game_roots: Dict[str, Path]
 
     bugfixes_default: bool
@@ -121,17 +116,9 @@ class Config:
             help='the path to an extracted game root (with "Effect", "Env", "HomeButton2", etc. subdirectories).'
             ' You can specify this multiple times for different game versions, and the resulting Riivolution patch will include assets for all of them.')
         env_group.add_argument('--kamek', type=Path, required=True,
-            help='the Kamek binary ("Kamek.exe" on Windows, "Kamek" on other platforms)')
-        env_group.add_argument('--kstdlib', type=Path, required=True,
-            help='Kamek\'s "k_stdlib" directory')
-        env_group.add_argument('--cw', type=Path, metavar='MWCCEPPC', required=True,
-            help='CodeWarrior\'s "mwcceppc.exe"')
-        env_group.add_argument('--loader-dir', metavar='DIR', type=Path, required=True,
-            help='the path to the Kamek loader folder (should contain "kamekLoader.cpp" and "nsmbw.cpp")')
-
-        config_group = parser.add_argument_group('Build configuration')
-        config_group.add_argument('--loader-base-addr', metavar='ADDR', default=hex(DEFAULT_LOADER_BASE_ADDR),
-            help=f'loader base address (default: {DEFAULT_LOADER_BASE_ADDR:#08x})')
+            help='Kamek folder, containing the Kamek binary ("Kamek.exe" or "Kamek") and the k_stdlib directory')
+        env_group.add_argument('--cw', type=Path, metavar='CODEWARRIOR', required=True,
+            help='CodeWarrior folder, containing mwcceppc.exe, mwasmeppc.exe, and license.dat, at minimum')
 
         bugs_group = parser.add_argument_group('Bugfix selection')
         bugs_group.add_argument('--default', choices=('on', 'off'), default='on',
@@ -212,11 +199,8 @@ class Config:
 
         self = cls()
         self.db = db
-        self.kamek_exe = args.kamek.resolve()
-        self.kstdlib_dir = args.kstdlib.resolve()
-        self.cw_exe = args.cw.resolve()
-        self.loader_dir = args.loader_dir.resolve()
-        self.loader_base_addr = int(args.loader_base_addr, 16)
+        self.kamek_dir = args.kamek.resolve()
+        self.cw_dir = args.cw.resolve()
         self.game_roots = {k: v.resolve() for k, v in game_roots.items()}
         self.bugfixes_default = bugfixes_default
         self.bugfixes_default_by_tag = bugfixes_default_by_tag
@@ -249,10 +233,37 @@ class Config:
 
         return state
 
-    def get_xml_template_path(self) -> Path:
+    @property
+    def xml_template_path(self) -> Path:
         # This is an intermediate output path, so the exact choice here
         # doesn't matter as long as we're consistent.
         return BUILD_DIR / 'riivo_template.xml'
+
+    @property
+    def kamek_exe(self) -> Path:
+        if sys.platform == 'win32':
+            return self.kamek_dir / 'Kamek.exe'
+        else:
+            return self.kamek_dir / 'Kamek'
+
+    @property
+    def k_stdlib_dir(self) -> Path:
+        return self.kamek_dir / 'k_stdlib'
+
+    @property
+    def loader_dir(self) -> Path:
+        return self.kamek_dir / 'loader'
+
+    @property
+    def mwcceppc_exe(self) -> Path:
+        return self.cw_dir / 'mwcceppc.exe'
+
+    def get_loader_base_addr(self) -> int:
+        # This is a bit gross, but, eh, should be reliable enough, probably
+        build_nsmbw_sh = (self.loader_dir / 'build_nsmbw.sh').read_text()
+        static_idx = build_nsmbw_sh.index('-static')
+        addr_str = build_nsmbw_sh[static_idx + 8 : static_idx + 18]
+        return int(addr_str, 16)
 
 
 ########################################################################
@@ -264,7 +275,7 @@ CODE_ROOT_DIR = Path('code')
 CODE_NINJA_FILE = CODE_ROOT_DIR / 'build.ninja'
 CODE_TEMPLATE_REPO_DIR = CODE_ROOT_DIR / 'Kamek-Ninja-Template'
 CODE_CONFIGURE_SCRIPT = CODE_TEMPLATE_REPO_DIR / 'configure.py'
-CODE_CW_WRAPPER = CODE_TEMPLATE_REPO_DIR / 'mwcceppc_wrapper.py'
+CODE_CW_WRAPPER = CODE_TEMPLATE_REPO_DIR / 'cw_wrapper.py'
 
 
 def make_code_rules(config: Config) -> str:
@@ -294,9 +305,8 @@ def make_code_rules(config: Config) -> str:
 
     # Run the code template's separate configure.py script
     proc = subprocess.run([sys.executable, str(CODE_CONFIGURE_SCRIPT),
-        '--kamek', str(config.kamek_exe),
-        '--kstdlib', str(config.kstdlib_dir),
-        '--cw', str(config.cw_exe),
+        '--kamek', str(config.kamek_dir),
+        '--cw', str(config.cw_dir),
         '--project-dir', str(CODE_ROOT_DIR),
         '--output-dir', str(RIIVO_DISC_CODE),
         *[f'-DNSMBWUP_{bf}' for bf in sorted(bug_flags)],
@@ -325,12 +335,12 @@ def make_code_rules(config: Config) -> str:
     cc = f"{ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
 
     lines.append(f"""
-mwcceppc = {ninja_escape(config.cw_exe)}
+mwcceppc = {ninja_escape(config.mwcceppc_exe)}
 cc = {cc}
 kamek = {ninja_escape(config.kamek_exe)}
-kstdlib = {ninja_escape(config.kstdlib_dir)}
+kstdlib = {ninja_escape(config.k_stdlib_dir)}
 loaderdir = {ninja_escape(config.loader_dir)}
-loaderaddr = {config.loader_base_addr:#08x}
+loaderaddr = {config.get_loader_base_addr():#08x}
 
 cflags = $
   -I- $
@@ -347,22 +357,22 @@ cflags = $
   -RTTI off $
   -maxerrors 1
 
-rule cw
+rule mwcc
   command = $cc $cflags -c -o $out -MDfile $out.d $in
   depfile = $out.d
-  description = {ninja_escape(config.cw_exe.name)} -o $out_shortname $in_shortname
+  description = mwcceppc.exe -o $out_shortname $in_shortname
 """.strip('\n'))
 
     cpp_files = set(config.loader_dir.glob('*.cpp'))
 
-    # Add "cw" edges for all .cpp -> .o files
+    # Add "mwcc" edges for all .cpp -> .o files
     for cpp_file in cpp_files:
         # sanity check
         if cpp_file.name not in {'kamekLoader.cpp', 'nsmbw.cpp'}:
             print(f'WARNING: Unexpected loader cpp file "{cpp_file}"')
 
         o_file = cpp_file.with_suffix('.o')
-        lines.append(f'build {ninja_escape(o_file)}: cw {ninja_escape(cpp_file)}')
+        lines.append(f'build {ninja_escape(o_file)}: mwcc {ninja_escape(cpp_file)}')
         lines.append(f'  out_shortname = {ninja_escape(o_file.name)}')
         lines.append(f'  in_shortname = {ninja_escape(cpp_file.name)}')
 
@@ -377,7 +387,7 @@ rule kmstatic
     for cpp_file in cpp_files:
         o_file = cpp_file.with_suffix('.o')
         lines[-1] += f' {ninja_escape(o_file)}'
-    lines.append(f'  inxml = {ninja_escape(config.get_xml_template_path())}')
+    lines.append(f'  inxml = {ninja_escape(config.xml_template_path)}')
     lines.append(f'  outxml = $outdir/{ninja_escape(RIIVO_XML.relative_to(OUTPUT_DIR))}')
     lines.append(f'  outxml_filename = {ninja_escape(RIIVO_XML.name)}')
     lines.append(f'  outbin = {ninja_escape(RIIVO_DISC_CODE_LOADER)}')
@@ -461,7 +471,7 @@ rule riixml
   command = {quote}$py{quote} {ninja_escape(CREATE_RIIVOLUTION_XML_TEMPLATE_PY)} $out /{ninja_escape(PROJECT_SAFE_NAME)} {quote}--title={PROJECT_DISPLAY_NAME}{quote}
   description = Generating Riivolution XML template...
 
-build {ninja_escape(config.get_xml_template_path())}: riixml
+build {ninja_escape(config.xml_template_path)}: riixml
 """.strip('\n')
 
 
