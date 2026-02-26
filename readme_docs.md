@@ -17,7 +17,7 @@ See `configure.py -h`.
 
 The "project directory", provided to `configure.py` with the `--project-dir` argument, must have all of the following:
 
-* A `src` directory, which will be scanned recursively for C++ and JSON files *(required)*
+* A `src` directory, which will be scanned recursively for C++/assembly and JSON files *(required)*
 * An `include` directory, which will be used for local headers (CodeWarrior's lowercase `-i` argument) *(required)*
 * `address-map.txt` or `versions.txt`, which is Kamek's "versions file" (Kamek's `-versions` argument) *(optional)*
 * `externals.txt`, which is Kamek's "externals file" (Kamek's `-externals` argument) *(optional)*
@@ -33,11 +33,11 @@ As explained in the tutorial, `"builds"` is an object that uses version names fo
 * The version used as the key for each group must also be in the group itself
 * No versions appear in multiple groups
 
-Note that "every version must be included in some group" is intentionally *not* a rule. Omitting a version will result in the C++ file not being linked into that version's Kamek file at all.
+Note that "every version must be included in some group" is intentionally *not* a rule. Omitting a version will result in the C++ or assembly file not being linked into that version's Kamek file at all.
 
 ### Searching
 
-JSON metadata can be defined for individual C++ files, or for entire folders. For `/a/b/c/d.cpp`, JSON data will be read from `/a/b/c/d.json`, `/a/b/c.json`, `/a/b.json`, or `/a.json`, whichever one of those exists first (stopping at the source code root directory if no JSON files are found by then).
+JSON metadata can be defined for individual C++/assembly files, or for entire folders. For `/a/b/c/d.cpp`, JSON data will be read from `/a/b/c/d.json`, `/a/b/c.json`, `/a/b.json`, or `/a.json`, whichever one of those exists first (stopping at the source code root directory if no JSON files are found by then).
 
 If no JSON file is found at all, the default is equivalent to `{"json_version": 1}`.
 
@@ -46,7 +46,7 @@ If no JSON file is found at all, the default is equivalent to `{"json_version": 
 
 As stated in the tutorial, `IS_GAME_VERSION_DYNAMIC` indicates that the current translation unit should be built in a way compatible with every known game version, even if that requires adding runtime version detection. You should always check for this case when writing game-version preprocessor logic, but you're free to just `#error` if you don't want to implement it. As a suggestion, you may want to follow a policy of implementing it correctly in header files when possible, and not implementing it in source files.
 
-`IS_GAME_VERSION_{version}_COMPATIBLE`, on the other hand, means that you're allowed to assume that the game version at runtime will be `{version}` **or one that's equivalent to it the context relevant to your .cpp file** (the "context" being whatever version difference(s) is/are motivating your use of split compilation in the first place). As the admittedly verbose name tries to indicate, **it does NOT mean that the game version at runtime will necessarily ACTUALLY be `{version}`.** So for example, the following patch **could be incorrect** depending on the JSON file contents:
+`IS_GAME_VERSION_{version}_COMPATIBLE`, on the other hand, means that you're allowed to assume that the game version at runtime will be `{version}` **or one that's equivalent to it in the context relevant to your .cpp or .s file** (the "context" being whatever version difference(s) is/are motivating your use of split compilation in the first place). As the admittedly verbose name tries to indicate, **it does NOT mean that the game version at runtime will necessarily ACTUALLY be `{version}`.** So for example, the following patch **could be incorrect** depending on the JSON file contents:
 
 ```cpp
 #ifdef IS_GAME_VERSION_P1_COMPATIBLE
@@ -62,4 +62,6 @@ The value being written (`0x80afdcb0`) is a pointer that's only correct for the 
 
 ## Wine
 
-Wine is used to run CodeWarrior on non-Windows systems. This is implemented with the `mwcceppc_wine_wrapper.py` wrapper script, which translates host paths to guest paths in CLI arguments and guest paths to host paths in Makefile outputs ("`.d`" files that define header dependencies).
+Wine is used to run CodeWarrior on non-Windows systems. This is implemented with the `cw_wrapper.py` wrapper script, which translates host paths to guest paths in CLI arguments and guest paths to host paths in Makefile outputs ("`.d`" files that define header dependencies).
+
+The wrapper script is used on Windows, too, by the way, because CodeWarrior's Makefiles aren't otherwise entirely compatible with the way the build system uses Ninja.
