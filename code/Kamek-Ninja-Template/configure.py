@@ -30,7 +30,9 @@ import sys
 from typing import Any, Dict, List, Optional, Set
 
 
-CW_WRAPPER_SCRIPT_NAME = 'mwcceppc_wrapper.py'
+MWCCEPPC_NAME = 'mwcceppc.exe'
+MWASMEPPC_NAME = 'mwasmeppc.exe'
+CW_WRAPPER_SCRIPT_NAME = 'cw_wrapper.py'
 
 DEFAULT_BUILD_DIR_NAME = '_build'
 DEFAULT_OUTPUT_DIR_NAME = 'bin'
@@ -52,9 +54,8 @@ class Config:
     """
     Contains configuration options provided by the user
     """
-    kamek_exe: Path
-    kstdlib_dir: Path
-    cw_exe: Path
+    kamek_dir: Path
+    cw_dir: Path
     project_dir: Path
     build_dir: Path
     output_dir: Path
@@ -71,15 +72,11 @@ class Config:
             allow_abbrev=False,
             **kwargs)
 
-        km_group = parser.add_argument_group('Kamek location')
-        km_group.add_argument('--kamek', type=Path, required=True,
-            help='the Kamek binary ("Kamek.exe" on Windows, "Kamek" on other platforms)')
-        km_group.add_argument('--kstdlib', type=Path, required=True,
-            help='Kamek\'s "k_stdlib" directory')
-
-        cw_group = parser.add_argument_group('CodeWarrior location')
-        cw_group.add_argument('--cw', type=Path, metavar='MWCCEPPC', required=True,
-            help='CodeWarrior\'s "mwcceppc.exe"')
+        deps_group = parser.add_argument_group('Dependency locations')
+        deps_group.add_argument('--kamek', type=Path, required=True,
+            help='Kamek folder, containing the Kamek binary ("Kamek.exe" or "Kamek") and the k_stdlib directory')
+        deps_group.add_argument('--cw', type=Path, metavar='CODEWARRIOR', required=True,
+            help=f'CodeWarrior folder, containing {MWCCEPPC_NAME}, {MWASMEPPC_NAME}, and license.dat, at minimum')
 
         proj_group = parser.add_argument_group('Project location')
         proj_group.add_argument('--project-dir', type=Path, metavar='PROJECT',
@@ -105,9 +102,8 @@ class Config:
         project_dir = args.project_dir or Path.cwd()
 
         self = cls()
-        self.kamek_exe = args.kamek.resolve()
-        self.kstdlib_dir = args.kstdlib.resolve()
-        self.cw_exe = args.cw.resolve()
+        self.kamek_dir = args.kamek.resolve()
+        self.cw_dir = args.cw.resolve()
         self.project_dir = project_dir.resolve()
         self.select_versions = args.select_version or None
         self.build_dir = (args.build_dir or project_dir / DEFAULT_BUILD_DIR_NAME).resolve()
@@ -122,13 +118,35 @@ class Config:
 
         return self
 
-    def get_src_dir(self) -> Path:
+    @property
+    def kamek_exe(self) -> Path:
+        if sys.platform == 'win32':
+            return self.kamek_dir / 'Kamek.exe'
+        else:
+            return self.kamek_dir / 'Kamek'
+
+    @property
+    def k_stdlib_dir(self) -> Path:
+        return self.kamek_dir / 'k_stdlib'
+
+    @property
+    def mwcceppc_exe(self) -> Path:
+        return self.cw_dir / MWCCEPPC_NAME
+
+    @property
+    def mwasmeppc_exe(self) -> Path:
+        return self.cw_dir / MWASMEPPC_NAME
+
+    @property
+    def src_dir(self) -> Path:
         return self.project_dir / 'src'
 
-    def get_include_dir(self) -> Path:
+    @property
+    def include_dir(self) -> Path:
         return self.project_dir / 'include'
 
-    def get_address_map_txt(self) -> Path:
+    @property
+    def address_map_txt(self) -> Path:
         fp1 = self.project_dir / 'address-map.txt'
         fp2 = self.project_dir / 'versions.txt'
         if fp2.is_file() and not fp1.is_file():
@@ -137,15 +155,17 @@ class Config:
             return fp1
 
     def have_address_map_txt(self) -> bool:
-        return self.get_address_map_txt().is_file()
+        return self.address_map_txt.is_file()
 
-    def get_externals_txt(self) -> Path:
+    @property
+    def externals_txt(self) -> Path:
         return self.project_dir / 'externals.txt'
 
     def have_externals_txt(self) -> bool:
-        return self.get_externals_txt().is_file()
+        return self.externals_txt.is_file()
 
-    def get_ninja_file(self) -> Path:
+    @property
+    def ninja_file(self) -> Path:
         return self.project_dir / 'build.ninja'
 
     _version_names_list = None
@@ -154,7 +174,7 @@ class Config:
             if self.have_address_map_txt():
                 self._version_names_list = \
                     get_version_names_list_from_address_map(
-                        self.get_address_map_txt())
+                        self.address_map_txt)
             else:
                 self._version_names_list = []
         return list(self._version_names_list)
@@ -185,25 +205,25 @@ def get_version_names_list_from_address_map(path: Path) -> List[str]:
 
 class TranslationUnit:
     """
-    Represents one translation unit (.cpp file)
+    Represents one translation unit (.cpp or .s file)
     """
-    cpp_file: Path
+    source_file: Path
 
     use_static_version_builds: bool
     # {"compile_for_this_version": {"for", "these", "build", "versions"}, ...}
     static_version_builds: Dict[str, Set[str]]
 
-    def __init__(self, src_root_dir: Path, cpp_file: Path, game_versions: List[str]) -> 'TranslationUnit':
+    def __init__(self, src_root_dir: Path, source_file: Path, game_versions: List[str]) -> 'TranslationUnit':
         """
         Create a TranslationUnit from a .cpp file path, including
         checking for the existence of a corresponding .json file
         """
         super().__init__()
-        self.cpp_file = cpp_file
+        self.source_file = source_file
         self.use_static_version_builds = False
         self.static_version_builds = {}
 
-        inspect_path = cpp_file
+        inspect_path = source_file
         while True:
             json_path = inspect_path.with_suffix('.json')
             if json_path.is_file():
@@ -214,6 +234,9 @@ class TranslationUnit:
                 break
             else:
                 inspect_path = inspect_path.parent
+
+    def is_cpp(self) -> bool:
+        return self.source_file.suffix.lower() == '.cpp'
 
     def read_config(self, path: Path, game_versions: List[str]) -> None:
         """
@@ -291,7 +314,7 @@ class TranslationUnit:
             # We can use just ".o" instead of ".dynamic.o"
             suffix = '.o'
 
-        return config.build_dir / self.cpp_file.relative_to(config.get_src_dir()).with_suffix(suffix)
+        return config.build_dir / self.source_file.relative_to(config.src_dir).with_suffix(suffix)
 
 
 def make_ninja_file(config: Config) -> str:
@@ -301,8 +324,9 @@ def make_ninja_file(config: Config) -> str:
 
     # Find all TUs, and read any configs
     tus = []
-    for fp in sorted(config.get_src_dir().glob('**/*.cpp')):
-        tus.append(TranslationUnit(config.get_src_dir(), fp, config.get_version_names_list()))
+    for glob in ['**/*.cpp', '**/*.s']:
+        for fp in sorted(config.src_dir.glob(glob, case_sensitive=False)):
+            tus.append(TranslationUnit(config.src_dir, fp, config.get_version_names_list()))
 
     use_addrmap = config.have_address_map_txt()
     use_externals = config.have_externals_txt()
@@ -314,24 +338,30 @@ def make_ninja_file(config: Config) -> str:
     lines.append(f'builddir = {ninja_escape(config.build_dir)}')
     lines.append(f'outdir = {ninja_escape(config.output_dir)}')
     lines.append(f'')
-    lines.append(f'mwcceppc = {ninja_escape(config.cw_exe)}')
-    cc = Path(__file__).parent / CW_WRAPPER_SCRIPT_NAME
-    lines.append(f"cc = {ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}")
+    lines.append(f'mwcceppc = {ninja_escape(config.mwcceppc_exe)}')
+    lines.append(f'mwasmeppc = {ninja_escape(config.mwasmeppc_exe)}')
+    cw_wrapper = Path(__file__).parent / CW_WRAPPER_SCRIPT_NAME
+    lines.append(f"cc = {ninja_escape(sys.executable)} {quote}{ninja_escape(cw_wrapper)}{quote} {quote}$mwcceppc{quote}")
+    lines.append(f"as = {ninja_escape(sys.executable)} {quote}{ninja_escape(cw_wrapper)}{quote} {quote}$mwasmeppc{quote}")
     lines.append(f'kamek = {ninja_escape(config.kamek_exe)}')
-    lines.append(f'kstdlib = {ninja_escape(config.kstdlib_dir)}')
+    lines.append(f'kstdlib = {ninja_escape(config.k_stdlib_dir)}')
     if use_addrmap:
-        lines.append(f'addrmap = {ninja_escape(config.get_address_map_txt())}')
+        lines.append(f'addrmap = {ninja_escape(config.address_map_txt)}')
     if use_externals:
-        lines.append(f'externals = {ninja_escape(config.get_externals_txt())}')
-    lines.append(f'includedir = {ninja_escape(config.get_include_dir())}')
+        lines.append(f'externals = {ninja_escape(config.externals_txt)}')
+    lines.append(f'includedir = {ninja_escape(config.include_dir)}')
     lines.append(f'')
 
     dumb_constant = ' $\n  '  # backslashes aren't allowed in f-strings
     lines.append(f"""
-cflags = $
+shared_flags = $
   -I- $
   -i {quote}$kstdlib{quote} $
   -i {quote}$includedir{quote} $
+  -maxerrors 1
+
+cflags = $
+  $shared_flags $
   -Cpp_exceptions off $
   -enum int $
   -O4,s $
@@ -340,23 +370,33 @@ cflags = $
   -rostr $
   -sdata 0 $
   -sdata2 0 $
-  -RTTI off{(dumb_constant + ' '.join(config.extra_cflags)) if config.extra_cflags else ''} $
-  -maxerrors 1
+  -RTTI off{(dumb_constant + ' '.join(config.extra_cflags)) if config.extra_cflags else ''}
 
-rule cw
+asflags = $shared_flags
+
+rule mwcc
   command = $cc $cflags -c -o $out -MDfile $out.d $in
   depfile = $out.d
-  description = {ninja_escape(config.cw_exe.name)} -o $out_filename $in_filename
+  description = {config.mwcceppc_exe.name} -o $out_filename $in_filename
+
+rule mwasm
+  command = $as $asflags -c -o $out -MDfile $out.d $in
+  depfile = $out.d
+  description = {config.mwasmeppc_exe.name} -o $out_filename $in_filename
 """.strip('\n'))
 
-    # Add "cw" edges for all .cpp -> .o files
+    # Add "mwcc" and "mwasm" edges for all (.cpp or .s) -> .o files
     lines.append('')
     for tu in tus:
         for preproc_flag, o_file in tu.iter_builds(config):
-            lines.append(f'build {ninja_escape(o_file)}: cw {ninja_escape(tu.cpp_file)}')
-            lines.append(f'  cflags = $cflags -D{preproc_flag}')
+            if tu.is_cpp():
+                lines.append(f'build {ninja_escape(o_file)}: mwcc {ninja_escape(tu.source_file)}')
+                lines.append(f'  cflags = $cflags -D{preproc_flag}')
+            else:
+                lines.append(f'build {ninja_escape(o_file)}: mwasm {ninja_escape(tu.source_file)}')
+                lines.append(f'  asflags = $asflags -D{preproc_flag}')
             lines.append(f'  out_filename = {ninja_escape(o_file.relative_to(config.build_dir))}')
-            lines.append(f'  in_filename = {ninja_escape(tu.cpp_file.relative_to(config.get_src_dir()))}')
+            lines.append(f'  in_filename = {ninja_escape(tu.source_file.relative_to(config.src_dir))}')
             lines.append('')
 
     rule_command = f"{quote}$kamek{quote} $in -quiet -dynamic"
@@ -412,7 +452,7 @@ def main(argv=None) -> None:
     config = Config.from_args(args, extra_args)
 
     txt = make_ninja_file(config)
-    ninja_fp = config.get_ninja_file()
+    ninja_fp = config.ninja_file
     ninja_fp.write_text(txt, encoding='utf-8')
 
 
