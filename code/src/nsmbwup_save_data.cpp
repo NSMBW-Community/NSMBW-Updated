@@ -61,8 +61,6 @@ fail:
 
 #elif GAME_REVISION < GAME_REVISION_C
 
-kmWrite32(0x800cf890, 0x4182003c);  // beq 0x800cf8cc
-
 #endif  // game version checks
 
 #endif  // !NSMBWUP_C00600_OFF
