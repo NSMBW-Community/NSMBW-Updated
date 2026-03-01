@@ -195,7 +195,7 @@ C01900
 tags: M
 only-in: C
 
-Tilt Lifts trigger an invalid memory read (and potentially crash the game) when playing the Chinese NVIDIA SHIELD TV version outside NVIDIA's emulator.
+Tilt Lifts trigger an invalid memory read (and potentially crash the game) when playing the Chinese NVIDIA SHIELD TV version outside of NVIDIA's emulator
 
 --------
 P00000

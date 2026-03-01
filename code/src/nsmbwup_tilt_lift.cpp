@@ -72,12 +72,13 @@
 #if IS_GAME_VERSION_DYNAMIC || (GAME_REVISION >= GAME_REVISION_C)
 
 extern "C" void executeState_Move__21daLiftRemoconSeesaw_cFv__isValidPlayer_checkFail();
+
 #ifdef IS_GAME_VERSION_DYNAMIC
 static asm void executeState_Move_activePlayerCheck() {
 #else
-// Note that the addresses are mapped +0x10000000 to work around
-// the inability to tell Kamek that a particular address is for a
-// different base address than the rest of the addresses
+// Note that the addresses are mapped +0x10000000 to work around the
+// inability to tell Kamek that a particular address is for a different
+// base address than the rest of the addresses
 kmBranchDefAsm(0x9084417c, 0x90844180) {
 #endif  // IS_GAME_VERSION_DYNAMIC
     nofralloc
@@ -90,6 +91,7 @@ checkPass:
 };
 
 #ifdef IS_GAME_VERSION_DYNAMIC
+
 class daLiftRemoconSeesaw_c;
 
 kmBranchDefCpp(0x8083ee78, NULL, daLiftRemoconSeesaw_c*, daLiftRemoconSeesaw_c *this_) {
@@ -107,9 +109,9 @@ kmBranchDefCpp(0x8083ee78, NULL, daLiftRemoconSeesaw_c*, daLiftRemoconSeesaw_c *
 
     return this_;
 }
+
 #endif  // IS_GAME_VERSION_DYNAMIC
 
 #endif  // IS_GAME_VERSION_DYNAMIC || (GAME_REVISION >= GAME_REVISION_C)
-
 
 #endif  // !NSMBWUP_C01900_OFF
