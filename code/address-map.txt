@@ -278,7 +278,8 @@ extend P1
 8076849c-8076849f: +0x3c  # WIIMJ2DNP.str
 807684a0-807aaa30: +0x40  # ==== BEGIN d_basesNP.text ==== .. FUN_P1_807aaa30
 807aaa6c-809907ff: +0x10  # (prev) .. ==== BEGIN area between d_basesNP.rodata and d_basesNP.bss ====
-80990800-*: +0x20
+80990800-8fffffff: +0x20
+90000000-*: +0x0
 
 [E2]
 # North American NSMBW v2 (SMNE01 rev 2)
@@ -1246,7 +1247,8 @@ extend P2
 80b30564-80b3056b: +0x55c8  # ...
 80b3056c-80b3056f: +0x55cc  # ...
 80b30570-80b89aaf: +0x55d0  # ==== BEGIN area between d_en_bossNP.rodata and d_en_bossNP.bss ====
-80b89ac0-*: +0x55c0
+80b89ac0-8fffffff: +0x55c0
+90000000-*: +0x0
 
 [W]
 # Taiwanese NSMBW (SMNW01)
@@ -1301,7 +1303,8 @@ extend K
 80951278-80951b6b: -0x80
 80951b74-80952683: -0x88
 8095268c-809957df: -0x90  # ==== BEGIN area between d_basesNP.rodata and d_basesNP.bss ====
-809957e0-*: -0x80
+809957e0-8fffffff: -0x80
+90000000-*: +0x0
 
 [C]
 # Nvidia Shield TV NSMBW for Mainland China (SMNC01)
@@ -2376,4 +2379,5 @@ extend W
 80b16980-80b1ffdf: +0x840  # ==== BEGIN d_enemiesNP.bss ====
 # New symbol: DAT_C_80b20820
 80b1ffe0-80b21e67: +0x848  # ==== BEGIN area between d_enemiesNP.rel and d_en_bossNP.rel ====
-80b21e70-*: +0x840
+80b21e70-8fffffff: +0x840
+90000000-*: -0x10000000    # Workaround for C01900
