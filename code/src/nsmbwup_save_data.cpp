@@ -53,7 +53,7 @@
 
 extern "C" void load__13dNandThread_cFv__magic_check_success();
 
-kmBranchDefAsm(0x800cf890, NULL) {
+kmBranchDefAsm(0x800cf890, 0x800cf894) {
     bne fail
     b load__13dNandThread_cFv__magic_check_success
 fail:
