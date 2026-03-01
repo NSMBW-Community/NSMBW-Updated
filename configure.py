@@ -26,7 +26,7 @@ import argparse
 from pathlib import Path
 import subprocess
 import sys
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import db as db_lib
 from nsmbw_constants import LANG_FOLDER_NAMES
@@ -54,7 +54,7 @@ RIIVO_XML = RIIVO_CONFIG_DIR / f'{PROJECT_SAFE_NAME}.xml'
 ########################################################################
 
 
-def detect_game_version(root: Path) -> Optional[str]:
+def detect_game_version(root: Path) -> str | None:
     """
     Detect the game version at the specified path.
     """
@@ -100,11 +100,11 @@ class Config:
     db: db_lib.Database
     kamek_dir: Path
     cw_dir: Path
-    game_roots: Dict[str, Path]
+    game_roots: dict[str, Path]
 
     bugfixes_default: bool
-    bugfixes_default_by_tag: List[Tuple[db_lib.DatabaseEntryTag, bool]]
-    bugfixes_individual: Dict[str, Union[bool, str]]
+    bugfixes_default_by_tag: list[tuple[db_lib.DatabaseEntryTag, bool]]
+    bugfixes_individual: dict[str, bool | str]
 
     @staticmethod
     def set_up_arg_parser(db: db_lib.Database, parser: argparse.ArgumentParser) -> None:
@@ -207,7 +207,7 @@ class Config:
         self.bugfixes_individual = bugfixes_individual
         return self
 
-    def get_selected_bugfixes(self) -> Dict[str, Union[bool, str]]:
+    def get_selected_bugfixes(self) -> dict[str, bool | str]:
         """
         Flatten the info from the CLI args into a single dict that lists
         all bugfixes to be applied.
@@ -515,7 +515,7 @@ bugs = {' '.join(sorted(bug_items))}
     return txt + '\n'
 
 
-def main(argv=None) -> None:
+def main(argv: list[str] | None = None) -> None:
     """
     Main function
     """
