@@ -191,6 +191,13 @@ tags: M
 The size setting for the Airship Nut Platform (sprite 295) is unfinished and doesn't work properly for sizes other than 6x2
 
 --------
+C01900
+tags: M
+only-in: C
+
+Tilt Lifts trigger an invalid memory read (and potentially crash the game) when playing the Chinese NVIDIA SHIELD TV version outside NVIDIA's emulator.
+
+--------
 P00000
 fixed-in: K, W
 

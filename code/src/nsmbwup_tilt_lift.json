@@ -1,0 +1,6 @@
+{
+    "json_version": 1,
+    "builds": {
+        "C": ["C"]
+    }
+}
