@@ -26,7 +26,6 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Move-When-On platforms support different movement directions, but the texture apparently doesn't update correctly with those settings
 * Some things (icicles, held Mecha-koopas, ...) can kill King Bills
 * Banzai Bills have messed-up collision shapes ([video](https://cdn.discordapp.com/attachments/617856709423136799/982280695680483348/SMNP01_2022-06-03_15-51-07_1.mp4))
-* The China 1-2 null-pointer crash
 * Checkpoint Flag multiple-checkpoints multiplayer bug [(explained on TCRF)](https://tcrf.net/New_Super_Mario_Bros._Wii/Unused_Objects#Checkpoint_Flag)
 * Port [Meatball's GAKENOKO fix](https://github.com/Meatball132/NSMBW_GAKENOKO_fix)
 * There's some bug relating to Cooligan movement speed when they spawn in water vs enter it (see AnotherSMBW 3-3, when you exit the pipe after star coin 1)
