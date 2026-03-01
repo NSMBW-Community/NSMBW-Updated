@@ -21,7 +21,10 @@
 // SOFTWARE.
 
 #include <kamek.h>
+#include <k_sdk/types.h>
 
+#include "game_versions_nsmbw.h"
+#include "nsmbwup_common.h"
 #include "nsmbwup_user_config.h"
 
 
@@ -66,21 +69,47 @@
 // To fix this, we just fail NVIDIA's Classic Controller condition
 // early if the active Tilt Lift player is -1.
 
-#if !IS_GAME_VERSION_DYNAMIC || (GAME_REVISION == GAME_REVISION_C)
-extern "C" void executeState_Move__21daLiftRemoconSeesaw_cFv__isValidPlayer_checkFail();
+#if IS_GAME_VERSION_DYNAMIC || (GAME_REVISION >= GAME_REVISION_C)
 
+extern "C" void executeState_Move__21daLiftRemoconSeesaw_cFv__isValidPlayer_checkFail();
+#ifdef IS_GAME_VERSION_DYNAMIC
+static asm void executeState_Move_activePlayerCheck() {
+#else
 // Note that the addresses are mapped +0x10000000 to work around
 // the inability to tell Kamek that a particular address is for a
 // different base address than the rest of the addresses
 kmBranchDefAsm(0x9084417c, 0x90844180) {
+#endif  // IS_GAME_VERSION_DYNAMIC
     nofralloc
-    extsb. r0, r0 // Restore original instruction, but with dot to update CR0
+    extsb. r0, r0  // Restore original instruction, but with dot to update CR0
     bge checkPass
     // Check fails if r0 (this->mActivePlayer) is negative
     b executeState_Move__21daLiftRemoconSeesaw_cFv__isValidPlayer_checkFail
 checkPass:
     blr
 };
-#endif  // !IS_GAME_VERSION_DYNAMIC || (GAME_REVISION == GAME_REVISION_C)
+
+#ifdef IS_GAME_VERSION_DYNAMIC
+class daLiftRemoconSeesaw_c;
+
+kmBranchDefCpp(0x8083ee78, NULL, daLiftRemoconSeesaw_c*, daLiftRemoconSeesaw_c *this_) {
+    u32 version = _nsmbwup_check_game_version();
+
+    // Since the condition is >=, no need to check that it's also != 0
+    if (_NSMBWUP_GET_GAME_REVISION(version) >= _NSMBWUP_GAME_REVISION_C) {
+        u32 b_src = 0x8084417c;  // Correct for C
+        u32 inst = _NSMBWUP_ASSEMBLE_BRANCH(
+            b_src,
+            (u32)&executeState_Move_activePlayerCheck
+        );
+        *((u32*)b_src) = inst;
+    }
+
+    return this_;
+}
+#endif  // IS_GAME_VERSION_DYNAMIC
+
+#endif  // IS_GAME_VERSION_DYNAMIC || (GAME_REVISION >= GAME_REVISION_C)
+
 
 #endif  // !NSMBWUP_C01900_OFF
