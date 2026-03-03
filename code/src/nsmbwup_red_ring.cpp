@@ -38,6 +38,6 @@
 // More information on this type of bug can be found in
 // nsmbwup_timed_events_canceling_p_switch_music.h.
 
-kmWrite32(0x80a93034, 0x39200001);  // li r9, 1
+kmWriteDefAsm(0x80a93034) { nofralloc; li r9, 1 }
 
 #endif  // !NSMBWUP_C01403_OFF

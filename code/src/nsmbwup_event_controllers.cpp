@@ -44,14 +44,14 @@
 
 #ifndef NSMBWUP_C01401_OFF
 // Zone Enter:
-kmWrite32(0x807eb210, 0x39200001);  // li r9, 1
-kmWrite32(0x807eb248, 0x39200001);  // li r9, 1
+kmWriteDefAsm(0x807eb210) { nofralloc; li r9, 1 }
+kmWriteDefAsm(0x807eb248) { nofralloc; li r9, 1 }
 #endif  // !NSMBWUP_C01401_OFF
 
 #ifndef NSMBWUP_C01402_OFF
 // Chainer:
-kmWrite32(0x807ebaa0, 0x39200001);  // li r9, 1
-kmWrite32(0x807ebac8, 0x39200001);  // li r9, 1
-kmWrite32(0x807ebb28, 0x39200001);  // li r9, 1
-kmWrite32(0x807ebb50, 0x39200001);  // li r9, 1
+kmWriteDefAsm(0x807ebaa0) { nofralloc; li r9, 1 }
+kmWriteDefAsm(0x807ebac8) { nofralloc; li r9, 1 }
+kmWriteDefAsm(0x807ebb28) { nofralloc; li r9, 1 }
+kmWriteDefAsm(0x807ebb50) { nofralloc; li r9, 1 }
 #endif  // !NSMBWUP_C01402_OFF
