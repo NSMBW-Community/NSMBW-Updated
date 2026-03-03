@@ -49,7 +49,7 @@
 //   the only one where the blocks and coins end up upside-down.)
 // The stages should be modified (under this same bug ID) to compensate.
 
-kmWrite32(0x809e55f4, 0x3860c000);  // li r3, -0x4000
-kmWrite32(0x809e560c, 0x3860c000);  // li r3, -0x4000
+kmWriteDefAsm(0x809e55f4) { li r3, -0x4000 }
+kmWriteDefAsm(0x809e560c) { li r3, -0x4000 }
 
 #endif  // !NSMBWUP_C00002_OFF
