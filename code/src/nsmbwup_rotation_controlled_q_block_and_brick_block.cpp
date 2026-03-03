@@ -47,7 +47,7 @@
 //   of the stage.
 // The stages should be modified (under this same bug ID) to compensate.
 
-kmWriteDefAsm(0x809c15c4) { nofralloc; li r3, -0x4000 }
-kmWriteDefAsm(0x809c15dc) { nofralloc; li r3, -0x4000 }
+kmWriteDefAsm(0x809c15c4) { li r3, -0x4000 }
+kmWriteDefAsm(0x809c15dc) { li r3, -0x4000 }
 
 #endif  // !NSMBWUP_C00003_OFF

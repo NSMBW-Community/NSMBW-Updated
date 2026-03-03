@@ -38,7 +38,7 @@
 // More information on this type of bug can be found in
 // nsmbwup_rotation_controlled_actors_starting_rotation.h.
 
-kmWriteDefAsm(0x80a7b558) { nofralloc; li r3, -0x4000 }
-kmWriteDefAsm(0x80a7b570) { nofralloc; li r3, -0x4000 }
+kmWriteDefAsm(0x80a7b558) { li r3, -0x4000 }
+kmWriteDefAsm(0x80a7b570) { li r3, -0x4000 }
 
 #endif  // !NSMBWUP_C00001_OFF

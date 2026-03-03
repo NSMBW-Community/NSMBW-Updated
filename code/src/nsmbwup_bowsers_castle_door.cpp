@@ -57,6 +57,6 @@
 // category. Note that both the code being patched and the patch itself
 // rely on the fact that these three profile IDs are sequential.
 
-kmWriteDefAsm(0x8013f41c) { nofralloc; cmplwi r0, 2 }
+kmWriteDefAsm(0x8013f41c) { cmplwi r0, 2 }
 
 #endif  // !NSMBWUP_C00700_OFF
