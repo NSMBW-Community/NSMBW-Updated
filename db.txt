@@ -198,6 +198,18 @@ only-in: C
 Tilt Lifts trigger an invalid memory read (and potentially crash the game) when playing the Chinese NVIDIA SHIELD TV version outside of NVIDIA's emulator
 
 --------
+C02000
+tags: M
+
+Tile collision checks on layers that don't contain any tiles crash the game
+
+--------
+C02100
+tags: E
+
+The game wastes memory by allocating every tile block that touches any zone, whether or not it actually contains any tiles
+
+--------
 P00000
 fixed-in: K, W
 
