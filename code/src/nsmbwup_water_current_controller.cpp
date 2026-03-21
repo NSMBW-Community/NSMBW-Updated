@@ -68,8 +68,6 @@
 // unchanged and replace 80131404 with fmr f0, f5 instead of with nop.
 
 kmWrite8(0x80131401, 0xa3);         // "lfs f0, OFFSET(r3)" -> "lfs f5, OFFSET(r3)"
-kmWrite32(0x80131404, 0x60000000);  // nop
-kmWrite32(0x80131408, 0x60000000);  // nop
-kmWrite32(0x8013140c, 0x60000000);  // nop
+kmWriteNops(0x80131404, 0x8013140c);
 
 #endif  // !NSMBWUP_C01500_OFF
