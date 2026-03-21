@@ -48,6 +48,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * [Pipe Cannons use your last terminal velocity as your terminal velocity instead of the normal terminal velocity](https://cdn.discordapp.com/attachments/774479587701686283/1330696301192675339/2025-01-19_18-22-20.mp4?ex=678eeb01&is=678d9981&hm=8cab054c43ad9c3704af47d549187c5bb33b1d078a770f6390ad05d6f551b9e5&), so you fall slower if you propeller-flutter into the cannon, and faster if you propeller-drill into it
 * Stretching mushrooms' spawn area rectangle is not tall enough, so they despawn if the camera is too high while they (should) be on-screen
 * From RootCubed: "Nintendo forgot to hide the "world number" textbox [in the pause menu] when in a coin battle coin course. This makes it so that the default value (8) is still slightly visible behind the coin icon"
+* From Ryguy: "snake blocks will crash the game if set to "fast" speed with a length of less than 7. the game plays a CLR animation on each individual block as it moves to make them darker, and it makes this nice looking gradient. now, the length of this gradient is dependent on the speed of the snake block, and setting it to the "fast" speed makes the gradient 7 blocks long, and because there's no check on if the gradient length is greater than the snake block length it crashes due to setting a clr animation on a null pointer" (patch available in PropelParts)
 
 ##### Other things
 
@@ -71,6 +72,8 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * [It's possible to use Yoshi to clip through the goal flagpole](https://cdn.discordapp.com/attachments/601539713169489932/1273486269644669011/behindTheFlag.mp4?ex=66beca02&is=66bd7882&hm=73bd692d310ec02970ca61996f62566bed1abd9db306abec4b64de887c65d115&)
 * Bug used in TASes: if a player grabs a powerup and another player **who comes later in the player order** bubbles on the same frame, they can skip the powerup time-stop
 * (For the benefit of mods only) In multiplayer, if a player grabs the castle-boss key but dies before touching the ground, the game softlocks. (Unclear what the best fix for that would be...)
+* Stored Triple Jump (STJ)
+* Some kind of bug in dBc_c::checkGround() that makes it not recognize ground within walls, leading to issues like Red Koopas being unable to walk through semisolids
 
 #### Hardest
 
