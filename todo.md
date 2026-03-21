@@ -73,7 +73,7 @@ Despite being in the todo list, there's a good chance the "Harder" and "Hardest"
 * Bug used in TASes: if a player grabs a powerup and another player **who comes later in the player order** bubbles on the same frame, they can skip the powerup time-stop
 * (For the benefit of mods only) In multiplayer, if a player grabs the castle-boss key but dies before touching the ground, the game softlocks. (Unclear what the best fix for that would be...)
 * Stored Triple Jump (STJ)
-* Some kind of bug in dBc_c::checkGround() that makes it not recognize ground within walls, leading to issues like Red Koopas being unable to walk through semisolids
+* From Ryguy: "the "should we turn at ledges" function calls dBc_c::checkGround at a point 2.5 units away from the actor in the X direction and 4 units above it. the second parameter of dBc_c::checkGround is a float pointer, and that is the Y distance of very top of the nearest ground tile from the point it checks, but if that point is inside a tile, it gets the Y position of the top of the tile it's inside of. it then checks if that Y position is less than the Y position of the point it used and if it's greater than the y position of the actor - 5 units. if either of those are false it should turn around. that first check fails if the Y position of the ground is greater than the Y position of the point it used, which is true when the point is inside a tile" (this leads to, among other things, Red Koopas being unable to walk through semisolids)
 
 #### Hardest
 
