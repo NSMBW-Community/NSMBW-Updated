@@ -244,10 +244,10 @@ public:
 /// allocate more than 256 tile blocks on a single layer.
 unsigned short* __GetUnitPointer_allocateIfNecessary(
     dBg_c *this_,
-    unsigned int x,
-    unsigned int y,
+    unsigned short x,
+    unsigned short y,
     unsigned char layer,
-    unsigned int *blockNum,
+    int *blockNum,
     bool placeTile
 ) {
     // __GetUnitPointer() crashes if the layer doesn't exist, so we
