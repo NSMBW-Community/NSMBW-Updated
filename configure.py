@@ -332,7 +332,7 @@ def make_code_rules(config: Config) -> str:
     quote = '"' if sys.platform == 'win32' else "'"
 
     cc = CODE_CW_WRAPPER
-    cc = f"{ninja_escape(sys.executable)} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
+    cc = f"{quote}$py{quote} {quote}{ninja_escape(cc)}{quote} {quote}$mwcceppc{quote}"
 
     lines.append(f"""
 mwcceppc = {ninja_escape(config.mwcceppc_exe)}
