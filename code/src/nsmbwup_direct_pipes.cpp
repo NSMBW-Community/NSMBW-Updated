@@ -93,25 +93,28 @@ public:
 // the same assembly instructions, shuffled into the correct order.
 
 // First line (initializing the next-path-node index)
-       /* 0x800508f8 */             // lhz r0, 0x10(r30)              // r0 = destEntrance->flags;
-kmWrite32(0x800508fc, 0x540007ff);  // clrlwi. r0, r0, 0x1f           // r0 &= 0xff;
-kmWrite32(0x80050900, 0x41820014);  // beq NOT_DIRECT_PIPE_END        // if (r0 & DIRECT_PIPE_END) {
-kmWrite32(0x80050904, 0xa0e30004);  // lhz r7, 4(r3)                  //     this->nextPathNodeIndex = path->numNodes - 2;
-kmWrite32(0x80050908, 0x3807fffe);  // subi r0, r7, 0x2               //
-kmWrite32(0x8005090c, 0xb01f042c);  // sth r0, 0x42c(r31)             //
-kmWrite32(0x80050910, 0x4800000c);  // b AFTER_DIRECT_PIPE_END_CHECK  // }
-                                    // NOT_DIRECT_PIPE_END:           // else {
-kmWrite32(0x80050914, 0x38000001);  // li r0, 1                       //     this->nextPathNodeIndex = 1;
-kmWrite32(0x80050918, 0xb01f042c);  // sth r0, 0x42c(r31)             //
-                                    // AFTER_DIRECT_PIPE_END_CHECK:   // }
+    /* 800508f8 */ // lhz r0, 0x10(r30)           // r0 = destEntrance->flags;
+kmWriteDefAsm(0x800508fc, 0x80050930) {
+    nofralloc
+    /* 800508fc */ clrlwi. r0, r0, 0x1f           // r0 &= 0xff;
+    /* 80050900 */ beq NOT_DIRECT_PIPE_END        // if (r0 & DIRECT_PIPE_END) {
+    /* 80050904 */ lhz r7, 4(r3)                  //     this->nextPathNodeIndex = path->numNodes - 2;
+    /* 80050908 */ subi r0, r7, 0x2               //
+    /* 8005090c */ sth r0, 0x42c(r31)             //
+    /* 80050910 */ b AFTER_DIRECT_PIPE_END_CHECK  // }
+    NOT_DIRECT_PIPE_END:                          // else {
+    /* 80050914 */ li r0, 1                       //     this->nextPathNodeIndex = 1;
+    /* 80050918 */ sth r0, 0x42c(r31)             //
+    AFTER_DIRECT_PIPE_END_CHECK:                  // }
 
 // Second line (calculating the first-node pointer)
-kmWrite32(0x8005091c, 0xa0a30002);  // lhz r5, 2(r3)                  // r5 = path->startNodeIndex;
-kmWrite32(0x80050920, 0xa89f042c);  // lha r4, 0x42c(r31)             // r4 = this->nextPathNodeIndex;
-kmWrite32(0x80050924, 0x80c6003c);  // lwz r6, 0x3c(r6)               // r6 = area->pathNodesBlock;
-kmWrite32(0x80050928, 0x7c052214);  // add r0, r5, r4                 // r0 = path->startNodeIndex + this->nextPathNodeIndex;
-kmWrite32(0x8005092c, 0x54002036);  // slwi r0, r0, 4                 // (left-shift to prepare for indexing)
-kmWrite32(0x80050930, 0x7ca60214);  // add r5, r6, r0                 // r5 = area->pathNodesBlock[r0];
+    /* 8005091c */ lhz r5, 2(r3)                  // r5 = path->startNodeIndex;
+    /* 80050920 */ lha r4, 0x42c(r31)             // r4 = this->nextPathNodeIndex;
+    /* 80050924 */ lwz r6, 0x3c(r6)               // r6 = area->pathNodesBlock;
+    /* 80050928 */ add r0, r5, r4                 // r0 = path->startNodeIndex + this->nextPathNodeIndex;
+    /* 8005092c */ slwi r0, r0, 4                 // (left-shift to prepare for indexing)
+    /* 80050930 */ add r5, r6, r0                 // r5 = area->pathNodesBlock[r0];
+}
 
 #endif  // !NSMBWUP_C01100_OFF
 

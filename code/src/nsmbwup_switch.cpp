@@ -44,6 +44,6 @@
 // exist in that game, it's probably unlikely (but admittedly not
 // impossible) that it still does here.
 
-kmWrite32(0x80a19a7c, 0x60000000);  // nop
+kmWriteNop(0x80a19a7c);
 
 #endif  // !NSMBWUP_C00200_OFF
